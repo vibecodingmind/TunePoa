@@ -69,7 +69,7 @@ export function AdminRequests() {
       if (statusFilter !== 'ALL') params.set('status', statusFilter)
       const res = await fetch(`/api/service-requests?${params}`)
       const data = await res.json()
-      setRequests(data.requests || [])
+      setRequests(data.data.requests || [])
     } catch (e) {
       console.error(e)
     } finally {

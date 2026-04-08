@@ -61,13 +61,24 @@ export function LoginForm({ onSwitchToRegister }: LoginFormProps) {
         return
       }
 
-      setAuth(data.user, data.token)
+      // data is from API: { success, data: { token, user } } or { success: false, error }
+      const user = data.data?.user
+      const token = data.data?.token
+
+      if (!user || !token) {
+        setError(data.error || data.data?.error || 'Login failed. Please check your credentials.')
+        return
+      }
+
+      setAuth(user, token)
       toast({
         title: 'Welcome back!',
-        description: `Signed in as ${data.user.name}`,
+        description: `Signed in as ${user.name}`,
       })
-    } catch {
-      setError('Network error. Please check your connection and try again.')
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : 'Unknown error'
+      console.error('Login fetch error:', msg)
+      setError('Network error: ' + msg + '. Please try again.')
     } finally {
       setLoading(false)
     }

@@ -139,14 +139,25 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
         return
       }
 
+      // API returns { success: true, data: { user, token } }
+      const user = data.data?.user
+      const token = data.data?.token
+
+      if (!user || !token) {
+        setError(data.error || 'Registration succeeded but login failed. Please sign in manually.')
+        return
+      }
+
       // Auto-login after successful registration
-      setAuth(data.user, data.token)
+      setAuth(user, token)
       toast({
         title: 'Account created!',
         description: 'Welcome to TunePoa! Your account is ready.',
       })
-    } catch {
-      setError('Network error. Please check your connection and try again.')
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : 'Unknown error'
+      console.error('Register fetch error:', msg)
+      setError('Network error: ' + msg + '. Please try again.')
     } finally {
       setLoading(false)
     }
