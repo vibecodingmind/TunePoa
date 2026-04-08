@@ -570,22 +570,20 @@ export function LandingPage() {
               variant="secondary"
               className="bg-emerald-50 text-emerald-700 border-emerald-200/80 mb-4 font-medium"
             >
-              Gharama za Huduma
+              Service Pricing
             </Badge>
             <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-4 tracking-tight">
               Simple, Transparent Pricing
             </h2>
             <p className="text-slate-500 max-w-2xl mx-auto">
               No hidden fees. No long-term contracts. All prices in Tanzanian Shillings.
-              <br className="hidden sm:block" />
-              Bei rahisi, wazi — hazina gharama zilizofichwa. Bei zote katika Shilingi ya Tanzania.
             </p>
           </div>
 
           <PricingCalculator mode="landing" isAuthenticated={isAuthenticated} />
 
           <p className="text-center text-sm text-slate-400 mt-10">
-            Bei hupungua kadiri muda unapozidi. Jiunge sasa kupata punguzo la kipekee.
+            Prices decrease with longer durations. Subscribe now to get the best deal.
           </p>
         </div>
       </section>

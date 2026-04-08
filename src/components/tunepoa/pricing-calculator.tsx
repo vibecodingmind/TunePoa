@@ -58,10 +58,10 @@ interface PricingCalculatorProps {
 }
 
 const DURATIONS = [
-  { value: 1, label: 'Mwezi 1', sublabel: '1 Month', discount: null },
-  { value: 3, label: 'Mwezi 3', sublabel: '3 Months', discount: null },
-  { value: 6, label: 'Mwezi 6', sublabel: '6 Months', discount: null },
-  { value: 12, label: 'Mwezi 12', sublabel: '12 Months', discount: null },
+  { value: 1, label: '1 Month', sublabel: 'Per User' },
+  { value: 3, label: '3 Months', sublabel: 'Per User' },
+  { value: 6, label: '6 Months', sublabel: 'Per User' },
+  { value: 12, label: '12 Months', sublabel: 'Per User' },
 ]
 
 export function PricingCalculator({ mode = 'landing', onSubscribe, isAuthenticated }: PricingCalculatorProps) {
@@ -88,11 +88,11 @@ export function PricingCalculator({ mode = 'landing', onSubscribe, isAuthenticat
       if (data.success && data.data) {
         setResult(data.data)
       } else {
-        setError(data.error || 'Hitilafu imetokea')
+        setError(data.error || 'An error occurred')
         setResult(null)
       }
     } catch {
-      setError('Hitilafu ya mtandao')
+      setError('Network error')
       setResult(null)
     }
     setLoading(false)
@@ -176,12 +176,12 @@ export function PricingCalculator({ mode = 'landing', onSubscribe, isAuthenticat
           <div className="bg-gradient-to-r from-emerald-600 to-teal-500 px-6 py-4">
             <h3 className="text-white font-semibold text-lg flex items-center gap-2">
               <Calculator className="h-5 w-5" />
-              {mode === 'landing' ? 'Pata Bei — Get Your Price' : 'Linganisha Bei — Calculate & Subscribe'}
+              {mode === 'landing' ? 'Get Your Price' : 'Calculate & Subscribe'}
             </h3>
             <p className="text-emerald-100 text-sm mt-1">
               {mode === 'landing'
-                ? 'Chagua idadi ya namba na muda, tutakupa bei halisi'
-                : 'Chagua mipangilio yako ya usajili'}
+                ? 'Select the number of users and duration to get your price'
+                : 'Configure your subscription details'}
             </p>
           </div>
 
@@ -190,7 +190,7 @@ export function PricingCalculator({ mode = 'landing', onSubscribe, isAuthenticat
             <div className="space-y-3">
               <div className="flex items-center gap-2">
                 <div className="h-7 w-7 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-xs font-bold">1</div>
-                <Label className="text-sm font-semibold text-slate-700">Chagua Idadi ya Namba — Select Number Count</Label>
+                <Label className="text-sm font-semibold text-slate-700">Select Number Count</Label>
               </div>
               <div className="flex items-center gap-4">
                 <Input
@@ -220,7 +220,7 @@ export function PricingCalculator({ mode = 'landing', onSubscribe, isAuthenticat
             <div className="space-y-3">
               <div className="flex items-center gap-2">
                 <div className="h-7 w-7 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-xs font-bold">2</div>
-                <Label className="text-sm font-semibold text-slate-700">Chagua Muda — Select Duration</Label>
+                <Label className="text-sm font-semibold text-slate-700">Select Duration</Label>
               </div>
               <div className="grid grid-cols-4 gap-2">
                 {DURATIONS.map((d) => (
@@ -244,17 +244,17 @@ export function PricingCalculator({ mode = 'landing', onSubscribe, isAuthenticat
             <div className="space-y-3">
               <div className="flex items-center gap-2">
                 <div className="h-7 w-7 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-xs font-bold">3</div>
-                <Label className="text-sm font-semibold text-slate-700">Audio Recording — Uandikaji wa Sauti</Label>
+                <Label className="text-sm font-semibold text-slate-700">Audio Recording</Label>
               </div>
               <div className="flex items-center justify-between p-4 rounded-xl bg-slate-50 border border-slate-200">
                 <div className="flex items-center gap-3">
                   <Music className="h-5 w-5 text-slate-400" />
                   <div>
-                    <p className="text-sm font-medium text-slate-700">Jumuisha Audio Recording</p>
+                    <p className="text-sm font-medium text-slate-700">Include Audio Recording</p>
                     <p className="text-xs text-slate-400">
                       {result
-                        ? `+${formatTZS(result.audioCost)} TZS (bei ya kawaida)`
-                        : 'Bei ya kawaida ya uandikaji'}
+                        ? `+${formatTZS(result.audioCost)} TZS (flat fee)`
+                        : 'Flat fee for audio recording'}
                     </p>
                   </div>
                 </div>
@@ -271,7 +271,7 @@ export function PricingCalculator({ mode = 'landing', onSubscribe, isAuthenticat
                 <div className="h-7 w-7 rounded-full bg-emerald-500 text-white flex items-center justify-center text-xs font-bold">
                   <CheckCircle2 className="h-4 w-4" />
                 </div>
-                <Label className="text-sm font-semibold text-slate-700">Muhtasari — Your Plan Summary</Label>
+                <Label className="text-sm font-semibold text-slate-700">Your Plan Summary</Label>
               </div>
 
               {error && (
@@ -287,14 +287,14 @@ export function PricingCalculator({ mode = 'landing', onSubscribe, isAuthenticat
                     <div className="text-slate-500">Tier:</div>
                     <div className="font-semibold text-slate-800 text-right">{result.tier.name} Users</div>
 
-                    <div className="text-slate-500">Bei/Mtumiaji/Mwezi:</div>
+                    <div className="text-slate-500">Price/User/Month:</div>
                     <div className="font-semibold text-slate-800 text-right">{formatTZS(result.unitPrice)} TZS</div>
 
-                    <div className="text-slate-500">Idadi ya Namba:</div>
+                    <div className="text-slate-500">Number of Users:</div>
                     <div className="font-semibold text-slate-800 text-right">{result.userCount}</div>
 
-                    <div className="text-slate-500">Muda:</div>
-                    <div className="font-semibold text-slate-800 text-right">{result.durationMonths} Miezi</div>
+                    <div className="text-slate-500">Duration:</div>
+                    <div className="font-semibold text-slate-800 text-right">{result.durationMonths} Months</div>
                   </div>
 
                   <div className="h-px bg-emerald-200/50" />
@@ -316,7 +316,7 @@ export function PricingCalculator({ mode = 'landing', onSubscribe, isAuthenticat
                   <div className="h-px bg-emerald-300" />
 
                   <div className="flex items-center justify-between">
-                    <span className="text-base font-bold text-slate-800">JUMLA — TOTAL:</span>
+                    <span className="text-base font-bold text-slate-800">TOTAL:</span>
                     <span className="text-2xl font-bold text-emerald-700">
                       {formatTZS(result.total)} TZS
                     </span>
@@ -334,7 +334,7 @@ export function PricingCalculator({ mode = 'landing', onSubscribe, isAuthenticat
                 <div className="space-y-3">
                   <div className="flex items-center gap-2">
                     <div className="h-7 w-7 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-xs font-bold">4</div>
-                    <Label className="text-sm font-semibold text-slate-700">Chagua Ombi — Select Service Request</Label>
+                    <Label className="text-sm font-semibold text-slate-700">Select Service Request</Label>
                   </div>
                   {requests.length > 0 ? (
                     <div className="space-y-2">
@@ -361,9 +361,7 @@ export function PricingCalculator({ mode = 'landing', onSubscribe, isAuthenticat
                   ) : (
                     <div className="p-4 rounded-xl bg-amber-50 border border-amber-200 text-amber-700 text-sm">
                       <Info className="h-4 w-4 inline mr-1.5" />
-                      Unahitaji ombi lililoidhinishwa au kukamilika kabla ya kusajili.
-                      <br />
-                      <span className="text-xs">You need an approved or completed service request before subscribing.</span>
+                      You need an approved or completed service request before subscribing.
                     </div>
                   )}
                 </div>
@@ -372,7 +370,7 @@ export function PricingCalculator({ mode = 'landing', onSubscribe, isAuthenticat
                 <div className="space-y-3">
                   <div className="flex items-center gap-2">
                     <div className="h-7 w-7 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-xs font-bold">5</div>
-                    <Label className="text-sm font-semibold text-slate-700">Namba ya Simu — Phone Number</Label>
+                    <Label className="text-sm font-semibold text-slate-700">Phone Number</Label>
                   </div>
                   <div className="relative">
                     <Input
@@ -404,7 +402,7 @@ export function PricingCalculator({ mode = 'landing', onSubscribe, isAuthenticat
                       className="bg-emerald-600 hover:bg-emerald-700 text-white w-full sm:w-auto"
                       onClick={() => window.dispatchEvent(new CustomEvent('open-auth', { detail: 'register' }))}>
                       <Sparkles className="h-4 w-4 mr-2" />
-                      Anza Sasa — Get Started
+                      Get Started
                     </Button>
                   )}
                 </div>
@@ -416,10 +414,10 @@ export function PricingCalculator({ mode = 'landing', onSubscribe, isAuthenticat
                   onClick={handleSubscribe}
                 >
                   {loading ? (
-                    'Inahesabu...'
+                    'Calculating...'
                   ) : (
                     <>
-                      Sajili Sasa — Subscribe Now
+                      Subscribe Now
                       <ArrowRight className="h-5 w-5 ml-2" />
                     </>
                   )}

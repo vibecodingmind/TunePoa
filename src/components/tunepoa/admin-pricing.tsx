@@ -47,10 +47,10 @@ interface PricingSetting {
 }
 
 const DURATION_HEADERS = [
-  { key: '1', label: 'Mwezi 1', sublabel: '1 Month' },
-  { key: '3', label: 'Mwezi 3', sublabel: '3 Months' },
-  { key: '6', label: 'Mwezi 6', sublabel: '6 Months' },
-  { key: '12', label: 'Mwezi 12', sublabel: '12 Months' },
+  { key: '1', label: '1 Month', sublabel: 'Per User' },
+  { key: '3', label: '3 Months', sublabel: 'Per User' },
+  { key: '6', label: '6 Months', sublabel: 'Per User' },
+  { key: '12', label: '12 Months', sublabel: 'Per User' },
 ]
 
 export function AdminPricing() {
@@ -152,7 +152,7 @@ export function AdminPricing() {
 
   const saveTier = async () => {
     if (!formName || formMinUsers < 1) {
-      showMessage('error', 'Jina na idadi ya watumiaji ni lazima')
+      showMessage('error', 'Name and user count are required')
       return
     }
 
@@ -177,9 +177,9 @@ export function AdminPricing() {
         })
         const data = await res.json()
         if (data.success) {
-          showMessage('success', 'Tier imeongezwa kikamilifu!')
+          showMessage('success', 'Tier added successfully!')
         } else {
-          showMessage('error', data.error || 'Hitilafu imetokea')
+          showMessage('error', data.error || 'An error occurred')
         }
       } else if (editingTier) {
         const res = await fetch(`/api/pricing-tiers/${editingTier.id}`, {
@@ -198,21 +198,21 @@ export function AdminPricing() {
         })
         const data = await res.json()
         if (data.success) {
-          showMessage('success', 'Tier imeboreshwa kikamilifu!')
+          showMessage('success', 'Tier updated successfully!')
         } else {
-          showMessage('error', data.error || 'Hitilafu imetokea')
+          showMessage('error', data.error || 'An error occurred')
         }
       }
       setEditDialogOpen(false)
       await fetchTiers()
     } catch (err) {
-      showMessage('error', 'Hitilafu ya mtandao')
+      showMessage('error', 'Network error')
     }
     setSaving(false)
   }
 
   const deactivateTier = async (tier: PricingTier) => {
-    if (!confirm(`Futa tier "${tier.name}"? Hii itafanya tier isiwe hai.`)) return
+    if (!confirm(`Deactivate tier "${tier.name}"? This will make the tier inactive.`)) return
     try {
       const headers = { 'Content-Type': 'application/json' }
       if (token) headers['Authorization'] = `Bearer ${token}`
@@ -220,13 +220,13 @@ export function AdminPricing() {
       const res = await fetch(`/api/pricing-tiers/${tier.id}`, { method: 'DELETE', headers })
       const data = await res.json()
       if (data.success) {
-        showMessage('success', 'Tier imefutwa')
+        showMessage('success', 'Tier deactivated')
         await fetchTiers()
       } else {
-        showMessage('error', data.error || 'Hitilafu imetokea')
+        showMessage('error', data.error || 'An error occurred')
       }
     } catch {
-      showMessage('error', 'Hitilafu ya mtandao')
+      showMessage('error', 'Network error')
     }
   }
 
@@ -258,9 +258,9 @@ export function AdminPricing() {
         }),
       })
 
-      showMessage('success', 'Mipangilio imehifadhiwa!')
+      showMessage('success', 'Settings saved successfully!')
     } catch {
-      showMessage('error', 'Hitilafu ya mtandao')
+      showMessage('error', 'Network error')
     }
     setSavingSettings(false)
   }
@@ -290,8 +290,8 @@ export function AdminPricing() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">Gharama za Huduma</h1>
-          <p className="text-sm text-slate-500 mt-1">Simamia bei za huduma zako — matrix ya bei kulingana na idadi ya watumiaji na muda</p>
+          <h1 className="text-2xl font-bold text-slate-900">Service Pricing</h1>
+          <p className="text-sm text-slate-500 mt-1">Manage your service pricing — pricing matrix based on user count and duration</p>
         </div>
         <div className="flex gap-2">
           <Button variant="outline" size="sm" onClick={() => { fetchTiers(); fetchSettings(); }}>
@@ -300,7 +300,7 @@ export function AdminPricing() {
           </Button>
           <Button size="sm" onClick={openNewTier} className="bg-emerald-600 hover:bg-emerald-700">
             <Plus className="h-4 w-4 mr-1.5" />
-            Ongeza Tier
+            Add Tier
           </Button>
         </div>
       </div>
@@ -322,7 +322,7 @@ export function AdminPricing() {
         <CardHeader className="pb-3">
           <div className="flex items-center gap-2">
             <DollarSign className="h-5 w-5 text-emerald-600" />
-            <CardTitle className="text-lg">Pricing Matrix — Gharama (TZS / Mtumiaji / Mwezi)</CardTitle>
+            <CardTitle className="text-lg">Pricing Matrix — Price (TZS / User / Month)</CardTitle>
           </div>
         </CardHeader>
         <CardContent>
@@ -331,7 +331,7 @@ export function AdminPricing() {
               <thead>
                 <tr className="border-b border-slate-200">
                   <th className="text-left py-3 px-4 font-semibold text-slate-700 w-32">
-                    Namba<br />
+                    Numbers<br />
                     <span className="text-xs font-normal text-slate-400">Users</span>
                   </th>
                   {DURATION_HEADERS.map((d) => (
@@ -340,8 +340,8 @@ export function AdminPricing() {
                       <span className="text-xs font-normal text-slate-400">{d.sublabel}</span>
                     </th>
                   ))}
-                  <th className="text-center py-3 px-4 font-semibold text-slate-700 w-28">Hali</th>
-                  <th className="text-center py-3 px-4 font-semibold text-slate-700 w-24">Vitendo</th>
+                  <th className="text-center py-3 px-4 font-semibold text-slate-700 w-28">Status</th>
+                  <th className="text-center py-3 px-4 font-semibold text-slate-700 w-24">Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -389,7 +389,7 @@ export function AdminPricing() {
                 {tiers.length === 0 && (
                   <tr>
                     <td colSpan={7} className="text-center py-12 text-slate-400">
-                      Hakuna pricing tiers. Bonyeza &quot;Ongeza Tier&quot; kuunda moja.
+                      No pricing tiers yet. Click "Add Tier" to create one.
                     </td>
                   </tr>
                 )}
@@ -404,7 +404,7 @@ export function AdminPricing() {
         <CardHeader className="pb-3">
           <div className="flex items-center gap-2">
             <Music className="h-5 w-5 text-emerald-600" />
-            <CardTitle className="text-lg">Mipangilio ya Ziada — Add-on Settings</CardTitle>
+            <CardTitle className="text-lg">Add-on Settings</CardTitle>
           </div>
         </CardHeader>
         <CardContent className="space-y-6">
@@ -413,7 +413,7 @@ export function AdminPricing() {
             <div className="space-y-2">
               <Label className="flex items-center gap-2 text-sm font-medium text-slate-700">
                 <Music className="h-4 w-4 text-emerald-500" />
-                Audio Recording — Bei (TZS)
+                Audio Recording — Price (TZS)
               </Label>
               <div className="flex items-center gap-2">
                 <span className="text-sm text-slate-400">TZS</span>
@@ -424,14 +424,14 @@ export function AdminPricing() {
                   className="max-w-[200px]"
                 />
               </div>
-              <p className="text-xs text-slate-400">Bei ya kurekodi audio ya tangazo. Bei ya kawaida.</p>
+              <p className="text-xs text-slate-400">Flat fee for recording your advertisement audio.</p>
             </div>
 
             {/* Starter Package Price */}
             <div className="space-y-2">
               <Label className="flex items-center gap-2 text-sm font-medium text-slate-700">
                 <Gift className="h-4 w-4 text-emerald-500" />
-                Kifurushi cha Kuanzia — Starter Package (TZS)
+                Starter Package (TZS)
               </Label>
               <div className="flex items-center gap-2">
                 <span className="text-sm text-slate-400">TZS</span>
@@ -442,14 +442,14 @@ export function AdminPricing() {
                   className="max-w-[200px]"
                 />
               </div>
-              <p className="text-xs text-slate-400">Pamoja na usajili wa mwezi 1 + uandikaji wa audio.</p>
+              <p className="text-xs text-slate-400">Includes 1-month subscription + audio recording.</p>
             </div>
           </div>
 
           <Button onClick={saveGlobalSettings} disabled={savingSettings}
             className="bg-emerald-600 hover:bg-emerald-700">
             {savingSettings ? <RefreshCw className="h-4 w-4 mr-1.5 animate-spin" /> : <Save className="h-4 w-4 mr-1.5" />}
-            {savingSettings ? 'Inahifadhi...' : 'Hifadhi Mipangilio'}
+            {savingSettings ? 'Saving...' : 'Save Settings'}
           </Button>
         </CardContent>
       </Card>
@@ -460,9 +460,9 @@ export function AdminPricing() {
           <div className="flex gap-3">
             <Info className="h-5 w-5 text-slate-400 mt-0.5 shrink-0" />
             <div className="text-sm text-slate-500 space-y-1">
-              <p><strong className="text-slate-700">Jinsi hesabu inavyofanya kazi:</strong></p>
-              <p>Jumla = Bei ya mtumiaji × Idadi ya watumiaji × Miezi + Audio Recording (kama imechaguliwa)</p>
-              <p className="text-xs">Mfano: Tier 11-25, 20 watumiaji, miezi 6 = 12,000 × 20 × 6 = 1,440,000 TZS</p>
+              <p><strong className="text-slate-700">How the calculation works:</strong></p>
+              <p>Total = Price per user × Number of users × Months + Audio Recording (if selected)</p>
+              <p className="text-xs">Example: Tier 11-25, 20 users, 6 months = 12,000 × 20 × 6 = 1,440,000 TZS</p>
             </div>
           </div>
         </CardContent>
@@ -472,12 +472,12 @@ export function AdminPricing() {
       <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
         <DialogContent className="sm:max-w-lg">
           <DialogHeader>
-            <DialogTitle>{isNewTier ? 'Ongeza Pricing Tier' : 'Hariri Pricing Tier'}</DialogTitle>
+            <DialogTitle>{isNewTier ? 'Add Pricing Tier' : 'Edit Pricing Tier'}</DialogTitle>
           </DialogHeader>
           <div className="space-y-4 py-2">
             {/* Name */}
             <div className="space-y-2">
-              <Label>Jina la Tier</Label>
+              <Label>Tier Name</Label>
               <Input
                 value={formName}
                 onChange={(e) => setFormName(e.target.value)}
@@ -501,25 +501,25 @@ export function AdminPricing() {
 
             {/* Prices */}
             <div className="space-y-2">
-              <Label className="text-sm font-medium text-slate-700">Bei (TZS / Mtumiaji / Mwezi)</Label>
+              <Label className="text-sm font-medium text-slate-700">Price (TZS / User / Month)</Label>
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1">
-                  <Label className="text-xs text-slate-400">Mwezi 1</Label>
+                  <Label className="text-xs text-slate-400">1 Month</Label>
                   <Input type="number" value={formPrice1}
                     onChange={(e) => setFormPrice1(parseFloat(e.target.value) || 0)} />
                 </div>
                 <div className="space-y-1">
-                  <Label className="text-xs text-slate-400">Mwezi 3</Label>
+                  <Label className="text-xs text-slate-400">3 Months</Label>
                   <Input type="number" value={formPrice3}
                     onChange={(e) => setFormPrice3(parseFloat(e.target.value) || 0)} />
                 </div>
                 <div className="space-y-1">
-                  <Label className="text-xs text-slate-400">Mwezi 6</Label>
+                  <Label className="text-xs text-slate-400">6 Months</Label>
                   <Input type="number" value={formPrice6}
                     onChange={(e) => setFormPrice6(parseFloat(e.target.value) || 0)} />
                 </div>
                 <div className="space-y-1">
-                  <Label className="text-xs text-slate-400">Mwezi 12</Label>
+                  <Label className="text-xs text-slate-400">12 Months</Label>
                   <Input type="number" value={formPrice12}
                     onChange={(e) => setFormPrice12(parseFloat(e.target.value) || 0)} />
                 </div>
@@ -529,18 +529,18 @@ export function AdminPricing() {
             {/* Active toggle */}
             {!isNewTier && (
               <div className="flex items-center justify-between py-2">
-                <Label className="text-sm font-medium">Tier Iko Hai</Label>
+                <Label className="text-sm font-medium">Tier Active</Label>
                 <Switch checked={formActive} onCheckedChange={setFormActive} />
               </div>
             )}
           </div>
 
           <DialogFooter>
-            <Button variant="outline" onClick={() => setEditDialogOpen(false)}>Ghairi</Button>
+            <Button variant="outline" onClick={() => setEditDialogOpen(false)}>Cancel</Button>
             <Button onClick={saveTier} disabled={saving}
               className="bg-emerald-600 hover:bg-emerald-700">
               {saving ? <RefreshCw className="h-4 w-4 mr-1.5 animate-spin" /> : <Save className="h-4 w-4 mr-1.5" />}
-              {isNewTier ? 'Ongeza' : 'Hifadhi'}
+              {isNewTier ? 'Add' : 'Save'}
             </Button>
           </DialogFooter>
         </DialogContent>

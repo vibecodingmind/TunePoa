@@ -56,22 +56,22 @@ export function PackagesPage() {
 
       if (!res.ok || !result.success) {
         toast({
-          title: 'Hitilafu — Error',
-          description: result.error || 'Usajili umeshindikana',
+          title: 'Error',
+          description: result.error || 'Subscription failed',
           variant: 'destructive',
         })
         return
       }
 
       toast({
-        title: 'Usajili Umefanikiwa!',
-        description: `Umekubali usajili wa TZS ${data.totalAmount.toLocaleString()}. Tafadhali maliza malipo yako.`,
+        title: 'Subscription Created!',
+        description: `You have subscribed for TZS ${data.totalAmount.toLocaleString()}. Please complete your payment.`,
       })
       navigate('subscriptions')
     } catch {
       toast({
         title: 'Network Error',
-        description: 'Tafadhali angalia muunganisho wako na ujaribu tena.',
+        description: 'Please check your connection and try again.',
         variant: 'destructive',
       })
     } finally {
@@ -85,7 +85,7 @@ export function PackagesPage() {
       <div>
         <h1 className="text-2xl font-bold text-slate-900">Packages & Pricing</h1>
         <p className="text-slate-500 text-sm mt-1">
-          Chagua idadi ya namba na muda, then subscribe. Bei zinapatikana moja kwa moja.
+          Select the number of users and duration to get instant pricing, then subscribe.
         </p>
       </div>
 
@@ -96,7 +96,7 @@ export function PackagesPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
           <Card className="p-8 flex flex-col items-center gap-4 shadow-2xl">
             <Loader2 className="h-8 w-8 text-emerald-600 animate-spin" />
-            <p className="text-sm font-medium text-slate-700">Inasajili... Processing subscription...</p>
+            <p className="text-sm font-medium text-slate-700">Processing subscription...</p>
           </Card>
         </div>
       )}
