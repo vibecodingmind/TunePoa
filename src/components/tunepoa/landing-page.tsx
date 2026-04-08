@@ -7,7 +7,9 @@ import { Card, CardContent } from '@/components/ui/card'
 import {
   Dialog,
   DialogContent,
+  DialogTitle,
 } from '@/components/ui/dialog'
+import { VisuallyHidden } from '@radix-ui/react-visually-hidden'
 import { Badge } from '@/components/ui/badge'
 import {
   Accordion,
@@ -799,6 +801,9 @@ export function LandingPage() {
       {/* ─── AUTH DIALOG (popup from navbar / CTAs) ─── */}
       <Dialog open={authDialogOpen} onOpenChange={setAuthDialogOpen}>
         <DialogContent className="sm:max-w-md p-0 gap-0 overflow-hidden border-0 shadow-2xl">
+          <VisuallyHidden>
+            <DialogTitle>{authMode === 'login' ? 'Sign In' : 'Create Account'}</DialogTitle>
+          </VisuallyHidden>
           {authMode === 'login' ? (
             <LoginForm onSwitchToRegister={() => setAuthMode('register')} />
           ) : (
