@@ -172,9 +172,9 @@ export function UserDashboard() {
       if (!subRes.ok || !subData.success) throw new Error(subData.error || 'Failed to fetch subscriptions')
       if (!payRes.ok || !payData.success) throw new Error(payData.error || 'Failed to fetch payments')
 
-      setRequests(reqData.data.requests || [])
-      setSubscriptions(subData.data.subscriptions || [])
-      setPayments(payData.data.payments || [])
+      setRequests(reqData.data?.requests || [])
+      setSubscriptions(subData.data?.subscriptions || [])
+      setPayments(payData.data?.payments || [])
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load dashboard data')
     } finally {

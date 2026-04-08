@@ -199,7 +199,7 @@ export function MyRequests() {
         throw new Error(data.error || 'Failed to fetch requests')
       }
 
-      setRequests(data.data.requests || [])
+      setRequests(data.data?.requests || [])
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load requests')
     } finally {

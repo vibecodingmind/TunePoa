@@ -57,7 +57,12 @@ export function AdminPackages() {
     try {
       const res = await fetch('/api/packages')
       const data = await res.json()
-      setPackages(data.data.packages || [])
+      if (data.success && data.data) {
+        setPackages(data.data?.packages || [])
+      } else {
+        console.error('Failed to fetch packages:', data.error)
+        setPackages([])
+      }
     } catch (e) {
       console.error(e)
     } finally {

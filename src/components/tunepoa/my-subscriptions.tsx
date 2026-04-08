@@ -169,7 +169,7 @@ export function MySubscriptions() {
         throw new Error(data.error || 'Failed to fetch subscriptions')
       }
 
-      setSubscriptions(data.data.subscriptions || [])
+      setSubscriptions(data.data?.subscriptions || [])
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load subscriptions')
     } finally {
@@ -200,7 +200,7 @@ export function MySubscriptions() {
         if (data.success) {
           setPaymentsMap((prev) => ({
             ...prev,
-            [subscriptionId]: data.data.payments || [],
+            [subscriptionId]: data.data?.payments || [],
           }))
         }
       } catch {

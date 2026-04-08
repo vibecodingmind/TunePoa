@@ -195,7 +195,7 @@ export function PackagesPage() {
       if (!pkgRes.ok || !pkgData.success) throw new Error(pkgData.error || 'Failed to fetch packages')
       if (reqData.success === false) throw new Error(reqData.error || 'Failed to fetch requests')
 
-      setPackages(pkgData.data.packages || [])
+      setPackages(pkgData.data?.packages || [])
       setUserRequests(reqData.data?.requests || [])
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load packages')

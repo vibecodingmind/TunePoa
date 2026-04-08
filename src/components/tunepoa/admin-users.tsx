@@ -53,7 +53,12 @@ export function AdminUsers() {
       if (searchTerm) params.set('search', searchTerm)
       const res = await fetch(`/api/users?${params}`)
       const data = await res.json()
-      setUsers(data.data.users || [])
+      if (data.success && data.data) {
+        setUsers(data.data?.users || [])
+      } else {
+        console.error('Failed to fetch users:', data.error)
+        setUsers([])
+      }
     } catch (e) {
       console.error(e)
     } finally {

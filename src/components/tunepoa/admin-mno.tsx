@@ -52,7 +52,12 @@ export function AdminMno() {
     try {
       const res = await fetch('/api/mno-providers')
       const data = await res.json()
-      setProviders(data.data.providers || [])
+      if (data.success && data.data) {
+        setProviders(data.data?.providers || [])
+      } else {
+        console.error('Failed to fetch providers:', data.error)
+        setProviders([])
+      }
     } catch (e) {
       console.error(e)
     } finally {

@@ -82,7 +82,12 @@ export function AdminSubscriptions() {
       if (statusFilter !== 'ALL') params.set('status', statusFilter)
       const res = await fetch(`/api/subscriptions?${params}`)
       const data = await res.json()
-      setSubscriptions(data.data.subscriptions || [])
+      if (data.success && data.data) {
+        setSubscriptions(data.data.subscriptions || [])
+      } else {
+        console.error('Failed to fetch subscriptions:', data.error)
+        setSubscriptions([])
+      }
     } catch (e) {
       console.error(e)
     } finally {
@@ -92,7 +97,7 @@ export function AdminSubscriptions() {
 
   useEffect(() => {
     fetchSubscriptions()
-    fetch('/api/mno-providers').then(r => r.json()).then(d => setMnoProviders(d.data.providers || [])).catch(() => {})
+    fetch('/api/mno-providers').then(r => r.json()).then(d => setMnoProviders(d.data?.providers || [])).catch(() => {})
   }, [fetchSubscriptions])
 
   const filteredSubs = subscriptions.filter(s =>
