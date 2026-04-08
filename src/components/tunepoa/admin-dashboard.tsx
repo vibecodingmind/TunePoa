@@ -49,7 +49,7 @@ export function AdminDashboard() {
       try {
         const res = await fetch('/api/analytics')
         const data = await res.json()
-        setAnalytics(data)
+        setAnalytics(data.data || data)
       } catch (e) {
         console.error(e)
       } finally {
@@ -74,7 +74,12 @@ export function AdminDashboard() {
     )
   }
 
-  const maxPkgRevenue = Math.max(...analytics.packageRevenue.map(p => p.amount), 1)
+  const pkgRevenue = analytics.packageRevenue || []
+  const maxPkgRevenue = pkgRevenue.length > 0 ? Math.max(...pkgRevenue.map(p => p.amount), 1) : 1
+  const usersByRole = analytics.usersByRole || []
+  const subsByStatus = analytics.subscriptionsByStatus || []
+  const reqsByStatus = analytics.requestsByStatus || []
+  const recentActivity = analytics.recentActivity || []
 
   return (
     <div className="space-y-6">
@@ -92,7 +97,7 @@ export function AdminDashboard() {
                 <p className="text-sm text-gray-500">Total Users</p>
                 <p className="text-2xl font-bold text-gray-900">{analytics.totalUsers}</p>
                 <p className="text-xs text-emerald-600 mt-1">
-                  {analytics.usersByRole.filter(r => r.role === 'BUSINESS_OWNER').reduce((s, r) => s + r._count, 0)} businesses
+                  {usersByRole.filter(r => r.role === 'BUSINESS_OWNER').reduce((s, r) => s + r._count, 0)} businesses
                 </p>
               </div>
               <div className="h-10 w-10 rounded-xl bg-blue-100 flex items-center justify-center">
@@ -109,7 +114,7 @@ export function AdminDashboard() {
                 <p className="text-sm text-gray-500">Active Subscriptions</p>
                 <p className="text-2xl font-bold text-gray-900">{analytics.activeSubscriptions}</p>
                 <p className="text-xs text-emerald-600 mt-1">
-                  {analytics.subscriptionsByStatus.find(s => s.status === 'PENDING')?._count || 0} pending
+                  {subsByStatus.find(s => s.status === 'PENDING')?._count || 0} pending
                 </p>
               </div>
               <div className="h-10 w-10 rounded-xl bg-emerald-100 flex items-center justify-center">
@@ -164,11 +169,11 @@ export function AdminDashboard() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            {analytics.packageRevenue.length === 0 ? (
+            {pkgRevenue.length === 0 ? (
               <p className="text-gray-400 text-center py-8">No revenue data yet</p>
             ) : (
               <div className="space-y-4">
-                {analytics.packageRevenue.map(pkg => (
+                {pkgRevenue.map(pkg => (
                   <div key={pkg.name} className="space-y-1.5">
                     <div className="flex items-center justify-between text-sm">
                       <span className="font-medium text-gray-700">{pkg.name}</span>
@@ -197,7 +202,7 @@ export function AdminDashboard() {
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
-              {analytics.requestsByStatus.map(rs => (
+              {reqsByStatus.map(rs => (
                 <div key={rs.status} className="flex items-center justify-between">
                   <Badge
                     className={
@@ -228,10 +233,10 @@ export function AdminDashboard() {
         </CardHeader>
         <CardContent>
           <div className="max-h-96 overflow-y-auto space-y-3">
-            {analytics.recentActivity.length === 0 ? (
+            {recentActivity.length === 0 ? (
               <p className="text-gray-400 text-center py-8">No recent activity</p>
             ) : (
-              analytics.recentActivity.map(a => (
+              recentActivity.map(a => (
                 <div key={a.id} className="flex items-start gap-3 p-2 rounded-lg hover:bg-gray-50">
                   <div className="h-8 w-8 rounded-full bg-emerald-100 flex items-center justify-center shrink-0 mt-0.5">
                     <span className="text-xs font-semibold text-emerald-700">
