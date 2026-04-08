@@ -16,7 +16,13 @@ import {
   ArrowRight,
   Info,
   Sparkles,
-  ChevronDown,
+  Minus,
+  Plus,
+  Zap,
+  Crown,
+  Shield,
+  Headphones,
+  Gift,
 } from 'lucide-react'
 
 interface PricingResult {
@@ -58,15 +64,15 @@ interface PricingCalculatorProps {
 }
 
 const DURATIONS = [
-  { value: 1, label: '1 Month', sublabel: 'Per User' },
-  { value: 3, label: '3 Months', sublabel: 'Per User' },
-  { value: 6, label: '6 Months', sublabel: 'Per User' },
-  { value: 12, label: '12 Months', sublabel: 'Per User' },
+  { value: 1, label: '1', unit: 'Month', badge: '', popular: false },
+  { value: 3, label: '3', unit: 'Months', badge: 'Save 5%', popular: false },
+  { value: 6, label: '6', unit: 'Months', badge: 'Save 15%', popular: true },
+  { value: 12, label: '12', unit: 'Months', badge: 'Best Value', popular: false },
 ]
 
 export function PricingCalculator({ mode = 'landing', onSubscribe, isAuthenticated }: PricingCalculatorProps) {
   const [userCount, setUserCount] = useState(10)
-  const [duration, setDuration] = useState(1)
+  const [duration, setDuration] = useState(6)
   const [includesAudio, setIncludesAudio] = useState(false)
   const [result, setResult] = useState<PricingResult | null>(null)
   const [loading, setLoading] = useState(false)
@@ -161,272 +167,555 @@ export function PricingCalculator({ mode = 'landing', onSubscribe, isAuthenticat
   }
 
   const mno = detectMNO(phoneNumber)
-
   const isSubscribeMode = mode === 'subscribe'
 
   return (
-    <div className="w-full max-w-4xl mx-auto">
-      <Card className={`border-0 shadow-xl overflow-hidden ${
-        mode === 'landing'
-          ? 'bg-white'
-          : 'bg-white'
-      }`}>
-        <CardContent className="p-0">
-          {/* Step indicators */}
-          <div className="bg-gradient-to-r from-emerald-600 to-teal-500 px-6 py-4">
-            <h3 className="text-white font-semibold text-lg flex items-center gap-2">
-              <Calculator className="h-5 w-5" />
-              {mode === 'landing' ? 'Get Your Price' : 'Calculate & Subscribe'}
-            </h3>
-            <p className="text-emerald-100 text-sm mt-1">
-              {mode === 'landing'
-                ? 'Select the number of users and duration to get your price'
-                : 'Configure your subscription details'}
-            </p>
-          </div>
-
-          <div className="p-6 space-y-6">
-            {/* Step 1: User Count */}
-            <div className="space-y-3">
-              <div className="flex items-center gap-2">
-                <div className="h-7 w-7 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-xs font-bold">1</div>
-                <Label className="text-sm font-semibold text-slate-700">Select Number Count</Label>
+    <div className="w-full max-w-5xl mx-auto">
+      {mode === 'landing' ? (
+        /* ═══════════════════════════════════════════════════════
+           LANDING MODE — Premium split layout
+           ═══════════════════════════════════════════════════════ */
+        <div className="relative grid lg:grid-cols-5 gap-6 items-start">
+          {/* Left: Calculator Controls */}
+          <div className="lg:col-span-3 space-y-6">
+            {/* User Count Card */}
+            <div className="relative rounded-2xl bg-white border border-slate-200/80 p-6 sm:p-7 shadow-lg shadow-slate-200/30 hover:shadow-xl transition-shadow duration-500">
+              <div className="flex items-center gap-3 mb-5">
+                <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-400 text-white flex items-center justify-center shadow-md shadow-emerald-500/20">
+                  <Users className="h-5 w-5" />
+                </div>
+                <div>
+                  <h4 className="text-sm font-bold text-slate-900">Number of Users</h4>
+                  <p className="text-xs text-slate-400">How many phone numbers need ringback tones?</p>
+                </div>
               </div>
+
               <div className="flex items-center gap-4">
-                <Input
-                  type="number"
-                  min={1}
-                  value={userCount}
-                  onChange={(e) => setUserCount(Math.max(1, parseInt(e.target.value) || 1))}
-                  className="max-w-[160px] text-lg font-semibold"
-                />
+                <div className="flex items-center gap-0 rounded-xl border-2 border-slate-200 bg-slate-50 overflow-hidden">
+                  <button
+                    onClick={() => setUserCount(Math.max(1, userCount - 1))}
+                    className="h-12 w-12 flex items-center justify-center text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 transition-colors duration-200 active:scale-95"
+                  >
+                    <Minus className="h-4 w-4" />
+                  </button>
+                  <input
+                    type="number"
+                    min={1}
+                    value={userCount}
+                    onChange={(e) => setUserCount(Math.max(1, parseInt(e.target.value) || 1))}
+                    className="w-20 h-12 text-center text-xl font-bold text-slate-900 bg-transparent border-0 focus:outline-none focus:ring-0 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                  />
+                  <button
+                    onClick={() => setUserCount(userCount + 1)}
+                    className="h-12 w-12 flex items-center justify-center text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 transition-colors duration-200 active:scale-95"
+                  >
+                    <Plus className="h-4 w-4" />
+                  </button>
+                </div>
+
                 <div className="flex-1">
                   {result && (
-                    <div className="flex items-center gap-2">
-                      <Badge className="bg-emerald-100 text-emerald-700 border-emerald-200 hover:bg-emerald-100">
-                        <Users className="h-3 w-3 mr-1" />
+                    <div className="inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-emerald-50 border border-emerald-100 animate-fade-in">
+                      <div className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+                      <span className="text-xs font-bold text-emerald-700 uppercase tracking-wider">
                         Tier: {result.tier.name}
-                      </Badge>
-                      <span className="text-xs text-slate-400">
+                      </span>
+                      <span className="text-[10px] text-emerald-500 font-medium">
                         ({result.tier.minUsers}–{result.tier.maxUsers === 999 ? '50+' : result.tier.maxUsers} users)
                       </span>
                     </div>
                   )}
                 </div>
               </div>
-            </div>
 
-            {/* Step 2: Duration */}
-            <div className="space-y-3">
-              <div className="flex items-center gap-2">
-                <div className="h-7 w-7 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-xs font-bold">2</div>
-                <Label className="text-sm font-semibold text-slate-700">Select Duration</Label>
-              </div>
-              <div className="grid grid-cols-4 gap-2">
-                {DURATIONS.map((d) => (
+              {/* Quick select chips */}
+              <div className="flex flex-wrap gap-2 mt-4">
+                {[5, 10, 25, 50].map((num) => (
                   <button
-                    key={d.value}
-                    onClick={() => setDuration(d.value)}
-                    className={`py-3 px-2 rounded-xl border-2 text-center transition-all duration-200 ${
-                      duration === d.value
-                        ? 'border-emerald-500 bg-emerald-50 text-emerald-700 shadow-md shadow-emerald-100'
-                        : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:bg-slate-50'
+                    key={num}
+                    onClick={() => setUserCount(num)}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all duration-200 ${
+                      userCount === num
+                        ? 'bg-emerald-500 text-white shadow-md shadow-emerald-500/30'
+                        : 'bg-slate-100 text-slate-500 hover:bg-emerald-50 hover:text-emerald-600'
                     }`}
                   >
-                    <div className="text-sm font-bold">{d.label}</div>
-                    <div className="text-[10px] opacity-70 mt-0.5">{d.sublabel}</div>
+                    {num}
                   </button>
                 ))}
               </div>
             </div>
 
-            {/* Step 3: Audio Recording */}
-            <div className="space-y-3">
-              <div className="flex items-center gap-2">
-                <div className="h-7 w-7 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-xs font-bold">3</div>
-                <Label className="text-sm font-semibold text-slate-700">Audio Recording</Label>
-              </div>
-              <div className="flex items-center justify-between p-4 rounded-xl bg-slate-50 border border-slate-200">
-                <div className="flex items-center gap-3">
-                  <Music className="h-5 w-5 text-slate-400" />
-                  <div>
-                    <p className="text-sm font-medium text-slate-700">Include Audio Recording</p>
-                    <p className="text-xs text-slate-400">
-                      {result
-                        ? `+${formatTZS(result.audioCost)} TZS (flat fee)`
-                        : 'Flat fee for audio recording'}
-                    </p>
-                  </div>
+            {/* Duration Card */}
+            <div className="relative rounded-2xl bg-white border border-slate-200/80 p-6 sm:p-7 shadow-lg shadow-slate-200/30 hover:shadow-xl transition-shadow duration-500">
+              <div className="flex items-center gap-3 mb-5">
+                <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-500 text-white flex items-center justify-center shadow-md shadow-blue-500/20">
+                  <Calendar className="h-5 w-5" />
                 </div>
-                <Switch checked={includesAudio} onCheckedChange={setIncludesAudio} />
+                <div>
+                  <h4 className="text-sm font-bold text-slate-900">Subscription Duration</h4>
+                  <p className="text-xs text-slate-400">Longer plans save you more per month</p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-4 gap-2 sm:gap-3">
+                {DURATIONS.map((d) => (
+                  <button
+                    key={d.value}
+                    onClick={() => setDuration(d.value)}
+                    className={`relative py-4 px-2 rounded-xl text-center transition-all duration-300 group ${
+                      duration === d.value
+                        ? 'bg-gradient-to-br from-emerald-500 to-teal-500 text-white shadow-lg shadow-emerald-500/30 scale-[1.02]'
+                        : 'bg-slate-50 border-2 border-slate-200 text-slate-600 hover:border-emerald-300 hover:bg-emerald-50/50'
+                    }`}
+                  >
+                    {d.popular && (
+                      <span className="absolute -top-2.5 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-md bg-gradient-to-r from-amber-500 to-orange-500 text-white text-[9px] font-bold uppercase tracking-wider shadow-md">
+                        Popular
+                      </span>
+                    )}
+                    <div className={`text-xl sm:text-2xl font-extrabold ${duration === d.value ? 'text-white' : 'text-slate-900'}`}>
+                      {d.label}
+                    </div>
+                    <div className={`text-[10px] font-medium mt-0.5 ${duration === d.value ? 'text-emerald-100' : 'text-slate-400'}`}>
+                      {d.unit}
+                    </div>
+                    {d.badge && duration !== d.value && (
+                      <div className="text-[9px] font-bold text-emerald-600 mt-1">{d.badge}</div>
+                    )}
+                  </button>
+                ))}
               </div>
             </div>
 
-            {/* Divider */}
-            <div className="h-px bg-gradient-to-r from-transparent via-slate-200 to-transparent" />
-
-            {/* Price Summary */}
-            <div className="space-y-3">
-              <div className="flex items-center gap-2">
-                <div className="h-7 w-7 rounded-full bg-emerald-500 text-white flex items-center justify-center text-xs font-bold">
-                  <CheckCircle2 className="h-4 w-4" />
+            {/* Audio Recording Card */}
+            <div className="relative rounded-2xl bg-white border border-slate-200/80 p-6 sm:p-7 shadow-lg shadow-slate-200/30 hover:shadow-xl transition-shadow duration-500">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-violet-500 to-purple-500 text-white flex items-center justify-center shadow-md shadow-violet-500/20">
+                    <Music className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <h4 className="text-sm font-bold text-slate-900">Audio Recording</h4>
+                    <p className="text-xs text-slate-400">
+                      {result
+                        ? `Add professional ad recording for ${formatTZS(result.audioCost)} TZS`
+                        : 'Professional studio-recorded advertisement'}
+                    </p>
+                  </div>
                 </div>
-                <Label className="text-sm font-semibold text-slate-700">Your Plan Summary</Label>
+                <Switch
+                  checked={includesAudio}
+                  onCheckedChange={setIncludesAudio}
+                  className="data-[state=checked]:bg-gradient-to-r data-[state=checked]:from-violet-500 data-[state=checked]:to-purple-500"
+                />
               </div>
 
-              {error && (
-                <div className="p-4 rounded-xl bg-red-50 border border-red-200 text-red-600 text-sm flex items-center gap-2">
-                  <Info className="h-4 w-4 shrink-0" />
-                  {error}
+              {includesAudio && (
+                <div className="mt-4 flex items-start gap-3 p-3 rounded-xl bg-violet-50 border border-violet-100 animate-fade-in">
+                  <Headphones className="h-4 w-4 text-violet-500 mt-0.5 shrink-0" />
+                  <p className="text-xs text-violet-700 leading-relaxed">
+                    Our professional studio will record your custom ad with experienced voice artists. You approve it via WhatsApp before it goes live.
+                  </p>
                 </div>
               )}
+            </div>
+          </div>
 
-              {result && (
-                <div className="rounded-xl border-2 border-emerald-200 bg-gradient-to-br from-emerald-50 to-teal-50 p-5 space-y-3">
-                  <div className="grid grid-cols-2 gap-3 text-sm">
-                    <div className="text-slate-500">Tier:</div>
-                    <div className="font-semibold text-slate-800 text-right">{result.tier.name} Users</div>
+          {/* Right: Live Price Summary */}
+          <div className="lg:col-span-2">
+            <div className="lg:sticky lg:top-24 space-y-4">
+              {/* Main price card */}
+              <div className="relative rounded-2xl overflow-hidden">
+                {/* Animated gradient border */}
+                <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-emerald-500 via-teal-500 to-cyan-500 animate-gradient p-[2px]">
+                  <div className="w-full h-full rounded-2xl bg-gradient-to-br from-slate-900 via-emerald-950 to-slate-900" />
+                </div>
 
-                    <div className="text-slate-500">Price/User/Month:</div>
-                    <div className="font-semibold text-slate-800 text-right">{formatTZS(result.unitPrice)} TZS</div>
-
-                    <div className="text-slate-500">Number of Users:</div>
-                    <div className="font-semibold text-slate-800 text-right">{result.userCount}</div>
-
-                    <div className="text-slate-500">Duration:</div>
-                    <div className="font-semibold text-slate-800 text-right">{result.durationMonths} Months</div>
-                  </div>
-
-                  <div className="h-px bg-emerald-200/50" />
-
-                  <div className="grid grid-cols-2 gap-3 text-sm">
-                    <div className="text-slate-500">Subtotal:</div>
-                    <div className="font-semibold text-slate-800 text-right">{formatTZS(result.subtotal)} TZS</div>
-
-                    {result.includesAudio && (
-                      <>
-                        <div className="text-slate-500 flex items-center gap-1">
-                          <Music className="h-3 w-3" /> Audio Recording:
-                        </div>
-                        <div className="font-semibold text-slate-800 text-right">+{formatTZS(result.audioCost)} TZS</div>
-                      </>
+                <div className="relative p-6 sm:p-8">
+                  {/* Header */}
+                  <div className="flex items-center justify-between mb-6">
+                    <div className="flex items-center gap-2">
+                      <Zap className="h-5 w-5 text-emerald-400" />
+                      <span className="text-xs font-bold uppercase tracking-[0.15em] text-emerald-400">
+                        Your Price
+                      </span>
+                    </div>
+                    {result && (
+                      <Badge className="bg-emerald-500/20 text-emerald-300 border-emerald-500/30 text-[10px] font-bold uppercase tracking-wider">
+                        {result.tier.name} Tier
+                      </Badge>
                     )}
                   </div>
 
-                  <div className="h-px bg-emerald-300" />
+                  {loading && !result && (
+                    <div className="space-y-4 animate-pulse">
+                      <div className="h-12 bg-white/5 rounded-xl" />
+                      <div className="h-12 bg-white/5 rounded-xl" />
+                      <div className="h-12 bg-white/5 rounded-xl" />
+                      <div className="h-16 bg-white/5 rounded-xl" />
+                    </div>
+                  )}
 
-                  <div className="flex items-center justify-between">
-                    <span className="text-base font-bold text-slate-800">TOTAL:</span>
-                    <span className="text-2xl font-bold text-emerald-700">
-                      {formatTZS(result.total)} TZS
+                  {error && (
+                    <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-300 text-sm flex items-center gap-2">
+                      <Info className="h-4 w-4 shrink-0" />
+                      {error}
+                    </div>
+                  )}
+
+                  {result && (
+                    <div className="space-y-4 animate-fade-in">
+                      {/* Breakdown items */}
+                      <div className="space-y-3">
+                        <div className="flex items-center justify-between text-sm">
+                          <span className="text-slate-400 flex items-center gap-2">
+                            <Users className="h-3.5 w-3.5" />
+                            {result.userCount} users × {formatTZS(result.unitPrice)} TZS
+                          </span>
+                          <span className="text-slate-300 font-medium">
+                            {formatTZS(result.subtotal)} TZS
+                          </span>
+                        </div>
+
+                        <div className="flex items-center justify-between text-sm">
+                          <span className="text-slate-400 flex items-center gap-2">
+                            <Calendar className="h-3.5 w-3.5" />
+                            {result.durationMonths} {result.durationMonths === 1 ? 'month' : 'months'}
+                          </span>
+                          <span className="text-slate-300 font-medium">
+                            {formatTZS(result.unitPrice * result.userCount)} TZS/mo
+                          </span>
+                        </div>
+
+                        {result.includesAudio && (
+                          <div className="flex items-center justify-between text-sm">
+                            <span className="text-slate-400 flex items-center gap-2">
+                              <Music className="h-3.5 w-3.5" />
+                              Audio Recording
+                            </span>
+                            <span className="text-slate-300 font-medium">
+                              +{formatTZS(result.audioCost)} TZS
+                            </span>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Divider */}
+                      <div className="h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+
+                      {/* Total */}
+                      <div className="text-center py-4">
+                        <p className="text-xs font-bold uppercase tracking-[0.15em] text-slate-500 mb-2">Total Cost</p>
+                        <div className="text-4xl sm:text-5xl font-extrabold text-white tracking-tight">
+                          {formatTZS(result.total)}
+                          <span className="text-base font-medium text-slate-500 ml-2">TZS</span>
+                        </div>
+                        {result.durationMonths > 1 && (
+                          <p className="text-xs text-emerald-400 mt-2 font-medium">
+                            That&apos;s {formatTZS(Math.round(result.total / result.durationMonths))} TZS per month
+                          </p>
+                        )}
+                      </div>
+
+                      {/* Per-user breakdown */}
+                      <div className="flex items-center justify-center gap-4 py-2 rounded-xl bg-white/[0.04] border border-white/[0.06]">
+                        <div className="text-center">
+                          <p className="text-lg font-extrabold text-white">{formatTZS(result.unitPrice)}</p>
+                          <p className="text-[10px] text-slate-500 uppercase tracking-wider font-medium">Per User/Mo</p>
+                        </div>
+                        <div className="h-8 w-px bg-white/10" />
+                        <div className="text-center">
+                          <p className="text-lg font-extrabold text-white">{result.userCount}</p>
+                          <p className="text-[10px] text-slate-500 uppercase tracking-wider font-medium">Users</p>
+                        </div>
+                        <div className="h-8 w-px bg-white/10" />
+                        <div className="text-center">
+                          <p className="text-lg font-extrabold text-white">{result.durationMonths}</p>
+                          <p className="text-[10px] text-slate-500 uppercase tracking-wider font-medium">Months</p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* CTA */}
+              {!isAuthenticated && (
+                <Button
+                  size="lg"
+                  className="w-full bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white font-bold text-base h-14 rounded-2xl shadow-xl shadow-emerald-500/25 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-2xl hover:shadow-emerald-500/30 group"
+                  onClick={() => window.dispatchEvent(new CustomEvent('open-auth', { detail: 'register' }))}
+                >
+                  <Sparkles className="h-5 w-5 mr-2" />
+                  Get Started Now
+                  <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
+                </Button>
+              )}
+
+              {/* Trust badges */}
+              <div className="grid grid-cols-3 gap-3">
+                <div className="flex flex-col items-center gap-2 p-3 rounded-xl bg-white border border-slate-200/80 text-center">
+                  <Shield className="h-5 w-5 text-emerald-500" />
+                  <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider leading-tight">Secure<br/>Payment</span>
+                </div>
+                <div className="flex flex-col items-center gap-2 p-3 rounded-xl bg-white border border-slate-200/80 text-center">
+                  <Headphones className="h-5 w-5 text-blue-500" />
+                  <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider leading-tight">24/7<br/>Support</span>
+                </div>
+                <div className="flex flex-col items-center gap-2 p-3 rounded-xl bg-white border border-slate-200/80 text-center">
+                  <Gift className="h-5 w-5 text-violet-500" />
+                  <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider leading-tight">Cancel<br/>Anytime</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : (
+        /* ═══════════════════════════════════════════════════════
+           SUBSCRIBE MODE — Full width form
+           ═══════════════════════════════════════════════════════ */
+        <Card className="border-0 shadow-2xl shadow-slate-200/50 overflow-hidden rounded-2xl">
+          <CardContent className="p-0">
+            {/* Header */}
+            <div className="bg-gradient-to-r from-emerald-600 to-teal-500 px-6 sm:px-8 py-5 relative overflow-hidden">
+              <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.05)_1px,transparent_1px)] bg-[size:20px_20px]" />
+              <div className="relative flex items-center gap-3">
+                <div className="h-11 w-11 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center">
+                  <Calculator className="h-6 w-6 text-white" />
+                </div>
+                <div>
+                  <h3 className="text-white font-bold text-lg">Calculate & Subscribe</h3>
+                  <p className="text-emerald-100 text-sm">Configure your subscription details</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="p-6 sm:p-8 space-y-6">
+              {/* Step 1: User Count */}
+              <div className="space-y-3">
+                <div className="flex items-center gap-3">
+                  <div className="h-8 w-8 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center text-xs font-extrabold">1</div>
+                  <Label className="text-sm font-bold text-slate-900">Number of Users</Label>
+                </div>
+                <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-0 rounded-xl border-2 border-slate-200 bg-slate-50 overflow-hidden">
+                    <button
+                      onClick={() => setUserCount(Math.max(1, userCount - 1))}
+                      className="h-11 w-11 flex items-center justify-center text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 transition-colors active:scale-95"
+                    >
+                      <Minus className="h-4 w-4" />
+                    </button>
+                    <input
+                      type="number"
+                      min={1}
+                      value={userCount}
+                      onChange={(e) => setUserCount(Math.max(1, parseInt(e.target.value) || 1))}
+                      className="w-16 h-11 text-center text-lg font-bold text-slate-900 bg-transparent border-0 focus:outline-none focus:ring-0 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                    />
+                    <button
+                      onClick={() => setUserCount(userCount + 1)}
+                      className="h-11 w-11 flex items-center justify-center text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 transition-colors active:scale-95"
+                    >
+                      <Plus className="h-4 w-4" />
+                    </button>
+                  </div>
+                  {result && (
+                    <Badge className="bg-emerald-100 text-emerald-700 border-emerald-200 hover:bg-emerald-100">
+                      <Crown className="h-3 w-3 mr-1" />
+                      {result.tier.name}
+                    </Badge>
+                  )}
+                </div>
+              </div>
+
+              {/* Step 2: Duration */}
+              <div className="space-y-3">
+                <div className="flex items-center gap-3">
+                  <div className="h-8 w-8 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center text-xs font-extrabold">2</div>
+                  <Label className="text-sm font-bold text-slate-900">Duration</Label>
+                </div>
+                <div className="grid grid-cols-4 gap-2">
+                  {DURATIONS.map((d) => (
+                    <button
+                      key={d.value}
+                      onClick={() => setDuration(d.value)}
+                      className={`relative py-3 px-2 rounded-xl text-center transition-all duration-300 ${
+                        duration === d.value
+                          ? 'bg-gradient-to-br from-emerald-500 to-teal-500 text-white shadow-lg shadow-emerald-500/25'
+                          : 'bg-slate-50 border-2 border-slate-200 text-slate-600 hover:border-emerald-300'
+                      }`}
+                    >
+                      {d.popular && (
+                        <span className="absolute -top-2 left-1/2 -translate-x-1/2 px-1.5 py-0.5 rounded bg-amber-500 text-white text-[8px] font-bold uppercase">
+                          Hot
+                        </span>
+                      )}
+                      <div className="text-lg font-extrabold">{d.label}</div>
+                      <div className="text-[10px] opacity-70 font-medium">{d.unit}</div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Step 3: Audio */}
+              <div className="space-y-3">
+                <div className="flex items-center gap-3">
+                  <div className="h-8 w-8 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center text-xs font-extrabold">3</div>
+                  <Label className="text-sm font-bold text-slate-900">Audio Recording</Label>
+                </div>
+                <div className="flex items-center justify-between p-4 rounded-xl bg-slate-50 border border-slate-200 hover:border-slate-300 transition-colors">
+                  <div className="flex items-center gap-3">
+                    <div className="h-9 w-9 rounded-lg bg-violet-100 text-violet-600 flex items-center justify-center">
+                      <Music className="h-4 w-4" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-semibold text-slate-800">Include Audio Recording</p>
+                      <p className="text-xs text-slate-400">
+                        {result ? `+${formatTZS(result.audioCost)} TZS flat fee` : 'Professional studio recording'}
+                      </p>
+                    </div>
+                  </div>
+                  <Switch checked={includesAudio} onCheckedChange={setIncludesAudio} />
+                </div>
+              </div>
+
+              {/* Price Summary */}
+              {result && (
+                <div className="rounded-2xl bg-gradient-to-br from-emerald-50 to-teal-50 border-2 border-emerald-200 p-6 space-y-4">
+                  <div className="flex items-center gap-2">
+                    <CheckCircle2 className="h-5 w-5 text-emerald-600" />
+                    <span className="text-sm font-bold text-emerald-800">Your Plan Summary</span>
+                  </div>
+
+                  <div className="space-y-2.5 text-sm">
+                    <div className="flex justify-between">
+                      <span className="text-slate-500">Tier:</span>
+                      <span className="font-bold text-slate-800">{result.tier.name} Users</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-slate-500">Price / User / Month:</span>
+                      <span className="font-bold text-slate-800">{formatTZS(result.unitPrice)} TZS</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-slate-500">Total Users:</span>
+                      <span className="font-bold text-slate-800">{result.userCount}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-slate-500">Duration:</span>
+                      <span className="font-bold text-slate-800">{result.durationMonths} Months</span>
+                    </div>
+                  </div>
+
+                  <div className="h-px bg-emerald-200/60" />
+
+                  <div className="space-y-2.5 text-sm">
+                    <div className="flex justify-between">
+                      <span className="text-slate-500">Subtotal:</span>
+                      <span className="font-bold text-slate-800">{formatTZS(result.subtotal)} TZS</span>
+                    </div>
+                    {result.includesAudio && (
+                      <div className="flex justify-between">
+                        <span className="text-slate-500 flex items-center gap-1">
+                          <Music className="h-3 w-3" /> Audio Recording:
+                        </span>
+                        <span className="font-bold text-slate-800">+{formatTZS(result.audioCost)} TZS</span>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="h-px bg-emerald-300/60" />
+
+                  <div className="flex items-center justify-between pt-1">
+                    <span className="text-base font-bold text-slate-900">TOTAL:</span>
+                    <span className="text-3xl font-extrabold text-emerald-700">
+                      {formatTZS(result.total)} <span className="text-base font-medium">TZS</span>
                     </span>
                   </div>
                 </div>
               )}
-            </div>
 
-            {/* Subscribe Mode extras */}
-            {isSubscribeMode && (
-              <>
-                <div className="h-px bg-gradient-to-r from-transparent via-slate-200 to-transparent" />
+              {/* Service Request Selection */}
+              <div className="space-y-3">
+                <div className="flex items-center gap-3">
+                  <div className="h-8 w-8 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center text-xs font-extrabold">4</div>
+                  <Label className="text-sm font-bold text-slate-900">Select Service Request</Label>
+                </div>
+                {requests.length > 0 ? (
+                  <div className="space-y-2">
+                    {requests.map((r) => (
+                      <button
+                        key={r.id}
+                        onClick={() => setSelectedRequest(r.id)}
+                        className={`w-full p-3.5 rounded-xl border-2 text-left transition-all flex items-center justify-between ${
+                          selectedRequest === r.id
+                            ? 'border-emerald-500 bg-emerald-50 shadow-sm shadow-emerald-100'
+                            : 'border-slate-200 bg-white hover:border-slate-300'
+                        }`}
+                      >
+                        <div>
+                          <p className="text-sm font-semibold text-slate-800">{r.businessName}</p>
+                          <p className="text-xs text-slate-400">{r.adType} — {r.status}</p>
+                        </div>
+                        {selectedRequest === r.id && (
+                          <CheckCircle2 className="h-5 w-5 text-emerald-500" />
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="p-4 rounded-xl bg-amber-50 border border-amber-200 text-amber-700 text-sm flex items-center gap-2">
+                    <Info className="h-4 w-4 shrink-0" />
+                    You need an approved or completed service request before subscribing.
+                  </div>
+                )}
+              </div>
 
-                {/* Select Service Request */}
-                <div className="space-y-3">
+              {/* Phone Number */}
+              <div className="space-y-3">
+                <div className="flex items-center gap-3">
+                  <div className="h-8 w-8 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center text-xs font-extrabold">5</div>
+                  <Label className="text-sm font-bold text-slate-900">Phone Number</Label>
+                </div>
+                <div className="relative">
+                  <Input
+                    type="tel"
+                    placeholder="+2557XXXXXXXX"
+                    value={phoneNumber}
+                    onChange={(e) => setPhoneNumber(e.target.value)}
+                    className="pl-4 h-12 text-base"
+                  />
+                  {mno && (
+                    <Badge className="absolute right-3 top-1/2 -translate-y-1/2 bg-blue-100 text-blue-700 border-blue-200 text-xs font-bold">
+                      {mno}
+                    </Badge>
+                  )}
+                </div>
+              </div>
+
+              {/* Subscribe Button */}
+              <Button
+                size="lg"
+                className="w-full bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-700 hover:to-teal-600 text-white font-bold text-base h-14 rounded-2xl shadow-xl shadow-emerald-500/25 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-2xl group"
+                disabled={!result || !selectedRequest || requests.length === 0 || loading}
+                onClick={handleSubscribe}
+              >
+                {loading ? (
                   <div className="flex items-center gap-2">
-                    <div className="h-7 w-7 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-xs font-bold">4</div>
-                    <Label className="text-sm font-semibold text-slate-700">Select Service Request</Label>
+                    <div className="h-4 w-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    Calculating...
                   </div>
-                  {requests.length > 0 ? (
-                    <div className="space-y-2">
-                      {requests.map((r) => (
-                        <button
-                          key={r.id}
-                          onClick={() => setSelectedRequest(r.id)}
-                          className={`w-full p-3 rounded-xl border-2 text-left transition-all flex items-center justify-between ${
-                            selectedRequest === r.id
-                              ? 'border-emerald-500 bg-emerald-50'
-                              : 'border-slate-200 bg-white hover:border-slate-300'
-                          }`}
-                        >
-                          <div>
-                            <p className="text-sm font-medium text-slate-800">{r.businessName}</p>
-                            <p className="text-xs text-slate-400">{r.adType} — {r.status}</p>
-                          </div>
-                          {selectedRequest === r.id && (
-                            <CheckCircle2 className="h-5 w-5 text-emerald-500" />
-                          )}
-                        </button>
-                      ))}
-                    </div>
-                  ) : (
-                    <div className="p-4 rounded-xl bg-amber-50 border border-amber-200 text-amber-700 text-sm">
-                      <Info className="h-4 w-4 inline mr-1.5" />
-                      You need an approved or completed service request before subscribing.
-                    </div>
-                  )}
-                </div>
-
-                {/* Phone Number */}
-                <div className="space-y-3">
-                  <div className="flex items-center gap-2">
-                    <div className="h-7 w-7 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-xs font-bold">5</div>
-                    <Label className="text-sm font-semibold text-slate-700">Phone Number</Label>
-                  </div>
-                  <div className="relative">
-                    <Input
-                      type="tel"
-                      placeholder="+2557XXXXXXXX"
-                      value={phoneNumber}
-                      onChange={(e) => setPhoneNumber(e.target.value)}
-                      className="pl-4"
-                    />
-                    {mno && (
-                      <Badge className="absolute right-2 top-1/2 -translate-y-1/2 bg-blue-100 text-blue-700 border-blue-200 text-xs">
-                        {mno}
-                      </Badge>
-                    )}
-                  </div>
-                </div>
-              </>
-            )}
-
-            {/* CTA */}
-            <div className="pt-2">
-              {mode === 'landing' ? (
-                <div className="text-center space-y-3">
-                  <p className="text-sm text-slate-500">
-                    Ready to get started? <strong className="text-emerald-600">Register now</strong> and subscribe in minutes.
-                  </p>
-                  {!isAuthenticated && (
-                    <Button size="lg"
-                      className="bg-emerald-600 hover:bg-emerald-700 text-white w-full sm:w-auto"
-                      onClick={() => window.dispatchEvent(new CustomEvent('open-auth', { detail: 'register' }))}>
-                      <Sparkles className="h-4 w-4 mr-2" />
-                      Get Started
-                    </Button>
-                  )}
-                </div>
-              ) : (
-                <Button
-                  size="lg"
-                  className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-base py-6"
-                  disabled={!result || !selectedRequest || requests.length === 0 || loading}
-                  onClick={handleSubscribe}
-                >
-                  {loading ? (
-                    'Calculating...'
-                  ) : (
-                    <>
-                      Subscribe Now
-                      <ArrowRight className="h-5 w-5 ml-2" />
-                    </>
-                  )}
-                </Button>
-              )}
+                ) : (
+                  <>
+                    Subscribe Now — {result ? `${formatTZS(result.total)} TZS` : ''}
+                    <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
+                  </>
+                )}
+              </Button>
             </div>
-          </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+      )}
     </div>
   )
 }

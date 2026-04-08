@@ -640,29 +640,54 @@ export function LandingPage() {
       {/* ════════════════════════════════════════════════════════════════
           PRICING
           ════════════════════════════════════════════════════════════════ */}
-      <section id="pricing" className="py-24 sm:py-32 bg-white relative">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(16,185,129,0.03),transparent_50%)]" />
+      <section id="pricing" className="py-24 sm:py-32 relative overflow-hidden">
+        {/* Dark dramatic background */}
+        <div className="absolute inset-0 bg-gradient-to-b from-slate-50 via-slate-900/95 to-slate-900" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(16,185,129,0.08),transparent_50%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,rgba(20,184,166,0.06),transparent_50%)]" />
+
+        {/* Subtle grid */}
+        <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.015)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.015)_1px,transparent_1px)] bg-[size:60px_60px]" />
+
+        {/* Floating orbs */}
+        <div className="absolute top-20 left-[15%] w-[400px] h-[400px] bg-emerald-500/[0.04] rounded-full blur-[100px]" />
+        <div className="absolute bottom-10 right-[10%] w-[300px] h-[300px] bg-teal-400/[0.05] rounded-full blur-[80px]" />
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Header */}
-          <div className="text-center mb-14">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-50 text-emerald-700 text-[11px] font-bold uppercase tracking-[0.15em] mb-5 border border-emerald-100">
+          <div className="text-center mb-16">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 text-emerald-400 text-[11px] font-bold uppercase tracking-[0.15em] mb-5 border border-emerald-500/20 backdrop-blur-sm">
               <Wallet className="h-3.5 w-3.5" />
               Service Pricing
             </div>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 mb-5 tracking-tight">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white mb-5 tracking-tight">
               Simple, Transparent Pricing
             </h2>
-            <p className="text-slate-500 max-w-xl mx-auto text-base sm:text-lg leading-relaxed">
+            <p className="text-slate-400 max-w-xl mx-auto text-base sm:text-lg leading-relaxed">
               No hidden fees. No long-term contracts. All prices in Tanzanian Shillings.
             </p>
           </div>
 
           <PricingCalculator mode="landing" isAuthenticated={isAuthenticated} />
 
-          <p className="text-center text-sm text-slate-400 mt-12">
-            Prices decrease with longer durations. Subscribe now to get the best deal.
-          </p>
+          <div className="mt-16 flex flex-wrap items-center justify-center gap-6 text-sm text-slate-500">
+            <div className="flex items-center gap-2">
+              <CheckCircle2 className="h-4 w-4 text-emerald-500" />
+              <span>No setup fees</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <CheckCircle2 className="h-4 w-4 text-emerald-500" />
+              <span>Cancel anytime</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <CheckCircle2 className="h-4 w-4 text-emerald-500" />
+              <span>Secure M-Pesa payments</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <CheckCircle2 className="h-4 w-4 text-emerald-500" />
+              <span>WhatsApp support</span>
+            </div>
+          </div>
         </div>
       </section>
 
