@@ -180,7 +180,12 @@ export const useStore = create<AppState>((set, get) => ({
   isSidebarOpen: false,
   isGlobalLoading: false,
   authMode: 'login',
-  theme: 'light',
+  theme: (() => {
+    if (typeof window !== 'undefined') {
+      return (localStorage.getItem('tunepoa_theme') as 'light' | 'dark') || 'light'
+    }
+    return 'light'
+  })(),
 
   // --- Auth actions ---
 
@@ -243,7 +248,17 @@ export const useStore = create<AppState>((set, get) => ({
 
   setGlobalLoading: (loading) => set({ isGlobalLoading: loading }),
   setAuthMode: (mode) => set({ authMode: mode }),
-  setTheme: (theme) => set({ theme }),
+  setTheme: (newTheme) => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('tunepoa_theme', newTheme)
+      if (newTheme === 'dark') {
+        document.documentElement.classList.add('dark')
+      } else {
+        document.documentElement.classList.remove('dark')
+      }
+    }
+    set({ theme: newTheme })
+  },
 
   // --- Role helpers ---
 

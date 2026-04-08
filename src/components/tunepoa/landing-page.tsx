@@ -9,7 +9,6 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden'
-import { Badge } from '@/components/ui/badge'
 import {
   Accordion,
   AccordionContent,
@@ -18,7 +17,6 @@ import {
 } from '@/components/ui/accordion'
 import { LoginForm } from './login-form'
 import { RegisterForm } from './register-form'
-import { PricingCalculator } from './pricing-calculator'
 import {
   Music2,
   Megaphone,
@@ -37,19 +35,16 @@ import {
   Play,
   Menu,
   X,
-  Mail,
   Phone,
-  MapPin,
   ArrowRight,
-  Shield,
-  Headphones,
-  LogIn,
   Sparkles,
   Globe,
   Clock,
   Users,
-  Calculator,
   Crown,
+  Sun,
+  Moon,
+  Mail,
 } from 'lucide-react'
 
 /* ─── FAQ Data ─── */
@@ -123,23 +118,23 @@ const howItWorksSteps = [
     step: 1,
     title: 'Sign Up',
     desc: 'Register your business and request ringback tone service. It takes less than 2 minutes to create your account.',
-    color: 'from-blue-500 to-indigo-500',
-    shadowColor: 'shadow-blue-500/25',
+    color: 'from-emerald-500 to-teal-500',
+    shadowColor: 'shadow-emerald-500/25',
   },
   {
     icon: <FileText className="h-6 w-6" />,
     step: 2,
     title: 'Provide Ad Details',
     desc: 'Share your business details and ad script. Not sure what to say? Our team will help you craft the perfect message.',
-    color: 'from-violet-500 to-purple-500',
-    shadowColor: 'shadow-violet-500/25',
+    color: 'from-teal-500 to-cyan-500',
+    shadowColor: 'shadow-teal-500/25',
   },
   {
     icon: <Mic className="h-6 w-6" />,
     step: 3,
     title: 'Studio Recording',
     desc: 'Our professional studio records your custom ad with experienced voice artists and premium sound quality.',
-    color: 'from-emerald-500 to-teal-500',
+    color: 'from-emerald-500 to-green-500',
     shadowColor: 'shadow-emerald-500/25',
   },
   {
@@ -147,8 +142,8 @@ const howItWorksSteps = [
     step: 4,
     title: 'Go Live',
     desc: 'Approve the recording via WhatsApp and your ad goes live on every incoming call. It is that simple.',
-    color: 'from-amber-500 to-orange-500',
-    shadowColor: 'shadow-amber-500/25',
+    color: 'from-green-500 to-emerald-600',
+    shadowColor: 'shadow-green-500/25',
   },
 ]
 
@@ -159,42 +154,42 @@ const featureCards = [
     title: 'Brand Awareness',
     desc: 'Every call reinforces your brand message to callers, increasing recognition and trust with each ring.',
     gradient: 'from-emerald-500/10 to-teal-500/10',
-    iconBg: 'bg-emerald-100 text-emerald-600',
+    iconBg: 'bg-emerald-100 text-emerald-600 dark:bg-emerald-900/40 dark:text-emerald-400',
   },
   {
     icon: <Award className="h-5 w-5" />,
     title: 'Professional Ads',
     desc: 'Studio-quality recordings with professional voice artists that make your business sound premium and polished.',
-    gradient: 'from-blue-500/10 to-indigo-500/10',
-    iconBg: 'bg-blue-100 text-blue-600',
+    gradient: 'from-teal-500/10 to-cyan-500/10',
+    iconBg: 'bg-teal-100 text-teal-600 dark:bg-teal-900/40 dark:text-teal-400',
   },
   {
     icon: <BarChart3 className="h-5 w-5" />,
     title: 'Easy Management',
     desc: 'Track performance and manage ads from your dashboard with real-time analytics and simple controls.',
-    gradient: 'from-violet-500/10 to-purple-500/10',
-    iconBg: 'bg-violet-100 text-violet-600',
+    gradient: 'from-green-500/10 to-emerald-500/10',
+    iconBg: 'bg-green-100 text-green-600 dark:bg-green-900/40 dark:text-green-400',
   },
   {
     icon: <Wallet className="h-5 w-5" />,
     title: 'Flexible Plans',
     desc: 'Choose a package that fits your budget and scale. Start small, grow over time, and cancel anytime.',
-    gradient: 'from-amber-500/10 to-orange-500/10',
-    iconBg: 'bg-amber-100 text-amber-600',
+    gradient: 'from-cyan-500/10 to-teal-500/10',
+    iconBg: 'bg-cyan-100 text-cyan-600 dark:bg-cyan-900/40 dark:text-cyan-400',
   },
   {
     icon: <MessageCircle className="h-5 w-5" />,
     title: 'WhatsApp Verification',
     desc: 'Review and approve your ad via WhatsApp before going live. Quick, convenient, and always accessible.',
-    gradient: 'from-pink-500/10 to-rose-500/10',
-    iconBg: 'bg-pink-100 text-pink-600',
+    gradient: 'from-emerald-500/10 to-green-500/10',
+    iconBg: 'bg-emerald-100 text-emerald-600 dark:bg-emerald-900/40 dark:text-emerald-400',
   },
   {
     icon: <TrendingUp className="h-5 w-5" />,
     title: 'Analytics',
     desc: 'Monitor how many times your ad is played daily and track the impact on your business growth metrics.',
-    gradient: 'from-cyan-500/10 to-sky-500/10',
-    iconBg: 'bg-cyan-100 text-cyan-600',
+    gradient: 'from-teal-500/10 to-emerald-500/10',
+    iconBg: 'bg-teal-100 text-teal-600 dark:bg-teal-900/40 dark:text-teal-400',
   },
 ]
 
@@ -215,6 +210,56 @@ const networks = [
   { name: 'TTCL', color: 'text-sky-600' },
 ]
 
+/* ─── Pricing Cards ─── */
+const pricingCards = [
+  {
+    name: 'Basic',
+    price: '50,000',
+    duration: '1 month',
+    badge: null,
+    subtitle: 'For individuals & sole traders',
+    description: 'Get started with ringback tone advertising on a single number.',
+    icon: <Sparkles className="h-6 w-6" />,
+    iconBg: 'bg-emerald-500/10 border-emerald-500/20',
+    iconColor: 'text-emerald-400',
+    accentFrom: 'from-emerald-500',
+    accentTo: 'to-teal-400',
+    features: ['1 phone number', '1 month duration', 'Audio recording included', 'Email support'],
+    btnStyle: 'bg-white/[0.08] border-white/[0.12] hover:bg-emerald-500 hover:border-emerald-500',
+  },
+  {
+    name: 'Standard',
+    price: '120,000',
+    duration: '3 months',
+    badge: 'Most Popular',
+    subtitle: 'For growing businesses',
+    description: 'Reach more customers across multiple numbers with priority support.',
+    icon: <Zap className="h-6 w-6" />,
+    iconBg: 'bg-emerald-500/10 border-emerald-500/20',
+    iconColor: 'text-emerald-400',
+    accentFrom: 'from-emerald-500',
+    accentTo: 'to-teal-400',
+    features: ['5 phone numbers', '3 months duration', '30-sec ad duration', 'Priority support', 'Multi-network'],
+    btnStyle: 'bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 shadow-lg shadow-emerald-500/25',
+    popular: true,
+  },
+  {
+    name: 'Premium',
+    price: '250,000',
+    duration: '6 months',
+    badge: 'Best Value',
+    subtitle: 'For serious brand builders',
+    description: 'Maximize brand awareness and reach across all networks.',
+    icon: <Crown className="h-6 w-6" />,
+    iconBg: 'bg-emerald-500/10 border-emerald-500/20',
+    iconColor: 'text-emerald-400',
+    accentFrom: 'from-emerald-400',
+    accentTo: 'to-cyan-400',
+    features: ['10 phone numbers', '6 months duration', '45-sec ad duration', 'Dedicated manager', 'All networks'],
+    btnStyle: 'bg-white/[0.08] border-white/[0.12] hover:bg-emerald-500 hover:border-emerald-500',
+  },
+]
+
 /* ─── Footer Links ─── */
 const footerQuickLinks = [
   { label: 'Home', action: 'top' },
@@ -231,12 +276,19 @@ const footerServices = [
 ]
 
 export function LandingPage() {
-  const { isAuthenticated, navigate, authMode, setAuthMode } = useStore()
+  const { isAuthenticated, navigate, authMode, setAuthMode, theme, setTheme } = useStore()
   const [packages, setPackages] = useState<PackageData[]>([])
   const [packagesLoading, setPackagesLoading] = useState(true)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const [authDialogOpen, setAuthDialogOpen] = useState(false)
+
+  // Sync theme from store to DOM on mount
+  useEffect(() => {
+    if (theme === 'dark') {
+      document.documentElement.classList.add('dark')
+    }
+  }, [])
 
   // Fetch packages from API — auto-seed if database is empty
   useEffect(() => {
@@ -247,7 +299,6 @@ export function LandingPage() {
         const res = await fetch('/api/packages')
         const data = await res.json()
 
-        // Check if database needs seeding (empty response or needsSetup flag)
         if (data.needsSetup || (data.success && Array.isArray(data.data) && data.data.length === 0)) {
           console.log('Database appears empty, triggering auto-seed...')
           try {
@@ -321,17 +372,22 @@ export function LandingPage() {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
+  // Theme toggle handler
+  const toggleTheme = useCallback(() => {
+    setTheme(theme === 'dark' ? 'light' : 'dark')
+  }, [theme, setTheme])
+
   if (isAuthenticated) return null
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white dark:bg-emerald-950/5">
       {/* ════════════════════════════════════════════════════════════════
           NAVBAR
           ════════════════════════════════════════════════════════════════ */}
       <nav
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
           scrolled
-            ? 'bg-white/90 backdrop-blur-xl shadow-lg shadow-black/[0.04] border-b border-slate-200/50'
+            ? 'bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl shadow-lg shadow-black/[0.04] border-b border-emerald-100/50 dark:border-emerald-900/30'
             : 'bg-transparent'
         }`}
       >
@@ -342,7 +398,7 @@ export function LandingPage() {
               <div className="h-10 w-10 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-400 flex items-center justify-center shadow-lg shadow-emerald-500/30">
                 <Music2 className="h-5 w-5 text-white" />
               </div>
-              <span className={`font-extrabold text-xl tracking-tight transition-colors duration-500 ${scrolled ? 'text-slate-900' : 'text-white'}`}>
+              <span className={`font-extrabold text-xl tracking-tight transition-colors duration-500 ${scrolled ? 'text-slate-900 dark:text-white' : 'text-white'}`}>
                 TunePoa
               </span>
             </div>
@@ -355,7 +411,7 @@ export function LandingPage() {
                   onClick={() => scrollTo(label.toLowerCase().replace(/ /g, '-'))}
                   className={`text-[13px] font-semibold uppercase tracking-wider transition-all duration-300 px-4 py-2 rounded-lg ${
                     scrolled
-                      ? 'text-slate-500 hover:text-emerald-600 hover:bg-emerald-50'
+                      ? 'text-slate-500 dark:text-slate-400 hover:text-emerald-600 dark:hover:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-900/20'
                       : 'text-white/70 hover:text-white hover:bg-white/10'
                   }`}
                 >
@@ -364,13 +420,26 @@ export function LandingPage() {
               ))}
             </div>
 
-            {/* Desktop auth buttons */}
-            <div className="hidden md:flex items-center gap-3">
+            {/* Desktop right section */}
+            <div className="hidden md:flex items-center gap-2">
+              {/* Theme toggle */}
+              <button
+                onClick={toggleTheme}
+                className={`p-2.5 rounded-xl transition-all duration-300 ${
+                  scrolled
+                    ? 'text-slate-500 dark:text-slate-400 hover:text-emerald-600 dark:hover:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-900/20'
+                    : 'text-white/70 hover:text-white hover:bg-white/10'
+                }`}
+                aria-label="Toggle theme"
+              >
+                {theme === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+              </button>
+
               <Button
                 variant="ghost"
                 className={`font-semibold text-sm transition-all duration-300 ${
                   scrolled
-                    ? 'text-slate-600 hover:text-emerald-600 hover:bg-emerald-50'
+                    ? 'text-slate-600 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-900/20'
                     : 'text-white/80 hover:text-white hover:bg-white/10'
                 }`}
                 onClick={() => {
@@ -392,18 +461,31 @@ export function LandingPage() {
               </Button>
             </div>
 
-            {/* Mobile hamburger */}
-            <button
-              className={`md:hidden p-2.5 rounded-xl transition-all duration-300 ${scrolled ? 'hover:bg-slate-100' : 'hover:bg-white/10'}`}
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              aria-label="Toggle navigation menu"
-            >
-              {mobileMenuOpen ? (
-                <X className={`h-5 w-5 transition-colors ${scrolled ? 'text-slate-700' : 'text-white'}`} />
-              ) : (
-                <Menu className={`h-5 w-5 transition-colors ${scrolled ? 'text-slate-700' : 'text-white'}`} />
-              )}
-            </button>
+            {/* Mobile hamburger + theme toggle */}
+            <div className="md:hidden flex items-center gap-1">
+              <button
+                onClick={toggleTheme}
+                className={`p-2.5 rounded-xl transition-all duration-300 ${
+                  scrolled
+                    ? 'text-slate-500 dark:text-slate-400 hover:bg-emerald-50 dark:hover:bg-emerald-900/20'
+                    : 'text-white/70 hover:bg-white/10'
+                }`}
+                aria-label="Toggle theme"
+              >
+                {theme === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+              </button>
+              <button
+                className={`p-2.5 rounded-xl transition-all duration-300 ${scrolled ? 'hover:bg-slate-100 dark:hover:bg-slate-800' : 'hover:bg-white/10'}`}
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                aria-label="Toggle navigation menu"
+              >
+                {mobileMenuOpen ? (
+                  <X className={`h-5 w-5 transition-colors ${scrolled ? 'text-slate-700 dark:text-slate-300' : 'text-white'}`} />
+                ) : (
+                  <Menu className={`h-5 w-5 transition-colors ${scrolled ? 'text-slate-700 dark:text-slate-300' : 'text-white'}`} />
+                )}
+              </button>
+            </div>
           </div>
 
           {/* Mobile menu dropdown */}
@@ -461,7 +543,7 @@ export function LandingPage() {
         {/* Floating orbs */}
         <div className="absolute top-1/4 left-[10%] w-[500px] h-[500px] bg-emerald-500/[0.07] rounded-full blur-[120px] animate-pulse-glow" />
         <div className="absolute bottom-0 right-[5%] w-[400px] h-[400px] bg-teal-400/[0.06] rounded-full blur-[100px] animate-pulse-glow" style={{ animationDelay: '2s' }} />
-        <div className="absolute top-1/2 right-[30%] w-[300px] h-[300px] bg-blue-500/[0.04] rounded-full blur-[80px] animate-pulse-glow" style={{ animationDelay: '4s' }} />
+        <div className="absolute top-1/2 right-[30%] w-[300px] h-[300px] bg-teal-500/[0.04] rounded-full blur-[80px] animate-pulse-glow" style={{ animationDelay: '4s' }} />
 
         {/* Sound wave decoration at bottom */}
         <div className="absolute bottom-0 left-0 right-0 flex justify-center items-end gap-[2px] h-16 opacity-[0.04]" aria-hidden="true">
@@ -560,16 +642,16 @@ export function LandingPage() {
       {/* ════════════════════════════════════════════════════════════════
           TRUSTED BY NETWORKS
           ════════════════════════════════════════════════════════════════ */}
-      <section className="py-12 bg-slate-50 border-b border-slate-100">
+      <section className="py-12 bg-gradient-to-b from-emerald-50/50 to-white dark:from-emerald-950/30 dark:to-slate-900/5 border-b border-emerald-100/50 dark:border-emerald-900/20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <p className="text-center text-xs font-bold uppercase tracking-[0.2em] text-slate-400 mb-8">
+          <p className="text-center text-xs font-bold uppercase tracking-[0.2em] text-emerald-600/60 dark:text-emerald-400/60 mb-8">
             Trusted Across All Major Networks
           </p>
           <div className="flex flex-wrap items-center justify-center gap-8 sm:gap-14">
             {networks.map((net) => (
               <div
                 key={net.name}
-                className="text-lg sm:text-xl font-bold text-slate-300 hover:text-slate-500 transition-colors duration-300 tracking-tight"
+                className="text-lg sm:text-xl font-bold text-slate-300 dark:text-slate-600 hover:text-slate-500 dark:hover:text-slate-400 transition-colors duration-300 tracking-tight"
               >
                 {net.name}
               </div>
@@ -581,20 +663,20 @@ export function LandingPage() {
       {/* ════════════════════════════════════════════════════════════════
           HOW IT WORKS
           ════════════════════════════════════════════════════════════════ */}
-      <section id="how-it-works" className="py-24 sm:py-32 bg-white relative">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(16,185,129,0.03),transparent_70%)]" />
+      <section id="how-it-works" className="py-24 sm:py-32 bg-emerald-50/30 dark:bg-slate-900/5 relative">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(16,185,129,0.03),transparent_70%)] dark:bg-[radial-gradient(ellipse_at_center,rgba(16,185,129,0.06),transparent_70%)]" />
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Header */}
           <div className="text-center mb-20">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-50 text-emerald-700 text-[11px] font-bold uppercase tracking-[0.15em] mb-5 border border-emerald-100">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 text-[11px] font-bold uppercase tracking-[0.15em] mb-5 border border-emerald-100 dark:border-emerald-800/40">
               <Clock className="h-3.5 w-3.5" />
               Simple Process
             </div>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 mb-5 tracking-tight">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 dark:text-white mb-5 tracking-tight">
               How TunePoa Works
             </h2>
-            <p className="text-slate-500 max-w-xl mx-auto text-base sm:text-lg leading-relaxed">
+            <p className="text-slate-500 dark:text-slate-400 max-w-xl mx-auto text-base sm:text-lg leading-relaxed">
               Get your custom ringback tone live in four simple steps. No technical skills required.
             </p>
           </div>
@@ -602,7 +684,7 @@ export function LandingPage() {
           {/* Steps */}
           <div className="relative max-w-5xl mx-auto">
             {/* Connecting line */}
-            <div className="hidden lg:block absolute top-[60px] left-[12%] right-[12%] h-[2px] bg-gradient-to-r from-blue-200 via-emerald-300 to-amber-200 opacity-50" />
+            <div className="hidden lg:block absolute top-[60px] left-[12%] right-[12%] h-[2px] bg-gradient-to-r from-emerald-200 via-teal-300 to-emerald-200 dark:from-emerald-800 dark:via-emerald-600 dark:to-emerald-800 opacity-50" />
 
             <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-6">
               {howItWorksSteps.map((item, idx) => (
@@ -615,14 +697,14 @@ export function LandingPage() {
                       {item.icon}
                     </div>
                     {/* Step number */}
-                    <span className="absolute -top-1 -right-1 h-7 w-7 rounded-xl bg-white text-slate-900 text-xs font-extrabold flex items-center justify-center z-20 shadow-lg border border-slate-100">
+                    <span className="absolute -top-1 -right-1 h-7 w-7 rounded-xl bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-xs font-extrabold flex items-center justify-center z-20 shadow-lg border border-emerald-100 dark:border-emerald-800/50">
                       {item.step}
                     </span>
                   </div>
-                  <h3 className="text-base font-bold text-slate-900 mb-2">
+                  <h3 className="text-base font-bold text-slate-900 dark:text-white mb-2">
                     {item.title}
                   </h3>
-                  <p className="text-sm text-slate-500 leading-relaxed max-w-[240px] mx-auto">
+                  <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed max-w-[240px] mx-auto">
                     {item.desc}
                   </p>
                 </div>
@@ -635,20 +717,20 @@ export function LandingPage() {
       {/* ════════════════════════════════════════════════════════════════
           FEATURES / BENEFITS
           ════════════════════════════════════════════════════════════════ */}
-      <section className="py-24 sm:py-32 bg-gradient-to-b from-slate-50 to-white relative">
-        <div className="absolute inset-0 bg-dot-pattern opacity-40" />
+      <section className="py-24 sm:py-32 bg-gradient-to-b from-emerald-50/30 to-white dark:from-slate-900/5 dark:to-emerald-950/10 relative">
+        <div className="absolute inset-0 bg-dot-pattern opacity-40 dark:opacity-20" />
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Header */}
           <div className="text-center mb-20">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-50 text-emerald-700 text-[11px] font-bold uppercase tracking-[0.15em] mb-5 border border-emerald-100">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 text-[11px] font-bold uppercase tracking-[0.15em] mb-5 border border-emerald-100 dark:border-emerald-800/40">
               <Sparkles className="h-3.5 w-3.5" />
               Key Benefits
             </div>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 mb-5 tracking-tight">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 dark:text-white mb-5 tracking-tight">
               Why Businesses Love TunePoa
             </h2>
-            <p className="text-slate-500 max-w-xl mx-auto text-base sm:text-lg leading-relaxed">
+            <p className="text-slate-500 dark:text-slate-400 max-w-xl mx-auto text-base sm:text-lg leading-relaxed">
               Everything you need to turn phone calls into a powerful marketing channel
             </p>
           </div>
@@ -658,7 +740,7 @@ export function LandingPage() {
             {featureCards.map((feature, idx) => (
               <div
                 key={feature.title}
-                className="group relative rounded-2xl bg-white border border-slate-200/80 p-7 hover:shadow-xl hover:shadow-slate-200/50 hover:-translate-y-1 transition-all duration-500 animate-fade-in-up"
+                className="group relative rounded-2xl bg-white dark:bg-slate-800/50 border border-emerald-100/80 dark:border-emerald-900/30 p-7 hover:shadow-xl hover:shadow-emerald-200/40 dark:hover:shadow-emerald-900/20 hover:-translate-y-1 transition-all duration-500 animate-fade-in-up"
                 style={{ animationDelay: `${idx * 80}ms` }}
               >
                 {/* Gradient bg on hover */}
@@ -668,10 +750,10 @@ export function LandingPage() {
                   <div className={`h-12 w-12 rounded-xl ${feature.iconBg} flex items-center justify-center mb-5 shadow-sm group-hover:scale-110 transition-transform duration-300`}>
                     {feature.icon}
                   </div>
-                  <h3 className="text-base font-bold text-slate-900 mb-2">
+                  <h3 className="text-base font-bold text-slate-900 dark:text-white mb-2">
                     {feature.title}
                   </h3>
-                  <p className="text-sm text-slate-500 leading-relaxed">
+                  <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
                     {feature.desc}
                   </p>
                 </div>
@@ -682,18 +764,18 @@ export function LandingPage() {
       </section>
 
       {/* ════════════════════════════════════════════════════════════════
-          PRICING — Starter Packages + Custom Calculator
+          PRICING
           ════════════════════════════════════════════════════════════════ */}
       <section id="pricing" className="py-24 sm:py-32 relative overflow-hidden">
-        {/* Dark dramatic background */}
-        <div className="absolute inset-0 bg-gradient-to-b from-slate-50 via-slate-900/95 to-slate-900" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(16,185,129,0.08),transparent_50%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,rgba(20,184,166,0.06),transparent_50%)]" />
+        {/* Dark greenish background */}
+        <div className="absolute inset-0 bg-gradient-to-b from-emerald-950 via-slate-900 to-emerald-950" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(16,185,129,0.1),transparent_50%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,rgba(20,184,166,0.08),transparent_50%)]" />
         <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.015)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.015)_1px,transparent_1px)] bg-[size:60px_60px]" />
-        <div className="absolute top-20 left-[15%] w-[400px] h-[400px] bg-emerald-500/[0.04] rounded-full blur-[100px]" />
-        <div className="absolute bottom-10 right-[10%] w-[300px] h-[300px] bg-teal-400/[0.05] rounded-full blur-[80px]" />
+        <div className="absolute top-20 left-[15%] w-[400px] h-[400px] bg-emerald-500/[0.05] rounded-full blur-[100px]" />
+        <div className="absolute bottom-10 right-[10%] w-[300px] h-[300px] bg-teal-400/[0.06] rounded-full blur-[80px]" />
 
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Header */}
           <div className="text-center mb-16">
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 text-emerald-400 text-[11px] font-bold uppercase tracking-[0.15em] mb-5 border border-emerald-500/20 backdrop-blur-sm">
@@ -704,101 +786,71 @@ export function LandingPage() {
               Choose Your Perfect Plan
             </h2>
             <p className="text-slate-400 max-w-2xl mx-auto text-base sm:text-lg leading-relaxed">
-              All-inclusive starter packages with everything you need. Or build a custom plan with our pricing calculator below. No hidden fees, no long-term contracts.
+              Simple, transparent pricing. No hidden fees, no long-term contracts. Pick the plan that fits your business.
             </p>
           </div>
 
-          {/* ── Starter Package Cards ── */}
-          <div className="grid md:grid-cols-3 gap-6 lg:gap-8 mb-20">
-            {/* Starter Basic */}
-            <div className="group relative rounded-2xl bg-gradient-to-b from-white/[0.08] to-white/[0.03] border border-white/[0.08] backdrop-blur-sm p-8 hover:border-emerald-500/30 transition-all duration-500 hover:-translate-y-1 hover:shadow-2xl hover:shadow-emerald-500/10">
-              <div className="h-1.5 w-16 rounded-full bg-gradient-to-r from-emerald-500 to-teal-400 mb-6" />
-              <div className="flex items-center gap-3 mb-4">
-                <div className="h-12 w-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center">
-                  <Sparkles className="h-6 w-6 text-emerald-400" />
-                </div>
-                <div>
-                  <h3 className="text-lg font-bold text-white">Starter Basic</h3>
-                  <p className="text-xs text-slate-400">For individuals & sole traders</p>
-                </div>
-              </div>
-              <div className="mb-6">
-                <div className="flex items-baseline gap-1">
-                  <span className="text-4xl font-extrabold text-white tracking-tight">50,000</span>
-                  <span className="text-sm font-medium text-slate-400 ml-1">TZS</span>
-                </div>
-                <p className="text-xs text-slate-500 mt-1">One-time payment · 1 month</p>
-              </div>
-              <p className="text-sm text-slate-400 leading-relaxed mb-6">
-                Perfect for small businesses just getting started with ringback tone advertising. Includes everything you need to go live.
-              </p>
-              <ul className="space-y-3 mb-8">
-                {['1 phone number', '1 month subscription', 'Audio recording included', '15-second ad duration', 'Email support', 'Basic analytics'].map((f) => (
-                  <li key={f} className="flex items-center gap-2.5 text-sm text-slate-300">
-                    <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0" />
-                    {f}
-                  </li>
-                ))}
-              </ul>
-              <button
-                onClick={() => {
-                  if (!isAuthenticated) {
-                    window.dispatchEvent(new CustomEvent('open-auth', { detail: 'register' }))
-                  } else {
-                    navigate('packages')
-                  }
-                }}
-                className="w-full py-3.5 rounded-xl bg-white/[0.08] border border-white/[0.12] text-white font-semibold text-sm hover:bg-emerald-500 hover:border-emerald-500 transition-all duration-300 hover:shadow-lg hover:shadow-emerald-500/25"
-              >
-                Get Started
-              </button>
-            </div>
+          {/* ── Package Cards ── */}
+          <div className="grid md:grid-cols-3 gap-6 lg:gap-8 mb-16">
+            {pricingCards.map((card) => (
+              <div key={card.name} className="group relative rounded-2xl bg-gradient-to-b from-white/[0.08] to-white/[0.03] border border-white/[0.08] backdrop-blur-sm p-8 hover:border-emerald-500/30 transition-all duration-500 hover:-translate-y-1 hover:shadow-2xl hover:shadow-emerald-500/10">
+                {/* Popular badge */}
+                {card.badge && card.popular && (
+                  <div className="absolute top-0 right-0 z-10">
+                    <div className="flex items-center gap-1 px-3 py-1.5 bg-gradient-to-r from-amber-500 to-orange-500 text-white text-[10px] font-extrabold uppercase tracking-widest rounded-bl-xl shadow-lg shadow-amber-500/30">
+                      <Star className="h-3 w-3" />
+                      {card.badge}
+                    </div>
+                  </div>
+                )}
+                {card.badge && !card.popular && (
+                  <div className="absolute top-0 right-0 z-10">
+                    <div className="flex items-center gap-1 px-3 py-1.5 bg-gradient-to-r from-emerald-500 to-teal-500 text-white text-[10px] font-extrabold uppercase tracking-widest rounded-bl-xl shadow-lg shadow-emerald-500/30">
+                      <Crown className="h-3 w-3" />
+                      {card.badge}
+                    </div>
+                  </div>
+                )}
 
-            {/* Starter Standard — Popular */}
-            <div className="group relative rounded-2xl overflow-hidden">
-              {/* Animated gradient border */}
-              <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-blue-500 via-emerald-500 to-teal-500 animate-gradient p-[2px]">
-                <div className="w-full h-full rounded-2xl bg-gradient-to-b from-slate-900 via-slate-900/98 to-slate-900" />
-              </div>
-              {/* Popular badge */}
-              <div className="absolute top-0 right-0 z-10">
-                <div className="flex items-center gap-1 px-3 py-1.5 bg-gradient-to-r from-amber-500 to-orange-500 text-white text-[10px] font-extrabold uppercase tracking-widest rounded-bl-xl shadow-lg shadow-amber-500/30">
-                  <Star className="h-3 w-3" />
-                  Most Popular
-                </div>
-              </div>
-              <div className="relative p-8">
-                <div className="h-1.5 w-16 rounded-full bg-gradient-to-r from-blue-500 to-emerald-400 mb-6" />
+                {/* Accent bar */}
+                <div className={`h-1.5 w-16 rounded-full bg-gradient-to-r ${card.accentFrom} ${card.accentTo} mb-6`} />
+
+                {/* Icon + name */}
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="h-12 w-12 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center">
-                    <Zap className="h-6 w-6 text-blue-400" />
+                  <div className={`h-12 w-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center ${card.iconColor}`}>
+                    {card.icon}
                   </div>
                   <div>
-                    <h3 className="text-lg font-bold text-white">Starter Standard</h3>
-                    <p className="text-xs text-slate-400">For growing businesses</p>
+                    <h3 className="text-lg font-bold text-white">{card.name}</h3>
+                    <p className="text-xs text-slate-400">{card.subtitle}</p>
                   </div>
                 </div>
+
+                {/* Price */}
                 <div className="mb-6">
                   <div className="flex items-baseline gap-1">
-                    <span className="text-4xl font-extrabold text-white tracking-tight">120,000</span>
+                    <span className="text-4xl font-extrabold text-white tracking-tight">{card.price}</span>
                     <span className="text-sm font-medium text-slate-400 ml-1">TZS</span>
                   </div>
-                  <div className="flex items-center gap-2 mt-1">
-                    <p className="text-xs text-slate-500">One-time payment · 3 months</p>
-                    <span className="px-2 py-0.5 rounded-md bg-emerald-500/10 border border-emerald-500/20 text-[10px] font-bold text-emerald-400 uppercase">Save 20%</span>
-                  </div>
+                  <p className="text-xs text-slate-500 mt-1">One-time payment · {card.duration}</p>
                 </div>
+
+                {/* Description */}
                 <p className="text-sm text-slate-400 leading-relaxed mb-6">
-                  Great for growing businesses wanting to reach more customers through ringback tones on multiple numbers.
+                  {card.description}
                 </p>
+
+                {/* Features */}
                 <ul className="space-y-3 mb-8">
-                  {['5 phone numbers', '3 months subscription', 'Audio recording included', '30-second ad duration', 'Priority support', 'Weekly analytics', 'Multi-network support'].map((f) => (
+                  {card.features.map((f) => (
                     <li key={f} className="flex items-center gap-2.5 text-sm text-slate-300">
                       <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0" />
                       {f}
                     </li>
                   ))}
                 </ul>
+
+                {/* CTA */}
                 <button
                   onClick={() => {
                     if (!isAuthenticated) {
@@ -807,80 +859,16 @@ export function LandingPage() {
                       navigate('packages')
                     }
                   }}
-                  className="w-full py-3.5 rounded-xl bg-gradient-to-r from-blue-500 to-emerald-500 text-white font-semibold text-sm hover:from-blue-600 hover:to-emerald-600 transition-all duration-300 shadow-lg shadow-blue-500/25 hover:shadow-xl hover:shadow-emerald-500/30 hover:-translate-y-0.5"
+                  className={`w-full py-3.5 rounded-xl text-white font-semibold text-sm transition-all duration-300 hover:shadow-lg hover:shadow-emerald-500/25 hover:-translate-y-0.5 ${card.btnStyle}`}
                 >
                   Get Started
                 </button>
               </div>
-            </div>
-
-            {/* Starter Premium */}
-            <div className="group relative rounded-2xl bg-gradient-to-b from-white/[0.08] to-white/[0.03] border border-white/[0.08] backdrop-blur-sm p-8 hover:border-violet-500/30 transition-all duration-500 hover:-translate-y-1 hover:shadow-2xl hover:shadow-violet-500/10">
-              <div className="h-1.5 w-16 rounded-full bg-gradient-to-r from-violet-500 to-purple-400 mb-6" />
-              <div className="flex items-center gap-3 mb-4">
-                <div className="h-12 w-12 rounded-xl bg-violet-500/10 border border-violet-500/20 flex items-center justify-center">
-                  <Crown className="h-6 w-6 text-violet-400" />
-                </div>
-                <div>
-                  <h3 className="text-lg font-bold text-white">Starter Premium</h3>
-                  <p className="text-xs text-slate-400">For serious brand builders</p>
-                </div>
-              </div>
-              <div className="mb-6">
-                <div className="flex items-baseline gap-1">
-                  <span className="text-4xl font-extrabold text-white tracking-tight">250,000</span>
-                  <span className="text-sm font-medium text-slate-400 ml-1">TZS</span>
-                </div>
-                <div className="flex items-center gap-2 mt-1">
-                  <p className="text-xs text-slate-500">One-time payment · 6 months</p>
-                  <span className="px-2 py-0.5 rounded-md bg-violet-500/10 border border-violet-500/20 text-[10px] font-bold text-violet-400 uppercase">Save 33%</span>
-                </div>
-              </div>
-              <p className="text-sm text-slate-400 leading-relaxed mb-6">
-                Best value for businesses serious about maximizing brand awareness and reach across all networks.
-              </p>
-              <ul className="space-y-3 mb-8">
-                {['10 phone numbers', '6 months subscription', 'Audio recording included', '45-second ad duration', 'Dedicated support manager', 'Daily analytics', 'All networks supported', 'A/B testing', 'Priority activation'].map((f) => (
-                  <li key={f} className="flex items-center gap-2.5 text-sm text-slate-300">
-                    <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0" />
-                    {f}
-                  </li>
-                ))}
-              </ul>
-              <button
-                onClick={() => {
-                  if (!isAuthenticated) {
-                    window.dispatchEvent(new CustomEvent('open-auth', { detail: 'register' }))
-                  } else {
-                    navigate('packages')
-                  }
-                }}
-                className="w-full py-3.5 rounded-xl bg-white/[0.08] border border-white/[0.12] text-white font-semibold text-sm hover:bg-violet-500 hover:border-violet-500 transition-all duration-300 hover:shadow-lg hover:shadow-violet-500/25"
-              >
-                Get Started
-              </button>
-            </div>
+            ))}
           </div>
 
-          {/* ── Custom Pricing Calculator ── */}
-          <div className="mb-12">
-            <div className="text-center mb-10">
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/[0.06] text-slate-300 text-[11px] font-bold uppercase tracking-[0.15em] mb-4 border border-white/[0.08]">
-                <Calculator className="h-3.5 w-3.5" />
-                Custom Pricing
-              </div>
-              <h3 className="text-2xl sm:text-3xl font-extrabold text-white mb-3 tracking-tight">
-                Need a Custom Plan?
-              </h3>
-              <p className="text-slate-400 max-w-lg mx-auto text-sm sm:text-base leading-relaxed">
-                Calculate the exact price based on your number of users and preferred duration. Volume discounts apply automatically.
-              </p>
-            </div>
-          </div>
-
-          <PricingCalculator mode="landing" isAuthenticated={isAuthenticated} />
-
-          <div className="mt-16 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-sm text-slate-500">
+          {/* Trust badges */}
+          <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-sm text-slate-500">
             <div className="flex items-center gap-2">
               <CheckCircle2 className="h-4 w-4 text-emerald-500" />
               <span>No setup fees</span>
@@ -908,20 +896,20 @@ export function LandingPage() {
       {/* ════════════════════════════════════════════════════════════════
           TESTIMONIALS
           ════════════════════════════════════════════════════════════════ */}
-      <section className="py-24 sm:py-32 bg-gradient-to-b from-slate-50 to-white relative overflow-hidden">
-        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-emerald-200 to-transparent" />
+      <section className="py-24 sm:py-32 bg-gradient-to-b from-emerald-50/40 to-white dark:from-emerald-950/20 dark:to-slate-900/5 relative overflow-hidden">
+        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-emerald-300 dark:via-emerald-700 to-transparent" />
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Header */}
           <div className="text-center mb-20">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-50 text-emerald-700 text-[11px] font-bold uppercase tracking-[0.15em] mb-5 border border-emerald-100">
-              <Headphones className="h-3.5 w-3.5" />
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 text-[11px] font-bold uppercase tracking-[0.15em] mb-5 border border-emerald-100 dark:border-emerald-800/40">
+              <MessageCircle className="h-3.5 w-3.5" />
               Testimonials
             </div>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 mb-5 tracking-tight">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 dark:text-white mb-5 tracking-tight">
               Trusted by Tanzanian Businesses
             </h2>
-            <p className="text-slate-500 max-w-xl mx-auto text-base sm:text-lg leading-relaxed">
+            <p className="text-slate-500 dark:text-slate-400 max-w-xl mx-auto text-base sm:text-lg leading-relaxed">
               See what our customers have to say about their experience with TunePoa
             </p>
           </div>
@@ -931,10 +919,10 @@ export function LandingPage() {
             {testimonials.map((t, i) => (
               <div
                 key={i}
-                className="group relative rounded-2xl bg-white border border-slate-200/80 p-8 hover:shadow-xl hover:shadow-emerald-100/30 hover:-translate-y-1 transition-all duration-500"
+                className="group relative rounded-2xl bg-white dark:bg-slate-800/50 border border-emerald-100/80 dark:border-emerald-900/30 p-8 hover:shadow-xl hover:shadow-emerald-100/30 dark:hover:shadow-emerald-900/20 hover:-translate-y-1 transition-all duration-500"
               >
                 {/* Quote mark decoration */}
-                <div className="absolute top-6 right-8 text-7xl font-serif text-emerald-100 leading-none select-none group-hover:text-emerald-200 transition-colors duration-300">
+                <div className="absolute top-6 right-8 text-7xl font-serif text-emerald-100 dark:text-emerald-900/50 leading-none select-none group-hover:text-emerald-200 dark:group-hover:text-emerald-800/50 transition-colors duration-300">
                   &ldquo;
                 </div>
 
@@ -950,18 +938,18 @@ export function LandingPage() {
                   </div>
 
                   {/* Quote */}
-                  <p className="text-[15px] text-slate-600 leading-relaxed mb-8 font-medium">
+                  <p className="text-[15px] text-slate-600 dark:text-slate-300 leading-relaxed mb-8 font-medium">
                     &ldquo;{t.quote}&rdquo;
                   </p>
 
                   {/* Author */}
-                  <div className="flex items-center gap-3.5 pt-6 border-t border-slate-100">
+                  <div className="flex items-center gap-3.5 pt-6 border-t border-emerald-50 dark:border-emerald-900/30">
                     <div className="h-11 w-11 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-400 text-white flex items-center justify-center font-bold text-sm shadow-md shadow-emerald-500/20">
                       {t.name.charAt(0)}
                     </div>
                     <div>
-                      <p className="text-sm font-bold text-slate-900">{t.name}</p>
-                      <p className="text-xs text-slate-500 font-medium">{t.business}</p>
+                      <p className="text-sm font-bold text-slate-900 dark:text-white">{t.name}</p>
+                      <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">{t.business}</p>
                     </div>
                   </div>
                 </div>
@@ -974,32 +962,32 @@ export function LandingPage() {
       {/* ════════════════════════════════════════════════════════════════
           FAQ
           ════════════════════════════════════════════════════════════════ */}
-      <section id="faq" className="py-24 sm:py-32 bg-white relative">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,rgba(16,185,129,0.03),transparent_50%)]" />
+      <section id="faq" className="py-24 sm:py-32 bg-emerald-50/20 dark:bg-slate-900/5 relative">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,rgba(16,185,129,0.03),transparent_50%)] dark:bg-[radial-gradient(ellipse_at_bottom,rgba(16,185,129,0.06),transparent_50%)]" />
 
         <div className="relative max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Header */}
           <div className="text-center mb-16">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-50 text-emerald-700 text-[11px] font-bold uppercase tracking-[0.15em] mb-5 border border-emerald-100">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 text-[11px] font-bold uppercase tracking-[0.15em] mb-5 border border-emerald-100 dark:border-emerald-800/40">
               <MessageCircle className="h-3.5 w-3.5" />
               FAQ
             </div>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 mb-5 tracking-tight">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 dark:text-white mb-5 tracking-tight">
               Frequently Asked Questions
             </h2>
-            <p className="text-slate-500 max-w-xl mx-auto text-base sm:text-lg leading-relaxed">
+            <p className="text-slate-500 dark:text-slate-400 max-w-xl mx-auto text-base sm:text-lg leading-relaxed">
               Got questions? We have answers to help you get started.
             </p>
           </div>
 
-          <div className="rounded-2xl border border-slate-200/80 bg-white overflow-hidden shadow-lg shadow-slate-200/30">
+          <div className="rounded-2xl border border-emerald-100/80 dark:border-emerald-900/30 bg-white dark:bg-slate-800/50 overflow-hidden shadow-lg shadow-emerald-100/20 dark:shadow-emerald-900/10">
             <Accordion type="single" collapsible className="w-full">
               {faqItems.map((item, i) => (
-                <AccordionItem key={i} value={`faq-${i}`} className="border-b border-slate-100 last:border-0 px-6 sm:px-8">
-                  <AccordionTrigger className="text-left text-[15px] font-semibold text-slate-900 hover:text-emerald-600 hover:no-underline py-5 transition-colors duration-200">
+                <AccordionItem key={i} value={`faq-${i}`} className="border-b border-emerald-50 dark:border-emerald-900/20 last:border-0 px-6 sm:px-8">
+                  <AccordionTrigger className="text-left text-[15px] font-semibold text-slate-900 dark:text-white hover:text-emerald-600 dark:hover:text-emerald-400 hover:no-underline py-5 transition-colors duration-200">
                     {item.q}
                   </AccordionTrigger>
-                  <AccordionContent className="text-sm text-slate-500 leading-relaxed pb-5 pr-10">
+                  <AccordionContent className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed pb-5 pr-10">
                     {item.a}
                   </AccordionContent>
                 </AccordionItem>
@@ -1151,51 +1139,36 @@ export function LandingPage() {
             {/* Contact column */}
             <div>
               <h4 className="text-[11px] font-bold text-slate-300 mb-5 uppercase tracking-[0.15em]">
-                Contact Us
+                Contact
               </h4>
-              <ul className="space-y-3.5">
-                <li className="flex items-center gap-3 text-sm">
-                  <div className="h-8 w-8 rounded-lg bg-white/[0.04] flex items-center justify-center shrink-0">
-                    <Mail className="h-4 w-4 text-emerald-400" />
-                  </div>
-                  info@tunepoa.co.tz
+              <ul className="space-y-3 text-sm">
+                <li className="flex items-center gap-2.5">
+                  <Phone className="h-4 w-4 text-emerald-500 shrink-0" />
+                  <span>+255 123 456 789</span>
                 </li>
-                <li className="flex items-center gap-3 text-sm">
-                  <div className="h-8 w-8 rounded-lg bg-white/[0.04] flex items-center justify-center shrink-0">
-                    <Phone className="h-4 w-4 text-emerald-400" />
-                  </div>
-                  +255 22 123 4567
+                <li className="flex items-center gap-2.5">
+                  <MessageCircle className="h-4 w-4 text-emerald-500 shrink-0" />
+                  <span>WhatsApp Support</span>
                 </li>
-                <li className="flex items-start gap-3 text-sm">
-                  <div className="h-8 w-8 rounded-lg bg-white/[0.04] flex items-center justify-center shrink-0 mt-0.5">
-                    <MapPin className="h-4 w-4 text-emerald-400" />
-                  </div>
-                  Dar es Salaam, Tanzania
+                <li className="flex items-center gap-2.5">
+                  <Mail className="h-4 w-4 text-emerald-500 shrink-0" />
+                  <span>hello@tunepoa.co.tz</span>
                 </li>
               </ul>
             </div>
           </div>
-        </div>
 
-        {/* Bottom bar */}
-        <div className="border-t border-white/[0.04]">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <p className="text-xs text-slate-600">
+          {/* Bottom bar */}
+          <div className="mt-16 pt-8 border-t border-white/[0.06] flex flex-col sm:flex-row items-center justify-between gap-4">
+            <p className="text-xs text-slate-500">
               &copy; {new Date().getFullYear()} TunePoa. All rights reserved.
             </p>
-            <div className="flex gap-6">
-              <button className="text-xs text-slate-600 hover:text-emerald-400 transition-colors duration-200">
-                Privacy Policy
-              </button>
-              <button className="text-xs text-slate-600 hover:text-emerald-400 transition-colors duration-200">
-                Terms of Service
-              </button>
+            <div className="flex items-center gap-6 text-xs text-slate-500">
+              <button className="hover:text-emerald-400 transition-colors duration-200">Privacy Policy</button>
+              <button className="hover:text-emerald-400 transition-colors duration-200">Terms of Service</button>
             </div>
           </div>
         </div>
-
-        {/* Bottom gradient accent */}
-        <div className="h-1 bg-gradient-to-r from-emerald-600 via-teal-500 to-emerald-600 opacity-50" />
       </footer>
     </div>
   )
