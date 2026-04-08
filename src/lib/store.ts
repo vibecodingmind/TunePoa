@@ -52,6 +52,7 @@ export interface AppState {
   isSidebarOpen: boolean
   isGlobalLoading: boolean
   authMode: AuthMode
+  theme: 'light' | 'dark'
 
   // Actions
   setAuth: (user: User, token: string) => void
@@ -61,6 +62,7 @@ export interface AppState {
   setSidebarOpen: (open: boolean) => void
   setGlobalLoading: (loading: boolean) => void
   setAuthMode: (mode: AuthMode) => void
+  setTheme: (theme: 'light' | 'dark') => void
 
   // Role helpers
   isAdmin: () => boolean
@@ -178,6 +180,7 @@ export const useStore = create<AppState>((set, get) => ({
   isSidebarOpen: false,
   isGlobalLoading: false,
   authMode: 'login',
+  theme: 'light',
 
   // --- Auth actions ---
 
@@ -240,6 +243,7 @@ export const useStore = create<AppState>((set, get) => ({
 
   setGlobalLoading: (loading) => set({ isGlobalLoading: loading }),
   setAuthMode: (mode) => set({ authMode: mode }),
+  setTheme: (theme) => set({ theme }),
 
   // --- Role helpers ---
 

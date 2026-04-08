@@ -23,7 +23,7 @@ import { Music2 } from 'lucide-react'
 /* ─── Branded Loading Screen ─── */
 function LoadingScreen() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-50">
+    <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-950">
       <div className="flex flex-col items-center gap-5 animate-fade-in-scale">
         {/* Logo */}
         <div className="relative">
@@ -88,7 +88,7 @@ function ViewRouter() {
 /* ─── Authenticated App Layout ─── */
 function AppLayout() {
   return (
-    <div className="min-h-screen flex bg-slate-50 bg-dot-pattern">
+    <div className="min-h-screen flex bg-slate-50 dark:bg-slate-950 bg-dot-pattern">
       <Sidebar />
       <div className="flex-1 flex flex-col min-w-0">
         <Topbar />
