@@ -1,8 +1,10 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { NextRequest } from 'next/server'
 import { db } from '@/lib/db'
+import { success, error } from '@/lib/api-response'
 
 export async function GET() {
   try {
+    // No auth required for viewing MNO providers (public data)
     const providers = await db.mnoProvider.findMany({
       orderBy: { name: 'asc' },
       include: {
@@ -12,10 +14,10 @@ export async function GET() {
       },
     })
 
-    return NextResponse.json({ providers })
-  } catch (error) {
-    console.error('Get MNO providers error:', error)
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    return success({ providers })
+  } catch (err) {
+    console.error('Get MNO providers error:', err)
+    return error('Internal server error', 500)
   }
 }
 
@@ -25,7 +27,19 @@ export async function POST(request: NextRequest) {
     const { name, country, code, apiEndpoint, apiKey, isActive, notes } = body
 
     if (!name || !code) {
-      return NextResponse.json({ error: 'name and code are required' }, { status: 400 })
+      return error('name and code are required')
+    }
+
+    // Check for duplicate code
+    const existingCode = await db.mnoProvider.findUnique({ where: { code: code.toUpperCase() } })
+    if (existingCode) {
+      return error('MNO provider with this code already exists', 409)
+    }
+
+    // Check for duplicate name
+    const existingName = await db.mnoProvider.findUnique({ where: { name } })
+    if (existingName) {
+      return error('MNO provider with this name already exists', 409)
     }
 
     const provider = await db.mnoProvider.create({
@@ -40,9 +54,9 @@ export async function POST(request: NextRequest) {
       },
     })
 
-    return NextResponse.json({ provider }, { status: 201 })
-  } catch (error) {
-    console.error('Create MNO provider error:', error)
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    return success({ provider }, 201)
+  } catch (err) {
+    console.error('Create MNO provider error:', err)
+    return error('Internal server error', 500)
   }
 }

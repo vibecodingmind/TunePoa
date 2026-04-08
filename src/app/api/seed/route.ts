@@ -1,15 +1,29 @@
-import { NextResponse } from 'next/server'
+import { NextRequest } from 'next/server'
 import { db } from '@/lib/db'
+import { success, error, forbidden } from '@/lib/api-response'
+import { authenticate, isAdmin, hashPassword, createToken } from '@/lib/auth'
+import { PACKAGE_FEATURES } from '@/lib/constants'
 
-export async function POST() {
+export async function POST(request: NextRequest) {
   try {
-    // Check if already seeded
-    const userCount = await db.user.count()
-    if (userCount > 0) {
-      return NextResponse.json({ message: 'Database already seeded. Use a fresh database to reseed.' }, { status: 400 })
+    // Auth required - admin only (or allow unauthenticated for initial setup)
+    const auth = await authenticate(request)
+    if (auth.authenticated && auth.user && !isAdmin(auth.user.role)) {
+      return forbidden()
     }
 
-    // Create users
+    // Clear existing data in correct order (respecting foreign keys)
+    await db.payment.deleteMany({})
+    await db.subscription.deleteMany({})
+    await db.whatsAppVerification.deleteMany({})
+    await db.recording.deleteMany({})
+    await db.serviceRequest.deleteMany({})
+    await db.activityLog.deleteMany({})
+    await db.package.deleteMany({})
+    await db.mnoProvider.deleteMany({})
+    await db.user.deleteMany({})
+
+    // Create users with hashed passwords
     const superAdmin = await db.user.create({
       data: {
         name: 'TunePoa Super Admin',
@@ -19,7 +33,7 @@ export async function POST() {
         businessCategory: 'technology',
         role: 'SUPER_ADMIN',
         status: 'ACTIVE',
-        password: 'admin123',
+        password: hashPassword('admin123'),
       },
     })
 
@@ -32,7 +46,7 @@ export async function POST() {
         businessCategory: 'technology',
         role: 'ADMIN',
         status: 'ACTIVE',
-        password: 'admin123',
+        password: hashPassword('admin123'),
       },
     })
 
@@ -45,75 +59,79 @@ export async function POST() {
         businessCategory: 'media',
         role: 'STUDIO_MANAGER',
         status: 'ACTIVE',
-        password: 'studio123',
+        password: hashPassword('studio123'),
       },
     })
 
     // Business owners
-    const businessOwners = await Promise.all([
-      db.user.create({
-        data: {
-          name: 'Fatima Hassan',
-          email: 'fatima@kijanibora.tz',
-          phone: '+255712345678',
-          businessName: 'Kijani Bora Restaurant',
-          businessCategory: 'restaurant',
-          role: 'BUSINESS_OWNER',
-          status: 'ACTIVE',
-          password: 'password123',
-        },
-      }),
-      db.user.create({
-        data: {
-          name: 'Peter Kimaro',
-          email: 'peter@techsolutions.tz',
-          phone: '+255723456789',
-          businessName: 'Tech Solutions Hub',
-          businessCategory: 'technology',
-          role: 'BUSINESS_OWNER',
-          status: 'ACTIVE',
-          password: 'password123',
-        },
-      }),
-      db.user.create({
-        data: {
-          name: 'Asha Mwenda',
-          email: 'asha@fashionspot.tz',
-          phone: '+255734567890',
-          businessName: 'Fashion Spot Tanzania',
-          businessCategory: 'fashion',
-          role: 'BUSINESS_OWNER',
-          status: 'ACTIVE',
-          password: 'password123',
-        },
-      }),
-      db.user.create({
-        data: {
-          name: 'Joseph Mwangi',
-          email: 'joseph@pembeje.tz',
-          phone: '+255745678901',
-          businessName: 'Pembeje Electronics',
-          businessCategory: 'electronics',
-          role: 'BUSINESS_OWNER',
-          status: 'ACTIVE',
-          password: 'password123',
-        },
-      }),
-      db.user.create({
-        data: {
-          name: 'Grace Mwakyusa',
-          email: 'grace@salonbeauty.tz',
-          phone: '+255756789012',
-          businessName: 'Salon Beauty Pro',
-          businessCategory: 'beauty',
-          role: 'BUSINESS_OWNER',
-          status: 'SUSPENDED',
-          password: 'password123',
-        },
-      }),
-    ])
+    const fatima = await db.user.create({
+      data: {
+        name: 'Fatima Hassan',
+        email: 'fatima@kijanibora.tz',
+        phone: '+255712345678',
+        businessName: 'Kijani Bora Restaurant',
+        businessCategory: 'restaurant',
+        role: 'BUSINESS_OWNER',
+        status: 'ACTIVE',
+        password: hashPassword('password123'),
+      },
+    })
 
-    // Create packages
+    const peter = await db.user.create({
+      data: {
+        name: 'Peter Kimaro',
+        email: 'peter@techsolutions.tz',
+        phone: '+255723456789',
+        businessName: 'Tech Solutions Hub',
+        businessCategory: 'technology',
+        role: 'BUSINESS_OWNER',
+        status: 'ACTIVE',
+        password: hashPassword('password123'),
+      },
+    })
+
+    const asha = await db.user.create({
+      data: {
+        name: 'Asha Mwenda',
+        email: 'asha@fashionspot.tz',
+        phone: '+255734567890',
+        businessName: 'Fashion Spot Tanzania',
+        businessCategory: 'fashion',
+        role: 'BUSINESS_OWNER',
+        status: 'ACTIVE',
+        password: hashPassword('password123'),
+      },
+    })
+
+    const joseph = await db.user.create({
+      data: {
+        name: 'Joseph Mwangi',
+        email: 'joseph@pembeje.tz',
+        phone: '+255745678901',
+        businessName: 'Pembeje Electronics',
+        businessCategory: 'electronics',
+        role: 'BUSINESS_OWNER',
+        status: 'ACTIVE',
+        password: hashPassword('password123'),
+      },
+    })
+
+    const grace = await db.user.create({
+      data: {
+        name: 'Grace Mwakyusa',
+        email: 'grace@salonbeauty.tz',
+        phone: '+255756789012',
+        businessName: 'Salon Beauty Pro',
+        businessCategory: 'beauty',
+        role: 'BUSINESS_OWNER',
+        status: 'SUSPENDED',
+        password: hashPassword('password123'),
+      },
+    })
+
+    const businessOwners = [fatima, peter, asha, joseph, grace]
+
+    // Create packages with proper JSON array features
     const bronzePkg = await db.package.create({
       data: {
         name: 'Bronze',
@@ -121,7 +139,7 @@ export async function POST() {
         price: 10000,
         currency: 'TZS',
         durationMonths: 1,
-        features: JSON.stringify(['One ringback tone ad', 'Basic ad script writing', '15-second max duration', 'Email support', 'Basic analytics']),
+        features: JSON.stringify(PACKAGE_FEATURES.Bronze),
         maxAdDuration: 15,
         isActive: true,
         displayOrder: 1,
@@ -135,8 +153,8 @@ export async function POST() {
         price: 25000,
         currency: 'TZS',
         durationMonths: 3,
-        features: JSON.stringify(['Two ringback tone ads', 'Professional script writing', '25-second max duration', 'Priority email & phone support', 'Detailed analytics', 'WhatsApp verification']),
-        maxAdDuration: 25,
+        features: JSON.stringify(PACKAGE_FEATURES.Silver),
+        maxAdDuration: 30,
         isActive: true,
         displayOrder: 2,
       },
@@ -149,8 +167,8 @@ export async function POST() {
         price: 50000,
         currency: 'TZS',
         durationMonths: 6,
-        features: JSON.stringify(['Three ringback tone ads', 'Premium script writing', '30-second max duration', '24/7 priority support', 'Advanced analytics', 'WhatsApp verification', 'Multi-language support', 'A/B testing']),
-        maxAdDuration: 30,
+        features: JSON.stringify(PACKAGE_FEATURES.Gold),
+        maxAdDuration: 45,
         isActive: true,
         displayOrder: 3,
       },
@@ -163,8 +181,8 @@ export async function POST() {
         price: 100000,
         currency: 'TZS',
         durationMonths: 12,
-        features: JSON.stringify(['Unlimited ringback tone ads', 'Premium script writing & voice actors', '45-second max duration', 'Dedicated account manager', 'Enterprise analytics dashboard', 'WhatsApp & SMS verification', 'Multi-language support', 'A/B testing', 'Priority studio time', 'Custom branding options']),
-        maxAdDuration: 45,
+        features: JSON.stringify(PACKAGE_FEATURES.Platinum),
+        maxAdDuration: 60,
         isActive: true,
         displayOrder: 4,
       },
@@ -207,7 +225,7 @@ export async function POST() {
     // Create service requests
     const sr1 = await db.serviceRequest.create({
       data: {
-        userId: businessOwners[0].id,
+        userId: fatima.id,
         businessName: 'Kijani Bora Restaurant',
         businessCategory: 'restaurant',
         adType: 'PROMO',
@@ -222,7 +240,7 @@ export async function POST() {
 
     const sr2 = await db.serviceRequest.create({
       data: {
-        userId: businessOwners[1].id,
+        userId: peter.id,
         businessName: 'Tech Solutions Hub',
         businessCategory: 'technology',
         adType: 'BRANDING',
@@ -237,7 +255,7 @@ export async function POST() {
 
     const sr3 = await db.serviceRequest.create({
       data: {
-        userId: businessOwners[2].id,
+        userId: asha.id,
         businessName: 'Fashion Spot Tanzania',
         businessCategory: 'fashion',
         adType: 'OFFER',
@@ -252,7 +270,7 @@ export async function POST() {
 
     const sr4 = await db.serviceRequest.create({
       data: {
-        userId: businessOwners[3].id,
+        userId: joseph.id,
         businessName: 'Pembeje Electronics',
         businessCategory: 'electronics',
         adType: 'ANNOUNCEMENT',
@@ -266,7 +284,7 @@ export async function POST() {
 
     const sr5 = await db.serviceRequest.create({
       data: {
-        userId: businessOwners[4].id,
+        userId: grace.id,
         businessName: 'Salon Beauty Pro',
         businessCategory: 'beauty',
         adType: 'PROMO',
@@ -279,7 +297,7 @@ export async function POST() {
       },
     })
 
-    // Create recordings for completed request
+    // Create recordings
     const rec1 = await db.recording.create({
       data: {
         requestId: sr1.id,
@@ -328,7 +346,7 @@ export async function POST() {
     // Create subscriptions
     const sub1 = await db.subscription.create({
       data: {
-        userId: businessOwners[0].id,
+        userId: fatima.id,
         packageId: goldPkg.id,
         requestId: sr1.id,
         startDate: new Date('2025-01-01'),
@@ -349,7 +367,7 @@ export async function POST() {
 
     const sub2 = await db.subscription.create({
       data: {
-        userId: businessOwners[1].id,
+        userId: peter.id,
         packageId: silverPkg.id,
         requestId: sr2.id,
         startDate: new Date('2025-02-15'),
@@ -370,11 +388,11 @@ export async function POST() {
 
     const sub3 = await db.subscription.create({
       data: {
-        userId: businessOwners[2].id,
+        userId: asha.id,
         packageId: bronzePkg.id,
         requestId: sr3.id,
         startDate: new Date(),
-        endDate: new Date(new Date().setMonth(new Date().getMonth() + 1)),
+        endDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
         status: 'PENDING',
         amount: bronzePkg.price,
         currency: 'TZS',
@@ -458,7 +476,7 @@ export async function POST() {
           details: JSON.stringify({ mnoStatus: 'ACTIVE_MNO' }),
         },
         {
-          userId: businessOwners[0].id,
+          userId: fatima.id,
           action: 'CREATED',
           entityType: 'SERVICE_REQUEST',
           entityId: sr1.id,
@@ -467,20 +485,33 @@ export async function POST() {
       ],
     })
 
-    return NextResponse.json({
+    // Generate tokens for convenience
+    const tokens = {
+      superAdmin: createToken({ id: superAdmin.id, email: superAdmin.email, role: superAdmin.role, name: superAdmin.name }),
+      admin: createToken({ id: admin.id, email: admin.email, role: admin.role, name: admin.name }),
+      studioManager: createToken({ id: studioManager.id, email: studioManager.email, role: studioManager.role, name: studioManager.name }),
+      businessOwner: createToken({ id: fatima.id, email: fatima.email, role: fatima.role, name: fatima.name }),
+    }
+
+    return success({
       message: 'Database seeded successfully!',
       data: {
-        users: { superAdmin: superAdmin.email, admin: admin.email, studioManager: studioManager.email },
-        businessOwners: businessOwners.map(u => u.email),
+        users: {
+          superAdmin: { email: superAdmin.email, password: 'admin123', role: superAdmin.role },
+          admin: { email: admin.email, password: 'admin123', role: admin.role },
+          studioManager: { email: studioManager.email, password: 'studio123', role: studioManager.role },
+          businessOwners: businessOwners.map(u => ({ email: u.email, password: 'password123', role: u.role, status: u.status })),
+        },
         packages: [bronzePkg.name, silverPkg.name, goldPkg.name, platinumPkg.name],
         serviceRequests: 5,
         subscriptions: 3,
         payments: 3,
         mnoProviders: [vodacom.name, airtel.name, tigo.name],
+        tokens,
       },
     })
-  } catch (error) {
-    console.error('Seed error:', error)
-    return NextResponse.json({ error: 'Failed to seed database', details: String(error) }, { status: 500 })
+  } catch (err) {
+    console.error('Seed error:', err)
+    return error('Failed to seed database', 500)
   }
 }

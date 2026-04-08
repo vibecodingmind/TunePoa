@@ -1,39 +1,40 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { NextRequest } from 'next/server'
 import { db } from '@/lib/db'
-
-// Simple token generation for demo purposes
-function generateToken(userId: string): string {
-  return `tp_${Buffer.from(`${userId}:${Date.now()}`).toString('base64')}`
-}
+import { success, error, forbidden } from '@/lib/api-response'
+import { verifyPassword, createToken, excludePassword } from '@/lib/auth'
 
 export async function POST(request: NextRequest) {
   try {
-    const { email, password } = await request.json()
+    const body = await request.json()
+    const { email, password } = body
 
     if (!email || !password) {
-      return NextResponse.json({ error: 'Email and password are required' }, { status: 400 })
+      return error('Email and password are required')
     }
 
-    const user = await db.user.findUnique({
-      where: { email },
-    })
-
+    // Find user by email
+    const user = await db.user.findUnique({ where: { email } })
     if (!user) {
-      return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 })
+      return error('Invalid credentials', 401)
     }
 
-    // Simple password check (demo - plain text comparison)
-    if (user.password !== password) {
-      return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 })
+    // Compare password using the same hash method
+    if (!verifyPassword(password, user.password || '')) {
+      return error('Invalid credentials', 401)
     }
 
+    // Check account status
     if (user.status === 'SUSPENDED') {
-      return NextResponse.json({ error: 'Account suspended. Contact support.' }, { status: 403 })
+      return forbidden()
+    }
+    if (user.status === 'INACTIVE') {
+      return error('Account is inactive. Contact support.', 403)
     }
 
-    const token = generateToken(user.id)
+    // Create token with 24h expiry
+    const token = createToken({ id: user.id, email: user.email, role: user.role, name: user.name })
 
-    // Log activity
+    // Log login activity
     await db.activityLog.create({
       data: {
         userId: user.id,
@@ -44,24 +45,12 @@ export async function POST(request: NextRequest) {
       },
     })
 
-    return NextResponse.json({
-      user: {
-        id: user.id,
-        name: user.name,
-        email: user.email,
-        phone: user.phone,
-        businessName: user.businessName,
-        businessCategory: user.businessCategory,
-        role: user.role,
-        status: user.status,
-        avatar: user.avatar,
-        createdAt: user.createdAt,
-        updatedAt: user.updatedAt,
-      },
-      token,
-    })
-  } catch (error) {
-    console.error('Login error:', error)
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    // Return user WITHOUT password
+    const safeUser = excludePassword(user)
+
+    return success({ token, user: safeUser })
+  } catch (err) {
+    console.error('Login error:', err)
+    return error('Internal server error', 500)
   }
 }

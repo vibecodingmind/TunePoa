@@ -1,15 +1,30 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { NextRequest } from 'next/server'
 import { db } from '@/lib/db'
+import { success, error, unauthorized, forbidden } from '@/lib/api-response'
+import { authenticate, isAdmin } from '@/lib/auth'
 
 export async function GET(request: NextRequest) {
   try {
+    // Auth required
+    const auth = await authenticate(request)
+    if (!auth.authenticated || !auth.user) {
+      return unauthorized()
+    }
+
     const { searchParams } = new URL(request.url)
     const status = searchParams.get('status')
     const userId = searchParams.get('userId')
 
     const where: Record<string, unknown> = {}
+
+    // Non-admin users can only see their own subscriptions
+    if (!isAdmin(auth.user.role)) {
+      where.userId = auth.user.id
+    } else if (userId) {
+      where.userId = userId
+    }
+
     if (status) where.status = status
-    if (userId) where.userId = userId
 
     const subscriptions = await db.subscription.findMany({
       where,
@@ -31,30 +46,52 @@ export async function GET(request: NextRequest) {
       },
     })
 
-    return NextResponse.json({ subscriptions })
-  } catch (error) {
-    console.error('Get subscriptions error:', error)
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    return success({ subscriptions })
+  } catch (err) {
+    console.error('Get subscriptions error:', err)
+    return error('Internal server error', 500)
   }
 }
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json()
-    const { userId, packageId, requestId, phoneNumber, autoRenew } = body
-
-    if (!userId || !packageId || !requestId) {
-      return NextResponse.json({ error: 'userId, packageId, and requestId are required' }, { status: 400 })
+    // Auth required
+    const auth = await authenticate(request)
+    if (!auth.authenticated || !auth.user) {
+      return unauthorized()
     }
 
+    const body = await request.json()
+    const { packageId, requestId, phoneNumber, autoRenew } = body
+
+    if (!packageId || !requestId) {
+      return error('packageId and requestId are required')
+    }
+
+    // Validate package exists
     const pkg = await db.package.findUnique({ where: { id: packageId } })
     if (!pkg) {
-      return NextResponse.json({ error: 'Package not found' }, { status: 404 })
+      return error('Package not found', 404)
+    }
+    if (!pkg.isActive) {
+      return error('Package is not available')
     }
 
+    // Validate service request exists
     const serviceRequest = await db.serviceRequest.findUnique({ where: { id: requestId } })
     if (!serviceRequest) {
-      return NextResponse.json({ error: 'Service request not found' }, { status: 404 })
+      return error('Service request not found', 404)
+    }
+
+    // Non-admin: validate requestId belongs to user
+    if (!isAdmin(auth.user.role) && serviceRequest.userId !== auth.user.id) {
+      return forbidden()
+    }
+
+    // Check for duplicate subscription on same request
+    const existingSub = await db.subscription.findUnique({ where: { requestId } })
+    if (existingSub) {
+      return error('A subscription already exists for this service request', 409)
     }
 
     const startDate = new Date()
@@ -63,7 +100,7 @@ export async function POST(request: NextRequest) {
 
     const subscription = await db.subscription.create({
       data: {
-        userId,
+        userId: auth.user.id,
         packageId,
         requestId,
         startDate,
@@ -82,9 +119,10 @@ export async function POST(request: NextRequest) {
       },
     })
 
+    // Log activity
     await db.activityLog.create({
       data: {
-        userId,
+        userId: auth.user.id,
         action: 'CREATED',
         entityType: 'SUBSCRIPTION',
         entityId: subscription.id,
@@ -92,9 +130,9 @@ export async function POST(request: NextRequest) {
       },
     })
 
-    return NextResponse.json({ subscription }, { status: 201 })
-  } catch (error) {
-    console.error('Create subscription error:', error)
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    return success({ subscription }, 201)
+  } catch (err) {
+    console.error('Create subscription error:', err)
+    return error('Internal server error', 500)
   }
 }

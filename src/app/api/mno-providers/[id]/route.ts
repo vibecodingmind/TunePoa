@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server'
 import { db } from '@/lib/db'
-import { success, error, unauthorized, forbidden } from '@/lib/api-response'
+import { success, error, forbidden } from '@/lib/api-response'
 import { authenticate, isAdmin } from '@/lib/auth'
 
 export async function GET(
@@ -10,29 +10,30 @@ export async function GET(
   try {
     const { id } = await params
 
-    const pkg = await db.package.findUnique({
+    const provider = await db.mnoProvider.findUnique({
       where: { id },
       include: {
         _count: {
           select: { subscriptions: true },
         },
         subscriptions: {
-          take: 5,
+          take: 10,
           orderBy: { createdAt: 'desc' },
           include: {
             user: { select: { id: true, name: true, businessName: true } },
+            package: { select: { id: true, name: true } },
           },
         },
       },
     })
 
-    if (!pkg) {
-      return error('Package not found', 404)
+    if (!provider) {
+      return error('MNO provider not found', 404)
     }
 
-    return success({ package: pkg })
+    return success({ provider })
   } catch (err) {
-    console.error('Get package error:', err)
+    console.error('Get MNO provider error:', err)
     return error('Internal server error', 500)
   }
 }
@@ -51,28 +52,41 @@ export async function PATCH(
       return forbidden()
     }
 
-    const existing = await db.package.findUnique({ where: { id } })
+    const existing = await db.mnoProvider.findUnique({ where: { id } })
     if (!existing) {
-      return error('Package not found', 404)
+      return error('MNO provider not found', 404)
     }
 
     const updateData: Record<string, unknown> = {}
-    const allowedFields = ['name', 'description', 'price', 'durationMonths', 'features', 'maxAdDuration', 'displayOrder', 'isActive']
+    const allowedFields = ['name', 'country', 'code', 'apiEndpoint', 'apiKey', 'isActive', 'notes']
 
     for (const field of allowedFields) {
       if (body[field] !== undefined) {
-        // Ensure features is stored as JSON.stringify(array)
-        if (field === 'features' && typeof body[field] !== 'string') {
-          updateData[field] = JSON.stringify(body[field])
-        } else if (field === 'price' || field === 'durationMonths' || field === 'maxAdDuration' || field === 'displayOrder') {
-          updateData[field] = Number(body[field])
+        if (field === 'code') {
+          updateData[field] = (body[field] as string).toUpperCase()
         } else {
           updateData[field] = body[field]
         }
       }
     }
 
-    const pkg = await db.package.update({
+    // Check for code uniqueness if changing code
+    if (updateData.code && updateData.code !== existing.code) {
+      const codeExists = await db.mnoProvider.findUnique({ where: { code: updateData.code as string } })
+      if (codeExists) {
+        return error('MNO provider with this code already exists', 409)
+      }
+    }
+
+    // Check for name uniqueness if changing name
+    if (updateData.name && updateData.name !== existing.name) {
+      const nameExists = await db.mnoProvider.findUnique({ where: { name: updateData.name as string } })
+      if (nameExists) {
+        return error('MNO provider with this name already exists', 409)
+      }
+    }
+
+    const provider = await db.mnoProvider.update({
       where: { id },
       data: updateData,
     })
@@ -82,15 +96,15 @@ export async function PATCH(
       data: {
         userId: auth.user.id,
         action: 'UPDATED',
-        entityType: 'PACKAGE',
+        entityType: 'MNO_PROVIDER',
         entityId: id,
         details: JSON.stringify({ updatedFields: Object.keys(updateData), name: existing.name }),
       },
     })
 
-    return success({ package: pkg })
+    return success({ provider })
   } catch (err) {
-    console.error('Update package error:', err)
+    console.error('Update MNO provider error:', err)
     return error('Internal server error', 500)
   }
 }
@@ -108,22 +122,13 @@ export async function DELETE(
       return forbidden()
     }
 
-    const existing = await db.package.findUnique({ where: { id } })
+    const existing = await db.mnoProvider.findUnique({ where: { id } })
     if (!existing) {
-      return error('Package not found', 404)
-    }
-
-    // Check for active subscriptions
-    const activeSubs = await db.subscription.count({
-      where: { packageId: id, status: 'ACTIVE' },
-    })
-
-    if (activeSubs > 0) {
-      return error('Cannot deactivate package with active subscriptions')
+      return error('MNO provider not found', 404)
     }
 
     // Soft delete - set isActive to false
-    await db.package.update({
+    await db.mnoProvider.update({
       where: { id },
       data: { isActive: false },
     })
@@ -133,15 +138,15 @@ export async function DELETE(
       data: {
         userId: auth.user.id,
         action: 'UPDATED',
-        entityType: 'PACKAGE',
+        entityType: 'MNO_PROVIDER',
         entityId: id,
         details: JSON.stringify({ action: 'deactivated', name: existing.name }),
       },
     })
 
-    return success({ message: 'Package deactivated' })
+    return success({ message: 'MNO provider deactivated' })
   } catch (err) {
-    console.error('Delete package error:', err)
+    console.error('Delete MNO provider error:', err)
     return error('Internal server error', 500)
   }
 }

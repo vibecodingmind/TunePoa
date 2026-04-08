@@ -1,5 +1,9 @@
 import { create } from 'zustand'
 
+// ---------------------------------------------------------------------------
+// Types
+// ---------------------------------------------------------------------------
+
 export interface User {
   id: string
   name: string
@@ -14,55 +18,258 @@ export interface User {
   updatedAt: string
 }
 
-interface AppState {
-  currentUser: User | null
+export type ViewId =
+  | 'landing'
+  | 'dashboard'
+  | 'new-request'
+  | 'my-requests'
+  | 'packages'
+  | 'subscriptions'
+  | 'admin-dashboard'
+  | 'admin-requests'
+  | 'admin-subscriptions'
+  | 'admin-users'
+  | 'admin-packages'
+  | 'admin-mno'
+  | 'settings'
+
+export type AuthMode = 'login' | 'register'
+
+export const ADMIN_ROLES = ['SUPER_ADMIN', 'ADMIN'] as const
+export const MANAGER_ROLES = ['SUPER_ADMIN', 'ADMIN', 'STUDIO_MANAGER'] as const
+
+export interface AppState {
+  // Auth
+  user: User | null
   token: string | null
-  currentView: string
-  isLoggedIn: boolean
+  isAuthenticated: boolean
+
+  // Navigation
+  currentView: ViewId
+
+  // UI state
   isSidebarOpen: boolean
-  login: (user: User, token: string) => void
+  isGlobalLoading: boolean
+  authMode: AuthMode
+
+  // Actions
+  setAuth: (user: User, token: string) => void
   logout: () => void
-  navigate: (view: string) => void
+  navigate: (view: ViewId) => void
   toggleSidebar: () => void
   setSidebarOpen: (open: boolean) => void
+  setGlobalLoading: (loading: boolean) => void
+  setAuthMode: (mode: AuthMode) => void
+
+  // Role helpers
+  isAdmin: () => boolean
+  isStudioManager: () => boolean
+  isBusinessOwner: () => boolean
 }
 
-export const useAppStore = create<AppState>((set) => ({
-  currentUser: null,
-  token: typeof window !== 'undefined' ? localStorage.getItem('tunepoa_token') : null,
-  currentView: typeof window !== 'undefined' && localStorage.getItem('tunepoa_token') ? 'dashboard' : 'landing',
-  isLoggedIn: typeof window !== 'undefined' ? !!localStorage.getItem('tunepoa_token') : false,
-  isSidebarOpen: false,
-  login: (user, token) => {
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('tunepoa_token', token)
-      localStorage.setItem('tunepoa_user', JSON.stringify(user))
+// ---------------------------------------------------------------------------
+// Token helpers (client-side)
+// ---------------------------------------------------------------------------
+
+interface TokenPayload {
+  userId: string
+  email: string
+  role: string
+  name: string
+  exp: number
+}
+
+const TOKEN_KEY = 'tunepoa_token'
+const USER_KEY = 'tunepoa_user'
+const TOKEN_EXPIRY_MS = 24 * 60 * 60 * 1000 // 24 hours
+
+/**
+ * Decode a TunePoa token on the client.
+ * Format: "tp_" + base64(JSON { userId, email, role, name, exp })
+ * Returns null if the token is missing, malformed, or expired (24 h).
+ */
+function decodeClientToken(token: string): TokenPayload | null {
+  try {
+    if (!token.startsWith('tp_')) return null
+    const base64 = token.slice(3)
+    const json = atob(base64)
+    const payload: TokenPayload = JSON.parse(json)
+    if (!payload.userId || !payload.email || !payload.role) return null
+    if (payload.exp && payload.exp < Date.now()) return null
+    return payload
+  } catch {
+    return null
+  }
+}
+
+/**
+ * Check if a token will expire within the given buffer (default 1 hour).
+ * Returns true if token is valid and not about to expire.
+ */
+export function isTokenFresh(token: string, bufferMs = 60 * 60 * 1000): boolean {
+  try {
+    if (!token.startsWith('tp_')) return false
+    const base64 = token.slice(3)
+    const json = atob(base64)
+    const payload: TokenPayload = JSON.parse(json)
+    if (!payload.exp) return false
+    return payload.exp - Date.now() > bufferMs
+  } catch {
+    return false
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Initial state (hydrates from localStorage on the client)
+// ---------------------------------------------------------------------------
+
+function getInitialState(): Pick<
+  AppState,
+  'user' | 'token' | 'isAuthenticated' | 'currentView'
+> {
+  if (typeof window === 'undefined') {
+    return { user: null, token: null, isAuthenticated: false, currentView: 'landing' }
+  }
+
+  const savedToken = localStorage.getItem(TOKEN_KEY)
+  const savedUser = localStorage.getItem(USER_KEY)
+
+  if (savedToken && savedUser) {
+    const payload = decodeClientToken(savedToken)
+    if (payload) {
+      try {
+        const user: User = JSON.parse(savedUser)
+
+        // Determine default view based on role
+        let defaultView: ViewId = 'dashboard'
+        if (payload.role === 'SUPER_ADMIN' || payload.role === 'ADMIN') {
+          defaultView = 'admin-dashboard'
+        } else if (payload.role === 'STUDIO_MANAGER') {
+          defaultView = 'admin-requests'
+        }
+
+        return { user, token: savedToken, isAuthenticated: true, currentView: defaultView }
+      } catch {
+        // Corrupted user JSON -- fall through to clear
+      }
     }
-    set({ currentUser: user, token, isLoggedIn: true, currentView: 'dashboard' })
+
+    // Token expired or invalid -- clear stale data
+    localStorage.removeItem(TOKEN_KEY)
+    localStorage.removeItem(USER_KEY)
+  }
+
+  return { user: null, token: null, isAuthenticated: false, currentView: 'landing' }
+}
+
+// ---------------------------------------------------------------------------
+// Zustand store
+// ---------------------------------------------------------------------------
+
+const hydrated = getInitialState()
+
+export const useStore = create<AppState>((set, get) => ({
+  // --- State ---
+  user: hydrated.user,
+  token: hydrated.token,
+  isAuthenticated: hydrated.isAuthenticated,
+  currentView: hydrated.currentView,
+  isSidebarOpen: false,
+  isGlobalLoading: false,
+  authMode: 'login',
+
+  // --- Auth actions ---
+
+  setAuth: (user, token) => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem(TOKEN_KEY, token)
+      localStorage.setItem(USER_KEY, JSON.stringify(user))
+    }
+
+    // Determine default view based on role
+    let defaultView: ViewId = 'dashboard'
+    const role = user.role
+    if (role === 'SUPER_ADMIN' || role === 'ADMIN') {
+      defaultView = 'admin-dashboard'
+    } else if (role === 'STUDIO_MANAGER') {
+      defaultView = 'admin-requests'
+    }
+
+    set({
+      user,
+      token,
+      isAuthenticated: true,
+      currentView: defaultView,
+      isSidebarOpen: false,
+    })
   },
+
   logout: () => {
     if (typeof window !== 'undefined') {
-      localStorage.removeItem('tunepoa_token')
-      localStorage.removeItem('tunepoa_user')
+      localStorage.removeItem(TOKEN_KEY)
+      localStorage.removeItem(USER_KEY)
     }
-    set({ currentUser: null, token: null, isLoggedIn: false, currentView: 'landing', isSidebarOpen: false })
+    set({
+      user: null,
+      token: null,
+      isAuthenticated: false,
+      currentView: 'landing',
+      isSidebarOpen: false,
+      authMode: 'login',
+    })
   },
-  navigate: (view) => set({ currentView: view }),
-  toggleSidebar: () => set((state) => ({ isSidebarOpen: !state.isSidebarOpen })),
-  setSidebarOpen: (open) => set({ isSidebarOpen: open }),
+
+  // --- Navigation ---
+
+  navigate: (view) => {
+    set({ currentView: view, isSidebarOpen: false })
+  },
+
+  // --- Sidebar ---
+
+  toggleSidebar: () => {
+    set((s) => ({ isSidebarOpen: !s.isSidebarOpen }))
+  },
+
+  setSidebarOpen: (open) => {
+    set({ isSidebarOpen: open })
+  },
+
+  // --- Misc ---
+
+  setGlobalLoading: (loading) => set({ isGlobalLoading: loading }),
+  setAuthMode: (mode) => set({ authMode: mode }),
+
+  // --- Role helpers ---
+
+  isAdmin: () => {
+    const role = get().user?.role
+    return (ADMIN_ROLES as readonly string[]).includes(role ?? '')
+  },
+
+  isStudioManager: () => {
+    return get().user?.role === 'STUDIO_MANAGER'
+  },
+
+  isBusinessOwner: () => {
+    return get().user?.role === 'BUSINESS_OWNER'
+  },
 }))
 
-// Initialize from localStorage on client side
-if (typeof window !== 'undefined') {
-  const savedUser = localStorage.getItem('tunepoa_user')
-  const savedToken = localStorage.getItem('tunepoa_token')
-  if (savedUser && savedToken) {
-    try {
-      const user = JSON.parse(savedUser)
-      useAppStore.setState({ currentUser: user, token: savedToken, isLoggedIn: true, currentView: 'dashboard' })
-    } catch {
-      localStorage.removeItem('tunepoa_user')
-      localStorage.removeItem('tunepoa_token')
-    }
+// ---------------------------------------------------------------------------
+// Backward-compatible alias
+//
+// Many existing components import `useAppStore` and access `currentUser`,
+// `isLoggedIn`, and `login`. This wrapper maps those names to the canonical
+// store properties so we don't need to rewrite every component at once.
+// ---------------------------------------------------------------------------
+
+export function useAppStore() {
+  const store = useStore()
+  return {
+    ...store,
+    currentUser: store.user,
+    isLoggedIn: store.isAuthenticated,
+    login: store.setAuth,
   }
 }

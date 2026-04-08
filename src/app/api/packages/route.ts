@@ -1,8 +1,11 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { NextRequest } from 'next/server'
 import { db } from '@/lib/db'
+import { success, error, unauthorized, forbidden } from '@/lib/api-response'
+import { authenticate, isAdmin } from '@/lib/auth'
 
 export async function GET() {
   try {
+    // No auth required for viewing active packages
     const packages = await db.package.findMany({
       where: { isActive: true },
       orderBy: { displayOrder: 'asc' },
@@ -13,38 +16,55 @@ export async function GET() {
       },
     })
 
-    return NextResponse.json({ packages })
-  } catch (error) {
-    console.error('Get packages error:', error)
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    return success({ packages })
+  } catch (err) {
+    console.error('Get packages error:', err)
+    return error('Internal server error', 500)
   }
 }
 
 export async function POST(request: NextRequest) {
   try {
+    // Auth required - admin only
+    const auth = await authenticate(request)
+    if (!auth.authenticated || !auth.user || !isAdmin(auth.user.role)) {
+      return forbidden()
+    }
+
     const body = await request.json()
     const { name, description, price, durationMonths, features, maxAdDuration, displayOrder, isActive } = body
 
     if (!name || !description || price === undefined || !durationMonths || !features) {
-      return NextResponse.json({ error: 'name, description, price, durationMonths, and features are required' }, { status: 400 })
+      return error('name, description, price, durationMonths, and features are required')
     }
 
     const pkg = await db.package.create({
       data: {
         name,
         description,
-        price,
-        durationMonths,
+        price: Number(price),
+        durationMonths: Number(durationMonths),
         features: typeof features === 'string' ? features : JSON.stringify(features),
-        maxAdDuration: maxAdDuration || 30,
-        displayOrder: displayOrder || 0,
+        maxAdDuration: maxAdDuration ? Number(maxAdDuration) : 30,
+        displayOrder: displayOrder ? Number(displayOrder) : 0,
         isActive: isActive !== undefined ? isActive : true,
       },
     })
 
-    return NextResponse.json({ package: pkg }, { status: 201 })
-  } catch (error) {
-    console.error('Create package error:', error)
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    // Log activity
+    await db.activityLog.create({
+      data: {
+        userId: auth.user.id,
+        action: 'CREATED',
+        entityType: 'PACKAGE',
+        entityId: pkg.id,
+        details: JSON.stringify({ name, price, durationMonths }),
+      },
+    })
+
+    return success({ package: pkg }, 201)
+  } catch (err) {
+    console.error('Create package error:', err)
+    return error('Internal server error', 500)
   }
 }

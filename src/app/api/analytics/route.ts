@@ -1,8 +1,16 @@
-import { NextResponse } from 'next/server'
+import { NextRequest } from 'next/server'
 import { db } from '@/lib/db'
+import { success, error, unauthorized, forbidden } from '@/lib/api-response'
+import { authenticate, isAdmin } from '@/lib/auth'
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
+    // Auth required - admin only
+    const auth = await authenticate(request)
+    if (!auth.authenticated || !auth.user || !isAdmin(auth.user.role)) {
+      return forbidden()
+    }
+
     const [
       totalUsers,
       activeSubscriptions,
@@ -16,7 +24,7 @@ export async function GET() {
       recentActivity,
     ] = await Promise.all([
       // Total users
-      db.user.count(),
+      db.user.count({ where: { status: { not: 'INACTIVE' } } }),
 
       // Active subscriptions
       db.subscription.count({ where: { status: 'ACTIVE' } }),
@@ -47,6 +55,7 @@ export async function GET() {
       db.user.groupBy({
         by: ['role'],
         _count: true,
+        where: { status: { not: 'INACTIVE' } },
       }),
 
       // Subscriptions by status
@@ -89,7 +98,25 @@ export async function GET() {
       packageRevenueMap[pkgName] = (packageRevenueMap[pkgName] || 0) + p.amount
     }
 
-    return NextResponse.json({
+    // Payments by method
+    const paymentsByMethod = await db.payment.groupBy({
+      by: ['method'],
+      where: { status: 'COMPLETED' },
+      _sum: { amount: true },
+      _count: true,
+    })
+
+    // Active MNO providers
+    const activeMnoProviders = await db.mnoProvider.count({
+      where: { isActive: true },
+    })
+
+    // Subscriptions active on MNO
+    const activeOnMno = await db.subscription.count({
+      where: { mnoStatus: 'ACTIVE_MNO' },
+    })
+
+    return success({
       totalUsers,
       activeSubscriptions,
       pendingRequests,
@@ -102,9 +129,12 @@ export async function GET() {
       requestsByStatus,
       recentActivity,
       packageRevenue: Object.entries(packageRevenueMap).map(([name, amount]) => ({ name, amount })),
+      paymentsByMethod,
+      activeMnoProviders,
+      activeOnMno,
     })
-  } catch (error) {
-    console.error('Get analytics error:', error)
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+  } catch (err) {
+    console.error('Get analytics error:', err)
+    return error('Internal server error', 500)
   }
 }
