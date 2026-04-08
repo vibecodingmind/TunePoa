@@ -3,10 +3,10 @@ import { execSync } from 'child_process'
 
 export async function POST(request: NextRequest) {
   try {
-    // Run prisma db push to create tables
-    const result = execSync('npx prisma db push --skip-generate --accept-data-loss 2>&1', {
+    const result = execSync('npx prisma db push --skip-generate --accept-data-loss', {
       timeout: 60000,
       encoding: 'utf-8',
+      stdio: ['pipe', 'pipe', 'pipe'],
     })
     
     return NextResponse.json({ 
@@ -15,10 +15,15 @@ export async function POST(request: NextRequest) {
       output: result 
     })
   } catch (err: unknown) {
-    const message = err instanceof Error ? err.message : String(err)
+    let message = ''
+    if (err && typeof err === 'object' && 'stdout' in err) {
+      message = 'STDOUT: ' + String((err as {stdout: unknown}).stdout) + '\nSTDERR: ' + String((err as {stderr: unknown}).stderr)
+    } else {
+      message = err instanceof Error ? err.message : String(err)
+    }
     return NextResponse.json({ 
       success: false, 
-      error: 'Failed to push schema: ' + message 
+      error: message 
     }, { status: 500 })
   }
 }
