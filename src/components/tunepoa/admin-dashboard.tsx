@@ -74,6 +74,15 @@ export function AdminDashboard() {
     )
   }
 
+  const safe = {
+    totalUsers: analytics.totalUsers ?? 0,
+    activeSubscriptions: analytics.activeSubscriptions ?? 0,
+    pendingRequests: analytics.pendingRequests ?? 0,
+    completedRequests: analytics.completedRequests ?? 0,
+    totalRevenue: analytics.totalRevenue ?? 0,
+    monthlyRevenue: analytics.monthlyRevenue ?? 0,
+    monthlyPayments: analytics.monthlyPayments ?? 0,
+  }
   const pkgRevenue = analytics.packageRevenue || []
   const maxPkgRevenue = pkgRevenue.length > 0 ? Math.max(...pkgRevenue.map(p => p.amount), 1) : 1
   const usersByRole = analytics.usersByRole || []
@@ -95,7 +104,7 @@ export function AdminDashboard() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-500">Total Users</p>
-                <p className="text-2xl font-bold text-gray-900">{analytics.totalUsers}</p>
+                <p className="text-2xl font-bold text-gray-900">{safe.totalUsers}</p>
                 <p className="text-xs text-emerald-600 mt-1">
                   {usersByRole.filter(r => r.role === 'BUSINESS_OWNER').reduce((s, r) => s + r._count, 0)} businesses
                 </p>
@@ -112,7 +121,7 @@ export function AdminDashboard() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-500">Active Subscriptions</p>
-                <p className="text-2xl font-bold text-gray-900">{analytics.activeSubscriptions}</p>
+                <p className="text-2xl font-bold text-gray-900">{safe.activeSubscriptions}</p>
                 <p className="text-xs text-emerald-600 mt-1">
                   {subsByStatus.find(s => s.status === 'PENDING')?._count || 0} pending
                 </p>
@@ -129,9 +138,9 @@ export function AdminDashboard() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-500">Total Revenue</p>
-                <p className="text-2xl font-bold text-gray-900">TZS {analytics.totalRevenue.toLocaleString()}</p>
+                <p className="text-2xl font-bold text-gray-900">TZS {safe.totalRevenue.toLocaleString()}</p>
                 <p className="text-xs text-emerald-600 mt-1">
-                  TZS {analytics.monthlyRevenue.toLocaleString()} this month
+                  TZS {safe.monthlyRevenue.toLocaleString()} this month
                 </p>
               </div>
               <div className="h-10 w-10 rounded-xl bg-green-100 flex items-center justify-center">
@@ -146,9 +155,9 @@ export function AdminDashboard() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-500">Pending Requests</p>
-                <p className="text-2xl font-bold text-gray-900">{analytics.pendingRequests}</p>
+                <p className="text-2xl font-bold text-gray-900">{safe.pendingRequests}</p>
                 <p className="text-xs text-gray-500 mt-1">
-                  {analytics.completedRequests} completed
+                  {safe.completedRequests} completed
                 </p>
               </div>
               <div className="h-10 w-10 rounded-xl bg-yellow-100 flex items-center justify-center">
