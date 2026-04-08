@@ -40,6 +40,8 @@ COPY --from=builder /app/prisma ./prisma
 COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
 COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
 
+RUN mkdir -p /app/db && chown nextjs:nodejs /app/db
+
 USER nextjs
 
 EXPOSE 3000
