@@ -31,20 +31,17 @@ ENV NEXT_TELEMETRY_DISABLED=1
 
 RUN apk add --no-cache openssl
 
+# Copy full node_modules for prisma CLI access
+COPY --from=deps /app/node_modules ./node_modules
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
 COPY --from=builder /app/prisma ./prisma
-COPY --from=deps /app/node_modules/.prisma ./node_modules/.prisma
-COPY --from=deps /app/node_modules/@prisma ./node_modules/@prisma
-COPY --from=deps /app/node_modules/prisma ./node_modules/prisma
-
-# Startup script that runs migrations then starts the server
-COPY --chmod=755 docker-entrypoint.sh ./docker-entrypoint.sh
+COPY --from=builder /app/package.json ./
 
 EXPOSE 3000
 
 ENV PORT=3000
 ENV HOSTNAME="0.0.0.0"
 
-CMD ["./docker-entrypoint.sh"]
+CMD ["node", "server.js"]
