@@ -142,7 +142,7 @@ function SidebarContent({ onClose }: { onClose?: () => void }) {
 
             return (
               <div key={section.title}>
-                <p className="px-3 mb-2 text-[10px] font-semibold uppercase tracking-[0.1em] text-slate-600">
+                <p className="px-3 mb-2 text-[10px] font-semibold uppercase tracking-[0.1em] text-slate-500">
                   {section.title}
                 </p>
                 <div className="space-y-0.5">
@@ -161,7 +161,7 @@ function SidebarContent({ onClose }: { onClose?: () => void }) {
                       >
                         <span className={cn(
                           'shrink-0 transition-colors duration-200',
-                          isActive ? 'text-emerald-400' : 'text-slate-600 group-hover:text-slate-400'
+                          isActive ? 'text-emerald-400' : 'text-slate-500 group-hover:text-slate-300'
                         )}>
                           {item.icon}
                         </span>
@@ -191,7 +191,7 @@ function SidebarContent({ onClose }: { onClose?: () => void }) {
       <div className="p-3 shrink-0">
         <Button
           variant="ghost"
-          className="w-full text-slate-500 hover:text-red-400 hover:bg-red-500/10 justify-start gap-2.5 rounded-xl text-[13px] font-medium transition-colors duration-200"
+          className="w-full text-slate-400 hover:text-red-400 hover:bg-red-500/10 justify-start gap-2.5 rounded-xl text-[13px] font-medium transition-colors duration-200"
           onClick={logout}
         >
           <LogOut className="h-4 w-4" />

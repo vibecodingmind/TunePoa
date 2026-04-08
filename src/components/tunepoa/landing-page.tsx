@@ -268,7 +268,7 @@ export function LandingPage() {
               <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-400 flex items-center justify-center shadow-md shadow-emerald-500/20">
                 <Music2 className="h-5 w-5 text-white" />
               </div>
-              <span className="font-bold text-xl text-slate-900 tracking-tight">
+              <span className={`font-bold text-xl tracking-tight transition-colors duration-300 ${scrolled ? 'text-slate-900' : 'text-white'}`}>
                 TunePoa
               </span>
             </div>
@@ -277,19 +277,19 @@ export function LandingPage() {
             <div className="hidden md:flex items-center gap-1">
               <button
                 onClick={() => scrollTo('how-it-works')}
-                className="text-sm font-medium text-slate-600 hover:text-emerald-600 transition-colors px-3 py-2 rounded-lg hover:bg-emerald-50/50"
+                className={`text-sm font-medium transition-colors px-3 py-2 rounded-lg ${scrolled ? 'text-slate-600 hover:text-emerald-600 hover:bg-emerald-50/50' : 'text-white/80 hover:text-white hover:bg-white/10'}`}
               >
                 How It Works
               </button>
               <button
                 onClick={() => scrollTo('pricing')}
-                className="text-sm font-medium text-slate-600 hover:text-emerald-600 transition-colors px-3 py-2 rounded-lg hover:bg-emerald-50/50"
+                className={`text-sm font-medium transition-colors px-3 py-2 rounded-lg ${scrolled ? 'text-slate-600 hover:text-emerald-600 hover:bg-emerald-50/50' : 'text-white/80 hover:text-white hover:bg-white/10'}`}
               >
                 Pricing
               </button>
               <button
                 onClick={() => scrollTo('faq')}
-                className="text-sm font-medium text-slate-600 hover:text-emerald-600 transition-colors px-3 py-2 rounded-lg hover:bg-emerald-50/50"
+                className={`text-sm font-medium transition-colors px-3 py-2 rounded-lg ${scrolled ? 'text-slate-600 hover:text-emerald-600 hover:bg-emerald-50/50' : 'text-white/80 hover:text-white hover:bg-white/10'}`}
               >
                 FAQ
               </button>
@@ -299,7 +299,7 @@ export function LandingPage() {
             <div className="hidden md:flex items-center gap-2.5">
               <Button
                 variant="ghost"
-                className="text-slate-600 hover:text-emerald-600 hover:bg-emerald-50/50 font-medium"
+                className={`font-medium transition-colors ${scrolled ? 'text-slate-600 hover:text-emerald-600 hover:bg-emerald-50/50' : 'text-white/80 hover:text-white hover:bg-white/10'}`}
                 onClick={() => {
                   setAuthMode('login')
                   setAuthDialogOpen(true)
@@ -322,43 +322,43 @@ export function LandingPage() {
 
             {/* Mobile hamburger */}
             <button
-              className="md:hidden p-2 rounded-xl hover:bg-slate-100 transition-colors"
+              className={`md:hidden p-2 rounded-xl transition-colors ${scrolled ? 'hover:bg-slate-100' : 'hover:bg-white/10'}`}
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               aria-label="Toggle navigation menu"
             >
               {mobileMenuOpen ? (
-                <X className="h-5 w-5 text-slate-700" />
+                <X className={`h-5 w-5 transition-colors ${scrolled ? 'text-slate-700' : 'text-white'}`} />
               ) : (
-                <Menu className="h-5 w-5 text-slate-700" />
+                <Menu className={`h-5 w-5 transition-colors ${scrolled ? 'text-slate-700' : 'text-white'}`} />
               )}
             </button>
           </div>
 
           {/* Mobile menu dropdown */}
           {mobileMenuOpen && (
-            <div className="md:hidden border-t border-slate-100 py-4 space-y-1 animate-fade-in-down">
+            <div className="md:hidden border-t border-white/10 bg-slate-900/95 backdrop-blur-xl py-4 space-y-1 animate-fade-in-down rounded-b-2xl">
               <button
                 onClick={() => scrollTo('how-it-works')}
-                className="block w-full text-left px-3 py-2.5 text-sm font-medium text-slate-600 hover:text-emerald-600 hover:bg-emerald-50/50 rounded-lg transition-colors"
+                className="block w-full text-left px-3 py-2.5 text-sm font-medium text-slate-300 hover:text-emerald-400 hover:bg-white/5 rounded-lg transition-colors"
               >
                 How It Works
               </button>
               <button
                 onClick={() => scrollTo('pricing')}
-                className="block w-full text-left px-3 py-2.5 text-sm font-medium text-slate-600 hover:text-emerald-600 hover:bg-emerald-50/50 rounded-lg transition-colors"
+                className="block w-full text-left px-3 py-2.5 text-sm font-medium text-slate-300 hover:text-emerald-400 hover:bg-white/5 rounded-lg transition-colors"
               >
                 Pricing
               </button>
               <button
                 onClick={() => scrollTo('faq')}
-                className="block w-full text-left px-3 py-2.5 text-sm font-medium text-slate-600 hover:text-emerald-600 hover:bg-emerald-50/50 rounded-lg transition-colors"
+                className="block w-full text-left px-3 py-2.5 text-sm font-medium text-slate-300 hover:text-emerald-400 hover:bg-white/5 rounded-lg transition-colors"
               >
                 FAQ
               </button>
-              <div className="flex gap-2.5 pt-3 border-t border-slate-100">
+              <div className="flex gap-2.5 pt-3 border-t border-white/10">
                 <Button
                   variant="outline"
-                  className="flex-1 rounded-xl"
+                  className="flex-1 rounded-xl border-white/20 text-white hover:bg-white/10 hover:text-white"
                   onClick={() => {
                     setAuthMode('login')
                     setAuthDialogOpen(true)
