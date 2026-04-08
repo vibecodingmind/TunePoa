@@ -49,8 +49,9 @@ export async function POST(request: NextRequest) {
     const safeUser = excludePassword(user)
 
     return success({ token, user: safeUser })
-  } catch (err) {
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : String(err)
     console.error('Login error:', err)
-    return error('Internal server error', 500)
+    return error(`Internal server error: ${message}`, 500)
   }
 }

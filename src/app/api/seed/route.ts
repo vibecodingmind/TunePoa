@@ -510,8 +510,9 @@ export async function POST(request: NextRequest) {
         tokens,
       },
     })
-  } catch (err) {
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : String(err)
     console.error('Seed error:', err)
-    return error('Failed to seed database', 500)
+    return error(`Failed to seed database: ${message}`, 500)
   }
 }
