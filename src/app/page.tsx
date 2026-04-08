@@ -1,5 +1,6 @@
 'use client'
 
+import { useState, useEffect } from 'react'
 import { useAppStore } from '@/lib/store'
 import { Sidebar } from '@/components/tunepoa/sidebar'
 import { Topbar } from '@/components/tunepoa/topbar'
@@ -69,6 +70,16 @@ function AppLayout() {
 /* ─── Root Page ─── */
 export default function Home() {
   const { isLoggedIn, currentView } = useAppStore()
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  // Before hydration, always render the landing page so server and client match
+  if (!mounted) {
+    return <LandingPage />
+  }
 
   if (!isLoggedIn || currentView === 'landing') {
     return <LandingPage />
