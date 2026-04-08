@@ -20,6 +20,8 @@ export async function POST(request: NextRequest) {
     await db.serviceRequest.deleteMany({})
     await db.activityLog.deleteMany({})
     await db.package.deleteMany({})
+    await db.pricingTier.deleteMany({})
+    await db.pricingSettings.deleteMany({})
     await db.mnoProvider.deleteMany({})
     await db.user.deleteMany({})
 
@@ -131,7 +133,80 @@ export async function POST(request: NextRequest) {
 
     const businessOwners = [fatima, peter, asha, joseph, grace]
 
-    // Create packages with proper JSON array features
+    // Create pricing tiers (from user's pricing module)
+    const tier1_10 = await db.pricingTier.create({
+      data: {
+        name: '1-10',
+        minUsers: 1,
+        maxUsers: 10,
+        price1Month: 15000,
+        price3Month: 14000,
+        price6Month: 13000,
+        price12Month: 12000,
+        isActive: true,
+        displayOrder: 1,
+      },
+    })
+
+    const tier11_25 = await db.pricingTier.create({
+      data: {
+        name: '11-25',
+        minUsers: 11,
+        maxUsers: 25,
+        price1Month: 14000,
+        price3Month: 13000,
+        price6Month: 12000,
+        price12Month: 11000,
+        isActive: true,
+        displayOrder: 2,
+      },
+    })
+
+    const tier25_50 = await db.pricingTier.create({
+      data: {
+        name: '25-50',
+        minUsers: 26,
+        maxUsers: 50,
+        price1Month: 13000,
+        price3Month: 12000,
+        price6Month: 11000,
+        price12Month: 10000,
+        isActive: true,
+        displayOrder: 3,
+      },
+    })
+
+    const tier50plus = await db.pricingTier.create({
+      data: {
+        name: '50+',
+        minUsers: 51,
+        maxUsers: 999,
+        price1Month: 12000,
+        price3Month: 11000,
+        price6Month: 10000,
+        price12Month: 9000,
+        isActive: true,
+        displayOrder: 4,
+      },
+    })
+
+    // Create pricing settings (add-on prices)
+    await db.pricingSettings.createMany({
+      data: [
+        {
+          key: 'audio_recording_price',
+          value: '15000',
+          label: 'Audio Recording Price (TZS) — Bei ya kurekordi sauti',
+        },
+        {
+          key: 'starter_package_price',
+          value: '30000',
+          label: 'Starter Package Price (TZS) — Kifurushi cha Kuanzia',
+        },
+      ],
+    })
+
+    // Create legacy packages (kept for backward compatibility)
     const bronzePkg = await db.package.create({
       data: {
         name: 'Bronze',
@@ -486,6 +561,7 @@ export async function POST(request: NextRequest) {
     })
 
     // Generate tokens for convenience
+    const pricingTiers = [tier1_10, tier11_25, tier25_50, tier50plus]
     const tokens = {
       superAdmin: createToken({ id: superAdmin.id, email: superAdmin.email, role: superAdmin.role, name: superAdmin.name }),
       admin: createToken({ id: admin.id, email: admin.email, role: admin.role, name: admin.name }),
@@ -507,6 +583,7 @@ export async function POST(request: NextRequest) {
         subscriptions: 3,
         payments: 3,
         mnoProviders: [vodacom.name, airtel.name, tigo.name],
+        pricingTiers: pricingTiers.map(t => t.name),
         tokens,
       },
     })

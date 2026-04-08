@@ -14,6 +14,7 @@ import { AdminSubscriptions } from '@/components/tunepoa/admin-subscriptions'
 import { AdminUsers } from '@/components/tunepoa/admin-users'
 import { AdminPackages } from '@/components/tunepoa/admin-packages'
 import { AdminMno } from '@/components/tunepoa/admin-mno'
+import { AdminPricing } from '@/components/tunepoa/admin-pricing'
 import { SettingsPage } from '@/components/tunepoa/settings-page'
 import { MyRequests } from '@/components/tunepoa/my-requests'
 import { MySubscriptions } from '@/components/tunepoa/my-subscriptions'
@@ -75,6 +76,8 @@ function ViewRouter() {
       return <AdminPackages />
     case 'admin-mno':
       return <AdminMno />
+    case 'admin-pricing':
+      return <AdminPricing />
     case 'settings':
       return <SettingsPage />
     default:

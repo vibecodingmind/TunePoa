@@ -103,7 +103,38 @@ model WhatsAppVerification {
   @@index([requestId])
 }
 
+// ==================== PRICING TIERS ====================
+// Admin-managed pricing matrix: user-count ranges × duration discounts
+
+model PricingTier {
+  id            String   @id @default(cuid())
+  name          String   // e.g. "1-10", "11-25", "25-50", "50+"
+  minUsers      Int      // e.g. 1, 11, 25, 50
+  maxUsers      Int      // e.g. 10, 25, 50, 999
+  price1Month   Float    // per-user price for 1-month subscription
+  price3Month   Float    // per-user price for 3-month subscription
+  price6Month   Float    // per-user price for 6-month subscription
+  price12Month  Float    // per-user price for 12-month subscription
+  isActive      Boolean  @default(true)
+  displayOrder  Int      @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  subscriptions Subscription[]
+}
+
+// Global pricing settings managed by admin
+model PricingSettings {
+  id                  String   @id @default(cuid())
+  key                 String   @unique  // e.g. "audio_recording_price", "starter_package_price"
+  value               String   // stored as string, parsed as needed
+  label               String   // human-readable label for admin UI
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+}
+
 // ==================== PACKAGES ====================
+// Kept for backward compatibility; new subscriptions use PricingTier
 
 model Package {
   id            String   @id @default(cuid())
@@ -127,12 +158,17 @@ model Package {
 model Subscription {
   id              String   @id @default(cuid())
   userId          String
-  packageId       String
+  packageId       String?
+  pricingTierId   String?
   requestId       String   @unique
   startDate       DateTime?
   endDate         DateTime?
   status          String   @default("PENDING") // PENDING, ACTIVE, EXPIRED, CANCELLED, SUSPENDED
-  amount          Float
+  amount          Float    // total amount (price × userCount × duration)
+  unitPrice       Float    @default(0)  // per-user per-month price from PricingTier
+  userCount       Int      @default(1)  // number of users/numbers
+  durationMonths  Int      @default(1)  // subscription duration in months
+  includesAudio   Boolean  @default(false) // whether audio recording is included
   currency        String   @default("TZS")
   paymentStatus   String   @default("UNPAID") // UNPAID, PAID, OVERDUE, REFUNDED
   mnoProviderId   String?
@@ -147,7 +183,8 @@ model Subscription {
   updatedAt       DateTime @updatedAt
 
   user            User            @relation(fields: [userId], references: [id])
-  package         Package         @relation(fields: [packageId], references: [id])
+  package         Package?        @relation(fields: [packageId], references: [id])
+  pricingTier     PricingTier?    @relation(fields: [pricingTierId], references: [id])
   request         ServiceRequest  @relation(fields: [requestId], references: [id])
   mnoProvider     MnoProvider?    @relation(fields: [mnoProviderId], references: [id])
   payments        Payment[]
@@ -155,6 +192,7 @@ model Subscription {
   @@index([userId])
   @@index([status])
   @@index([packageId])
+  @@index([pricingTierId])
 }
 
 // ==================== MNO PROVIDERS ====================

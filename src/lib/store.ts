@@ -30,6 +30,7 @@ export type ViewId =
   | 'admin-subscriptions'
   | 'admin-users'
   | 'admin-packages'
+  | 'admin-pricing'
   | 'admin-mno'
   | 'settings'
 

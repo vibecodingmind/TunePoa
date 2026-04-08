@@ -20,6 +20,7 @@ import {
 import { Skeleton } from '@/components/ui/skeleton'
 import { LoginForm } from './login-form'
 import { RegisterForm } from './register-form'
+import { PricingCalculator } from './pricing-calculator'
 import {
   Music2,
   Megaphone,
@@ -561,125 +562,30 @@ export function LandingPage() {
         </div>
       </section>
 
-      {/* ─── E. PRICING ─── */}
+      {/* ─── E. PRICING (Interactive Calculator) ─── */}
       <section id="pricing" className="py-20 sm:py-28 bg-white bg-dot-pattern">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
+          <div className="text-center mb-12">
             <Badge
               variant="secondary"
               className="bg-emerald-50 text-emerald-700 border-emerald-200/80 mb-4 font-medium"
             >
-              Pricing
+              Gharama za Huduma
             </Badge>
             <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-4 tracking-tight">
               Simple, Transparent Pricing
             </h2>
             <p className="text-slate-500 max-w-2xl mx-auto">
               No hidden fees. No long-term contracts. All prices in Tanzanian Shillings.
+              <br className="hidden sm:block" />
+              Bei rahisi, wazi — hazina gharama zilizofichwa. Bei zote katika Shilingi ya Tanzania.
             </p>
           </div>
 
-          {packagesLoading ? (
-            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5 max-w-5xl mx-auto">
-              {[...Array(4)].map((_, i) => (
-                <Card key={i} className="border-0 shadow-sm bg-slate-50/50">
-                  <CardContent className="p-6 space-y-4">
-                    <Skeleton className="h-5 w-20 rounded-md" />
-                    <Skeleton className="h-8 w-28 rounded-md" />
-                    <Skeleton className="h-3.5 w-full rounded-md" />
-                    <Skeleton className="h-3.5 w-full rounded-md" />
-                    <Skeleton className="h-3.5 w-full rounded-md" />
-                    <Skeleton className="h-10 w-full mt-4 rounded-xl" />
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          ) : packages.length > 0 ? (
-            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5 max-w-5xl mx-auto">
-              {packages.map((pkg) => {
-                const isPopular = pkg.name === 'Gold'
-                return (
-                  <Card
-                    key={pkg.id}
-                    className={`relative overflow-hidden transition-all duration-300 hover:-translate-y-1 ${
-                      isPopular
-                        ? 'border-0 shadow-xl shadow-emerald-500/10 ring-1 ring-emerald-500/20 bg-white'
-                        : 'border-0 shadow-md bg-white/90 hover:shadow-lg hover:ring-1 hover:ring-slate-200/80'
-                    }`}
-                  >
-                    {isPopular && (
-                      <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-500 to-teal-400" />
-                    )}
-                    {isPopular && (
-                      <div className="absolute -top-0 right-4">
-                        <Badge className="bg-gradient-to-r from-emerald-600 to-emerald-500 text-white hover:from-emerald-700 hover:to-emerald-600 shadow-sm rounded-lg text-[11px] font-medium">
-                          Most Popular
-                        </Badge>
-                      </div>
-                    )}
-                    <CardContent className="p-6 pt-7">
-                      <div className="flex items-center gap-2 mb-4">
-                        <div
-                          className={`h-2.5 w-2.5 rounded-full ${
-                            pkg.name === 'Bronze'
-                              ? 'bg-amber-500'
-                              : pkg.name === 'Silver'
-                                ? 'bg-slate-400'
-                                : pkg.name === 'Gold'
-                                  ? 'bg-amber-400'
-                                  : 'bg-emerald-500'
-                          }`}
-                        />
-                        <h3 className="font-bold text-slate-900 text-sm">{pkg.name}</h3>
-                      </div>
-                      <div className="mb-6">
-                        <span className="text-3xl font-bold text-slate-900 tracking-tight">
-                          TZS {formatPrice(pkg.price)}
-                        </span>
-                        <span className="text-sm text-slate-400 ml-1">
-                          / {pkg.duration} {pkg.durationUnit}
-                        </span>
-                      </div>
-                      <ul className="space-y-2 mb-6">
-                        {(Array.isArray(pkg.features) ? pkg.features : []).map(
-                          (f: string) => (
-                            <li
-                              key={f}
-                              className="flex items-start gap-2 text-sm text-slate-600"
-                            >
-                              <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0 mt-0.5" />
-                              {f}
-                            </li>
-                          ),
-                        )}
-                      </ul>
-                      <Button
-                        className={`w-full rounded-xl font-medium transition-all duration-200 ${
-                          isPopular
-                            ? 'bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-700 hover:to-emerald-600 text-white shadow-md shadow-emerald-500/20'
-                            : 'bg-slate-900 hover:bg-slate-800 text-white shadow-sm'
-                        }`}
-                        onClick={() => {
-                          setAuthMode('register')
-                          setAuthDialogOpen(true)
-                        }}
-                      >
-                        Get Started
-                        <ArrowRight className="ml-1.5 h-3.5 w-3.5" />
-                      </Button>
-                    </CardContent>
-                  </Card>
-                )
-              })}
-            </div>
-          ) : (
-            <div className="text-center text-slate-500 py-12">
-              Pricing packages are being updated. Please check back soon.
-            </div>
-          )}
+          <PricingCalculator mode="landing" isAuthenticated={isAuthenticated} />
 
-          <p className="text-center text-sm text-slate-400 mt-8">
-            All plans include a 10% discount for annual subscriptions. Contact us for enterprise pricing.
+          <p className="text-center text-sm text-slate-400 mt-10">
+            Bei hupungua kadiri muda unapozidi. Jiunge sasa kupata punguzo la kipekee.
           </p>
         </div>
       </section>
