@@ -45,6 +45,7 @@ import {
   Shield,
   Headphones,
   LogIn,
+  Sparkles,
 } from 'lucide-react'
 
 /* ─── FAQ Data ─── */
@@ -114,25 +115,25 @@ interface PackageData {
 /* ─── How It Works Steps ─── */
 const howItWorksSteps = [
   {
-    icon: <UserPlus className="h-7 w-7" />,
+    icon: <UserPlus className="h-6 w-6" />,
     step: 1,
     title: 'Sign Up',
     desc: 'Register your business and request ringback tone service. It takes less than 2 minutes to create your account.',
   },
   {
-    icon: <FileText className="h-7 w-7" />,
+    icon: <FileText className="h-6 w-6" />,
     step: 2,
     title: 'Ad Details',
     desc: 'Provide your business details and ad script. Not sure what to say? Our team will help you craft the perfect message.',
   },
   {
-    icon: <Mic className="h-7 w-7" />,
+    icon: <Mic className="h-6 w-6" />,
     step: 3,
     title: 'Studio Recording',
     desc: 'Our professional studio records your custom ad with experienced voice artists and premium sound quality.',
   },
   {
-    icon: <Radio className="h-7 w-7" />,
+    icon: <Radio className="h-6 w-6" />,
     step: 4,
     title: 'Go Live',
     desc: 'Approve the recording via WhatsApp and your ad goes live on every incoming call. It is that simple.',
@@ -142,32 +143,32 @@ const howItWorksSteps = [
 /* ─── Feature Cards ─── */
 const featureCards = [
   {
-    icon: <Megaphone className="h-6 w-6" />,
+    icon: <Megaphone className="h-5 w-5" />,
     title: 'Brand Awareness',
     desc: 'Every call reinforces your brand message to callers, increasing recognition and trust with each ring.',
   },
   {
-    icon: <Award className="h-6 w-6" />,
+    icon: <Award className="h-5 w-5" />,
     title: 'Professional Ads',
     desc: 'Studio-quality recordings with professional voice artists that make your business sound premium and polished.',
   },
   {
-    icon: <BarChart3 className="h-6 w-6" />,
+    icon: <BarChart3 className="h-5 w-5" />,
     title: 'Easy Management',
     desc: 'Track performance and manage ads from your dashboard with real-time analytics and simple controls.',
   },
   {
-    icon: <Wallet className="h-6 w-6" />,
+    icon: <Wallet className="h-5 w-5" />,
     title: 'Flexible Plans',
     desc: 'Choose a package that fits your budget and scale. Start small, grow over time, and cancel anytime.',
   },
   {
-    icon: <MessageCircle className="h-6 w-6" />,
+    icon: <MessageCircle className="h-5 w-5" />,
     title: 'WhatsApp Verification',
     desc: 'Review and approve your ad via WhatsApp before going live. Quick, convenient, and always accessible.',
   },
   {
-    icon: <TrendingUp className="h-6 w-6" />,
+    icon: <TrendingUp className="h-5 w-5" />,
     title: 'Analytics',
     desc: 'Monitor how many times your ad is played daily and track the impact on your business growth metrics.',
   },
@@ -253,15 +254,17 @@ export function LandingPage() {
     <div className="min-h-screen bg-white">
       {/* ─── A. NAVBAR ─── */}
       <nav
-        className={`fixed top-0 left-0 right-0 z-50 bg-white transition-shadow duration-200 ${
-          scrolled ? 'shadow-md' : ''
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+          scrolled
+            ? 'glass-strong shadow-sm'
+            : 'bg-transparent'
         }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
             <div className="flex items-center gap-2.5">
-              <div className="h-9 w-9 rounded-lg bg-emerald-600 flex items-center justify-center">
+              <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-400 flex items-center justify-center shadow-md shadow-emerald-500/20">
                 <Music2 className="h-5 w-5 text-white" />
               </div>
               <span className="font-bold text-xl text-slate-900 tracking-tight">
@@ -270,32 +273,32 @@ export function LandingPage() {
             </div>
 
             {/* Desktop nav links */}
-            <div className="hidden md:flex items-center gap-8">
+            <div className="hidden md:flex items-center gap-1">
               <button
                 onClick={() => scrollTo('how-it-works')}
-                className="text-sm font-medium text-slate-600 hover:text-emerald-600 transition-colors"
+                className="text-sm font-medium text-slate-600 hover:text-emerald-600 transition-colors px-3 py-2 rounded-lg hover:bg-emerald-50/50"
               >
                 How It Works
               </button>
               <button
                 onClick={() => scrollTo('pricing')}
-                className="text-sm font-medium text-slate-600 hover:text-emerald-600 transition-colors"
+                className="text-sm font-medium text-slate-600 hover:text-emerald-600 transition-colors px-3 py-2 rounded-lg hover:bg-emerald-50/50"
               >
                 Pricing
               </button>
               <button
                 onClick={() => scrollTo('faq')}
-                className="text-sm font-medium text-slate-600 hover:text-emerald-600 transition-colors"
+                className="text-sm font-medium text-slate-600 hover:text-emerald-600 transition-colors px-3 py-2 rounded-lg hover:bg-emerald-50/50"
               >
                 FAQ
               </button>
             </div>
 
             {/* Desktop auth buttons */}
-            <div className="hidden md:flex items-center gap-3">
+            <div className="hidden md:flex items-center gap-2.5">
               <Button
                 variant="ghost"
-                className="text-slate-600 hover:text-emerald-600"
+                className="text-slate-600 hover:text-emerald-600 hover:bg-emerald-50/50 font-medium"
                 onClick={() => {
                   setAuthMode('login')
                   setAuthDialogOpen(true)
@@ -305,19 +308,20 @@ export function LandingPage() {
                 Sign In
               </Button>
               <Button
-                className="bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm"
+                className="bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-700 hover:to-emerald-600 text-white shadow-md shadow-emerald-500/20 font-medium"
                 onClick={() => {
                   setAuthMode('register')
                   setAuthDialogOpen(true)
                 }}
               >
                 Get Started
+                <ArrowRight className="ml-1.5 h-4 w-4" />
               </Button>
             </div>
 
             {/* Mobile hamburger */}
             <button
-              className="md:hidden p-2 rounded-lg hover:bg-slate-100 transition-colors"
+              className="md:hidden p-2 rounded-xl hover:bg-slate-100 transition-colors"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               aria-label="Toggle navigation menu"
             >
@@ -331,29 +335,29 @@ export function LandingPage() {
 
           {/* Mobile menu dropdown */}
           {mobileMenuOpen && (
-            <div className="md:hidden border-t border-slate-100 py-4 space-y-3">
+            <div className="md:hidden border-t border-slate-100 py-4 space-y-1 animate-fade-in-down">
               <button
                 onClick={() => scrollTo('how-it-works')}
-                className="block w-full text-left px-2 py-2 text-sm font-medium text-slate-600 hover:text-emerald-600"
+                className="block w-full text-left px-3 py-2.5 text-sm font-medium text-slate-600 hover:text-emerald-600 hover:bg-emerald-50/50 rounded-lg transition-colors"
               >
                 How It Works
               </button>
               <button
                 onClick={() => scrollTo('pricing')}
-                className="block w-full text-left px-2 py-2 text-sm font-medium text-slate-600 hover:text-emerald-600"
+                className="block w-full text-left px-3 py-2.5 text-sm font-medium text-slate-600 hover:text-emerald-600 hover:bg-emerald-50/50 rounded-lg transition-colors"
               >
                 Pricing
               </button>
               <button
                 onClick={() => scrollTo('faq')}
-                className="block w-full text-left px-2 py-2 text-sm font-medium text-slate-600 hover:text-emerald-600"
+                className="block w-full text-left px-3 py-2.5 text-sm font-medium text-slate-600 hover:text-emerald-600 hover:bg-emerald-50/50 rounded-lg transition-colors"
               >
                 FAQ
               </button>
-              <div className="flex gap-3 pt-2 border-t border-slate-100">
+              <div className="flex gap-2.5 pt-3 border-t border-slate-100">
                 <Button
                   variant="outline"
-                  className="flex-1"
+                  className="flex-1 rounded-xl"
                   onClick={() => {
                     setAuthMode('login')
                     setAuthDialogOpen(true)
@@ -363,7 +367,7 @@ export function LandingPage() {
                   Sign In
                 </Button>
                 <Button
-                  className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white"
+                  className="flex-1 bg-gradient-to-r from-emerald-600 to-emerald-500 text-white rounded-xl"
                   onClick={() => {
                     setAuthMode('register')
                     setAuthDialogOpen(true)
@@ -380,75 +384,68 @@ export function LandingPage() {
 
       {/* ─── B. HERO SECTION ─── */}
       <section className="relative pt-16 overflow-hidden">
-        {/* Gradient background */}
-        <div className="absolute inset-0 bg-gradient-to-br from-emerald-700 via-emerald-600 to-teal-500" />
+        {/* Animated gradient background */}
+        <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-emerald-950 to-slate-900 animate-gradient" />
 
-        {/* Decorative SVG shapes */}
-        <svg
-          className="absolute top-20 left-10 w-72 h-72 text-emerald-500 opacity-20"
-          viewBox="0 0 200 200"
-          fill="none"
-          aria-hidden="true"
-        >
-          <circle cx="100" cy="100" r="90" stroke="currentColor" strokeWidth="2" />
-          <circle cx="100" cy="100" r="60" stroke="currentColor" strokeWidth="1.5" />
-          <circle cx="100" cy="100" r="30" stroke="currentColor" strokeWidth="1" />
-        </svg>
-        <svg
-          className="absolute bottom-10 right-10 w-96 h-96 text-teal-400 opacity-15"
-          viewBox="0 0 300 200"
-          fill="none"
-          aria-hidden="true"
-        >
-          <path d="M0 100 Q75 20 150 100 T300 100" stroke="currentColor" strokeWidth="2" fill="none" />
-          <path d="M0 130 Q75 50 150 130 T300 130" stroke="currentColor" strokeWidth="1.5" fill="none" />
-          <path d="M0 160 Q75 80 150 160 T300 160" stroke="currentColor" strokeWidth="1" fill="none" />
-        </svg>
+        {/* Mesh gradient overlay */}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(5,150,105,0.2),transparent_50%),radial-gradient(ellipse_at_bottom_left,rgba(20,184,166,0.15),transparent_50%)]" />
+
+        {/* Subtle grid pattern */}
+        <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:60px_60px]" />
+
+        {/* Floating orbs */}
+        <div className="absolute top-32 left-[15%] w-72 h-72 bg-emerald-500/10 rounded-full blur-3xl animate-pulse-glow" />
+        <div className="absolute bottom-20 right-[10%] w-96 h-96 bg-teal-400/8 rounded-full blur-3xl animate-pulse-glow" style={{ animationDelay: '1.5s' }} />
 
         {/* Sound wave bars decoration */}
-        <div className="absolute bottom-0 left-0 right-0 flex justify-center items-end gap-1 h-16 opacity-10" aria-hidden="true">
-          {[...Array(40)].map((_, i) => (
+        <div className="absolute bottom-0 left-0 right-0 flex justify-center items-end gap-[3px] h-12 opacity-[0.07]" aria-hidden="true">
+          {[...Array(60)].map((_, i) => (
             <div
               key={i}
-              className="w-1 bg-white rounded-t"
+              className="w-[2px] bg-white rounded-t"
               style={{
-                height: `${Math.max(8, Math.sin(i * 0.5) * 40 + 30)}%`,
+                height: `${Math.max(6, Math.sin(i * 0.4) * 50 + 30)}%`,
               }}
             />
           ))}
         </div>
 
         {/* Content */}
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 sm:py-32 lg:py-40">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 sm:py-32 lg:py-44">
           <div className="text-center max-w-3xl mx-auto">
-            <Badge className="bg-white/15 text-white border-white/20 mb-6 hover:bg-white/20">
-              <Zap className="h-3.5 w-3.5 mr-1.5" />
-              Ringback Tone Marketing Platform
-            </Badge>
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white mb-6 leading-tight tracking-tight">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/[0.07] border border-white/[0.1] backdrop-blur-sm text-emerald-300 text-sm font-medium mb-8 animate-fade-in-down">
+              <Sparkles className="h-3.5 w-3.5" />
+              <span>Ringback Tone Marketing Platform</span>
+            </div>
+
+            <h1 className="text-4xl sm:text-5xl lg:text-[3.5rem] font-extrabold text-white mb-6 leading-[1.1] tracking-tight animate-fade-in-up">
               Turn Every Call Into a{' '}
-              <span className="text-amber-300">Marketing Opportunity</span>
+              <span className="bg-gradient-to-r from-emerald-400 via-teal-300 to-emerald-400 bg-clip-text text-transparent">
+                Marketing Opportunity
+              </span>
             </h1>
-            <p className="text-lg sm:text-xl text-emerald-100 mb-10 max-w-2xl mx-auto leading-relaxed">
+
+            <p className="text-base sm:text-lg text-slate-400 mb-10 max-w-2xl mx-auto leading-relaxed animate-fade-in-up animation-delay-200">
               Replace boring ringback tones with custom business ads. When customers call
               you, they hear your brand message, special offers, and key information.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+
+            <div className="flex flex-col sm:flex-row gap-3.5 justify-center animate-fade-in-up animation-delay-300">
               <Button
                 size="lg"
-                className="bg-white text-emerald-700 hover:bg-emerald-50 font-semibold text-base px-8 h-12 rounded-xl shadow-lg"
+                className="bg-white text-slate-900 hover:bg-slate-100 font-semibold text-[15px] px-8 h-12 rounded-xl shadow-lg shadow-black/20 group"
                 onClick={() => {
                   setAuthMode('register')
                   setAuthDialogOpen(true)
                 }}
               >
                 Get Started Free
-                <ArrowRight className="ml-2 h-4 w-4" />
+                <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
               </Button>
               <Button
                 size="lg"
                 variant="outline"
-                className="border-white/30 text-white hover:bg-white/10 rounded-xl text-base px-8 h-12"
+                className="border-white/15 text-white hover:bg-white/5 hover:border-white/25 rounded-xl text-[15px] px-8 h-12 backdrop-blur-sm"
                 onClick={() => scrollTo('how-it-works')}
               >
                 <Play className="mr-2 h-4 w-4" />
@@ -458,16 +455,16 @@ export function LandingPage() {
           </div>
         </div>
 
-        {/* Stats bar */}
-        <div className="relative bg-white/10 backdrop-blur-sm border-t border-white/20">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        {/* Stats bar with glass effect */}
+        <div className="relative glass-dark-strong border-t border-white/5">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
             <div className="grid grid-cols-3 gap-6 text-center">
               {heroStats.map((stat) => (
-                <div key={stat.label}>
-                  <div className="text-2xl sm:text-3xl font-bold text-white">
+                <div key={stat.label} className="group">
+                  <div className="text-xl sm:text-2xl font-bold text-white tracking-tight">
                     {stat.value}
                   </div>
-                  <div className="text-sm text-emerald-200 mt-0.5">{stat.label}</div>
+                  <div className="text-xs sm:text-sm text-slate-500 mt-0.5 font-medium">{stat.label}</div>
                 </div>
               ))}
             </div>
@@ -476,16 +473,16 @@ export function LandingPage() {
       </section>
 
       {/* ─── C. HOW IT WORKS ─── */}
-      <section id="how-it-works" className="py-20 sm:py-28 bg-white">
+      <section id="how-it-works" className="py-20 sm:py-28 bg-white bg-dot-pattern">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
+          <div className="text-center mb-16 animate-fade-in">
             <Badge
               variant="secondary"
-              className="bg-emerald-50 text-emerald-700 border-emerald-200 mb-4"
+              className="bg-emerald-50 text-emerald-700 border-emerald-200/80 mb-4 font-medium"
             >
               Simple Process
             </Badge>
-            <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-4">
+            <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-4 tracking-tight">
               How TunePoa Works
             </h2>
             <p className="text-slate-500 max-w-2xl mx-auto">
@@ -496,25 +493,25 @@ export function LandingPage() {
           {/* Timeline grid */}
           <div className="relative">
             {/* Connecting line (desktop only) */}
-            <div className="hidden lg:block absolute top-16 left-[12.5%] right-[12.5%] h-0.5 bg-emerald-200" aria-hidden="true" />
+            <div className="hidden lg:block absolute top-[52px] left-[12.5%] right-[12.5%] h-px bg-gradient-to-r from-emerald-200 via-emerald-300 to-emerald-200" aria-hidden="true" />
 
             <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-6">
-              {howItWorksSteps.map((item) => (
-                <div key={item.step} className="relative text-center">
+              {howItWorksSteps.map((item, idx) => (
+                <div key={item.step} className="relative text-center animate-fade-in-up" style={{ animationDelay: `${idx * 100}ms` }}>
                   {/* Step circle */}
-                  <div className="relative inline-flex items-center justify-center h-32 mb-6">
-                    <div className="h-16 w-16 rounded-full bg-emerald-600 text-white flex items-center justify-center shadow-lg shadow-emerald-200 z-10">
+                  <div className="relative inline-flex items-center justify-center h-28 mb-5">
+                    <div className="h-14 w-14 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-400 text-white flex items-center justify-center shadow-lg shadow-emerald-500/20 z-10">
                       {item.icon}
                     </div>
                     {/* Step number badge */}
-                    <span className="absolute -top-1 -right-1 h-7 w-7 rounded-full bg-amber-500 text-white text-xs font-bold flex items-center justify-center z-20">
+                    <span className="absolute -top-1 -right-1 h-6 w-6 rounded-lg bg-slate-900 text-white text-[11px] font-bold flex items-center justify-center z-20 shadow-md">
                       {item.step}
                     </span>
                   </div>
-                  <h3 className="text-lg font-semibold text-slate-900 mb-2">
+                  <h3 className="text-base font-semibold text-slate-900 mb-1.5">
                     {item.title}
                   </h3>
-                  <p className="text-sm text-slate-500 leading-relaxed max-w-xs mx-auto">
+                  <p className="text-sm text-slate-500 leading-relaxed max-w-[240px] mx-auto">
                     {item.desc}
                   </p>
                 </div>
@@ -525,16 +522,16 @@ export function LandingPage() {
       </section>
 
       {/* ─── D. FEATURES / BENEFITS ─── */}
-      <section className="py-20 sm:py-28 bg-slate-50">
+      <section className="py-20 sm:py-28 bg-slate-50/80">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <Badge
               variant="secondary"
-              className="bg-emerald-50 text-emerald-700 border-emerald-200 mb-4"
+              className="bg-emerald-50 text-emerald-700 border-emerald-200/80 mb-4 font-medium"
             >
               Benefits
             </Badge>
-            <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-4">
+            <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-4 tracking-tight">
               Why Businesses Love TunePoa
             </h2>
             <p className="text-slate-500 max-w-2xl mx-auto">
@@ -542,17 +539,18 @@ export function LandingPage() {
             </p>
           </div>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {featureCards.map((feature) => (
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            {featureCards.map((feature, idx) => (
               <Card
                 key={feature.title}
-                className="bg-white border-slate-200 hover:shadow-lg hover:border-emerald-200 transition-all duration-200 group"
+                className="card-premium border-0 bg-white/80 backdrop-blur-sm animate-fade-in-up"
+                style={{ animationDelay: `${idx * 80}ms` }}
               >
                 <CardContent className="p-6">
-                  <div className="h-12 w-12 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center mb-4 group-hover:bg-emerald-600 group-hover:text-white transition-colors">
+                  <div className="h-11 w-11 rounded-xl bg-gradient-to-br from-emerald-50 to-teal-50 text-emerald-600 flex items-center justify-center mb-4 group-hover:from-emerald-500 group-hover:to-teal-400 group-hover:text-white transition-all duration-300 shadow-sm">
                     {feature.icon}
                   </div>
-                  <h3 className="text-base font-semibold text-slate-900 mb-2">
+                  <h3 className="text-[15px] font-semibold text-slate-900 mb-1.5">
                     {feature.title}
                   </h3>
                   <p className="text-sm text-slate-500 leading-relaxed">{feature.desc}</p>
@@ -564,16 +562,16 @@ export function LandingPage() {
       </section>
 
       {/* ─── E. PRICING ─── */}
-      <section id="pricing" className="py-20 sm:py-28 bg-white">
+      <section id="pricing" className="py-20 sm:py-28 bg-white bg-dot-pattern">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <Badge
               variant="secondary"
-              className="bg-emerald-50 text-emerald-700 border-emerald-200 mb-4"
+              className="bg-emerald-50 text-emerald-700 border-emerald-200/80 mb-4 font-medium"
             >
               Pricing
             </Badge>
-            <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-4">
+            <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-4 tracking-tight">
               Simple, Transparent Pricing
             </h2>
             <p className="text-slate-500 max-w-2xl mx-auto">
@@ -582,64 +580,67 @@ export function LandingPage() {
           </div>
 
           {packagesLoading ? (
-            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mx-auto">
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5 max-w-5xl mx-auto">
               {[...Array(4)].map((_, i) => (
-                <Card key={i} className="border-slate-200">
+                <Card key={i} className="border-0 shadow-sm bg-slate-50/50">
                   <CardContent className="p-6 space-y-4">
-                    <Skeleton className="h-6 w-24" />
-                    <Skeleton className="h-8 w-32" />
-                    <Skeleton className="h-4 w-full" />
-                    <Skeleton className="h-4 w-full" />
-                    <Skeleton className="h-4 w-full" />
-                    <Skeleton className="h-10 w-full mt-4" />
+                    <Skeleton className="h-5 w-20 rounded-md" />
+                    <Skeleton className="h-8 w-28 rounded-md" />
+                    <Skeleton className="h-3.5 w-full rounded-md" />
+                    <Skeleton className="h-3.5 w-full rounded-md" />
+                    <Skeleton className="h-3.5 w-full rounded-md" />
+                    <Skeleton className="h-10 w-full mt-4 rounded-xl" />
                   </CardContent>
                 </Card>
               ))}
             </div>
           ) : packages.length > 0 ? (
-            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mx-auto">
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5 max-w-5xl mx-auto">
               {packages.map((pkg) => {
                 const isPopular = pkg.name === 'Gold'
                 return (
                   <Card
                     key={pkg.id}
-                    className={`relative ${
+                    className={`relative overflow-hidden transition-all duration-300 hover:-translate-y-1 ${
                       isPopular
-                        ? 'border-emerald-500 border-2 shadow-lg shadow-emerald-100'
-                        : 'border-slate-200'
+                        ? 'border-0 shadow-xl shadow-emerald-500/10 ring-1 ring-emerald-500/20 bg-white'
+                        : 'border-0 shadow-md bg-white/90 hover:shadow-lg hover:ring-1 hover:ring-slate-200/80'
                     }`}
                   >
                     {isPopular && (
-                      <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                        <Badge className="bg-emerald-600 text-white hover:bg-emerald-700 shadow-sm">
+                      <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-500 to-teal-400" />
+                    )}
+                    {isPopular && (
+                      <div className="absolute -top-0 right-4">
+                        <Badge className="bg-gradient-to-r from-emerald-600 to-emerald-500 text-white hover:from-emerald-700 hover:to-emerald-600 shadow-sm rounded-lg text-[11px] font-medium">
                           Most Popular
                         </Badge>
                       </div>
                     )}
-                    <CardContent className="p-6">
+                    <CardContent className="p-6 pt-7">
                       <div className="flex items-center gap-2 mb-4">
                         <div
-                          className={`h-3 w-3 rounded-full ${
+                          className={`h-2.5 w-2.5 rounded-full ${
                             pkg.name === 'Bronze'
-                              ? 'bg-amber-600'
+                              ? 'bg-amber-500'
                               : pkg.name === 'Silver'
                                 ? 'bg-slate-400'
                                 : pkg.name === 'Gold'
-                                  ? 'bg-amber-500'
-                                  : 'bg-emerald-600'
+                                  ? 'bg-amber-400'
+                                  : 'bg-emerald-500'
                           }`}
                         />
-                        <h3 className="font-bold text-slate-900">{pkg.name}</h3>
+                        <h3 className="font-bold text-slate-900 text-sm">{pkg.name}</h3>
                       </div>
                       <div className="mb-6">
-                        <span className="text-3xl font-bold text-slate-900">
+                        <span className="text-3xl font-bold text-slate-900 tracking-tight">
                           TZS {formatPrice(pkg.price)}
                         </span>
-                        <span className="text-sm text-slate-500 ml-1">
+                        <span className="text-sm text-slate-400 ml-1">
                           / {pkg.duration} {pkg.durationUnit}
                         </span>
                       </div>
-                      <ul className="space-y-2.5 mb-6">
+                      <ul className="space-y-2 mb-6">
                         {(Array.isArray(pkg.features) ? pkg.features : []).map(
                           (f: string) => (
                             <li
@@ -653,10 +654,10 @@ export function LandingPage() {
                         )}
                       </ul>
                       <Button
-                        className={`w-full ${
+                        className={`w-full rounded-xl font-medium transition-all duration-200 ${
                           isPopular
-                            ? 'bg-emerald-600 hover:bg-emerald-700 text-white'
-                            : 'bg-slate-900 hover:bg-slate-800 text-white'
+                            ? 'bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-700 hover:to-emerald-600 text-white shadow-md shadow-emerald-500/20'
+                            : 'bg-slate-900 hover:bg-slate-800 text-white shadow-sm'
                         }`}
                         onClick={() => {
                           setAuthMode('register')
@@ -664,6 +665,7 @@ export function LandingPage() {
                         }}
                       >
                         Get Started
+                        <ArrowRight className="ml-1.5 h-3.5 w-3.5" />
                       </Button>
                     </CardContent>
                   </Card>
@@ -683,16 +685,16 @@ export function LandingPage() {
       </section>
 
       {/* ─── F. TESTIMONIALS ─── */}
-      <section className="py-20 sm:py-28 bg-emerald-50">
+      <section className="py-20 sm:py-28 bg-slate-50/80">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <Badge
               variant="secondary"
-              className="bg-emerald-100 text-emerald-700 border-emerald-200 mb-4"
+              className="bg-emerald-50 text-emerald-700 border-emerald-200/80 mb-4 font-medium"
             >
               Testimonials
             </Badge>
-            <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-4">
+            <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-4 tracking-tight">
               Trusted by Tanzanian Businesses
             </h2>
             <p className="text-slate-500 max-w-2xl mx-auto">
@@ -700,9 +702,12 @@ export function LandingPage() {
             </p>
           </div>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {testimonials.map((t, i) => (
-              <Card key={i} className="bg-white border-slate-200 shadow-sm">
+              <Card
+                key={i}
+                className="card-premium border-0 bg-white/80 backdrop-blur-sm"
+              >
                 <CardContent className="p-6">
                   {/* Stars */}
                   <div className="flex gap-0.5 mb-4">
@@ -714,12 +719,12 @@ export function LandingPage() {
                     ))}
                   </div>
                   {/* Quote */}
-                  <p className="text-sm text-slate-600 leading-relaxed mb-6 italic">
+                  <p className="text-sm text-slate-600 leading-relaxed mb-6">
                     &ldquo;{t.quote}&rdquo;
                   </p>
                   {/* Author */}
-                  <div className="flex items-center gap-3">
-                    <div className="h-10 w-10 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-semibold text-sm">
+                  <div className="flex items-center gap-3 pt-4 border-t border-slate-100">
+                    <div className="h-9 w-9 rounded-lg bg-gradient-to-br from-emerald-50 to-teal-50 text-emerald-700 flex items-center justify-center font-semibold text-sm">
                       {t.name.charAt(0)}
                     </div>
                     <div>
@@ -740,11 +745,11 @@ export function LandingPage() {
           <div className="text-center mb-16">
             <Badge
               variant="secondary"
-              className="bg-emerald-50 text-emerald-700 border-emerald-200 mb-4"
+              className="bg-emerald-50 text-emerald-700 border-emerald-200/80 mb-4 font-medium"
             >
               FAQ
             </Badge>
-            <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-4">
+            <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-4 tracking-tight">
               Frequently Asked Questions
             </h2>
             <p className="text-slate-500 max-w-2xl mx-auto">
@@ -752,55 +757,54 @@ export function LandingPage() {
             </p>
           </div>
 
-          <Accordion type="single" collapsible className="w-full">
-            {faqItems.map((item, i) => (
-              <AccordionItem key={i} value={`faq-${i}`}>
-                <AccordionTrigger className="text-left text-sm font-medium text-slate-900 hover:text-emerald-600 hover:no-underline">
-                  {item.q}
-                </AccordionTrigger>
-                <AccordionContent className="text-sm text-slate-500 leading-relaxed">
-                  {item.a}
-                </AccordionContent>
-              </AccordionItem>
-            ))}
-          </Accordion>
+          <div className="card-premium-static border border-slate-200/80 rounded-2xl overflow-hidden">
+            <Accordion type="single" collapsible className="w-full">
+              {faqItems.map((item, i) => (
+                <AccordionItem key={i} value={`faq-${i}`} className="border-b border-slate-100 last:border-0 px-6">
+                  <AccordionTrigger className="text-left text-[14px] font-medium text-slate-900 hover:text-emerald-600 hover:no-underline py-5">
+                    {item.q}
+                  </AccordionTrigger>
+                  <AccordionContent className="text-sm text-slate-500 leading-relaxed pb-5">
+                    {item.a}
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
+          </div>
         </div>
       </section>
 
       {/* ─── H. CTA ─── */}
-      <section className="py-20 sm:py-28 bg-gradient-to-br from-emerald-700 via-emerald-600 to-teal-500 relative overflow-hidden">
-        <svg
-          className="absolute top-0 right-0 w-80 h-80 text-emerald-500 opacity-20"
-          viewBox="0 0 200 200"
-          fill="none"
-          aria-hidden="true"
-        >
-          <circle cx="100" cy="100" r="90" stroke="currentColor" strokeWidth="2" />
-        </svg>
+      <section className="py-20 sm:py-28 bg-gradient-to-br from-slate-900 via-emerald-950 to-slate-900 relative overflow-hidden">
+        {/* Decorative elements */}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(5,150,105,0.15),transparent_70%)]" />
+        <div className="absolute top-0 right-0 w-80 h-80 bg-emerald-500/10 rounded-full blur-3xl" />
+        <div className="absolute bottom-0 left-0 w-60 h-60 bg-teal-400/10 rounded-full blur-3xl" />
+
         <div className="relative max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
+          <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4 tracking-tight">
             Ready to Make Every Call Count?
           </h2>
-          <p className="text-lg text-emerald-100 mb-8 max-w-xl mx-auto">
+          <p className="text-base text-slate-400 mb-8 max-w-xl mx-auto leading-relaxed">
             Join hundreds of Tanzanian businesses already growing with TunePoa. Start your free trial today.
           </p>
           <Button
             size="lg"
-            className="bg-white text-emerald-700 hover:bg-emerald-50 font-semibold text-base px-10 h-12 rounded-xl shadow-lg"
+            className="bg-white text-slate-900 hover:bg-slate-100 font-semibold text-[15px] px-10 h-12 rounded-xl shadow-lg shadow-black/20 group"
             onClick={() => {
               setAuthMode('register')
               setAuthDialogOpen(true)
             }}
           >
             Get Started Now
-            <ArrowRight className="ml-2 h-4 w-4" />
+            <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
           </Button>
         </div>
       </section>
 
       {/* ─── AUTH DIALOG (popup from navbar / CTAs) ─── */}
       <Dialog open={authDialogOpen} onOpenChange={setAuthDialogOpen}>
-        <DialogContent className="sm:max-w-md p-0 gap-0 overflow-hidden border-0 shadow-2xl">
+        <DialogContent className="sm:max-w-md p-0 gap-0 overflow-hidden border-0 shadow-2xl rounded-2xl">
           <VisuallyHidden>
             <DialogTitle>{authMode === 'login' ? 'Sign In' : 'Create Account'}</DialogTitle>
           </VisuallyHidden>
@@ -813,16 +817,16 @@ export function LandingPage() {
       </Dialog>
 
       {/* ─── I. FOOTER ─── */}
-      <footer id="footer" className="bg-slate-900 text-slate-400">
+      <footer id="footer" className="bg-slate-950 text-slate-400">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-10">
             {/* Brand column */}
             <div className="sm:col-span-2 lg:col-span-1">
-              <div className="flex items-center gap-2 mb-4">
-                <div className="h-8 w-8 rounded-lg bg-emerald-600 flex items-center justify-center">
-                  <Music2 className="h-4 w-4 text-white" />
+              <div className="flex items-center gap-2.5 mb-4">
+                <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-400 flex items-center justify-center shadow-lg shadow-emerald-500/20">
+                  <Music2 className="h-5 w-5 text-white" />
                 </div>
-                <span className="font-bold text-lg text-white">TunePoa</span>
+                <span className="font-bold text-lg text-white tracking-tight">TunePoa</span>
               </div>
               <p className="text-sm leading-relaxed">
                 Tanzania&apos;s leading ringback tone marketing platform. Turn every phone call
@@ -832,7 +836,7 @@ export function LandingPage() {
 
             {/* Quick Links column */}
             <div>
-              <h4 className="text-sm font-semibold text-white mb-4 uppercase tracking-wider">
+              <h4 className="text-xs font-semibold text-slate-300 mb-4 uppercase tracking-[0.1em]">
                 Quick Links
               </h4>
               <ul className="space-y-2.5">
@@ -857,7 +861,7 @@ export function LandingPage() {
 
             {/* Services column */}
             <div>
-              <h4 className="text-sm font-semibold text-white mb-4 uppercase tracking-wider">
+              <h4 className="text-xs font-semibold text-slate-300 mb-4 uppercase tracking-[0.1em]">
                 Services
               </h4>
               <ul className="space-y-2.5">
@@ -871,19 +875,19 @@ export function LandingPage() {
 
             {/* Contact column */}
             <div>
-              <h4 className="text-sm font-semibold text-white mb-4 uppercase tracking-wider">
+              <h4 className="text-xs font-semibold text-slate-300 mb-4 uppercase tracking-[0.1em]">
                 Contact
               </h4>
               <ul className="space-y-3">
-                <li className="flex items-center gap-2 text-sm">
+                <li className="flex items-center gap-2.5 text-sm">
                   <Mail className="h-4 w-4 text-emerald-500 shrink-0" />
                   info@tunepoa.co.tz
                 </li>
-                <li className="flex items-center gap-2 text-sm">
+                <li className="flex items-center gap-2.5 text-sm">
                   <Phone className="h-4 w-4 text-emerald-500 shrink-0" />
                   +255 22 123 4567
                 </li>
-                <li className="flex items-start gap-2 text-sm">
+                <li className="flex items-start gap-2.5 text-sm">
                   <MapPin className="h-4 w-4 text-emerald-500 shrink-0 mt-0.5" />
                   Dar es Salaam, Tanzania
                 </li>
@@ -893,16 +897,16 @@ export function LandingPage() {
         </div>
 
         {/* Bottom bar */}
-        <div className="border-t border-slate-800">
+        <div className="border-t border-slate-900">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <p className="text-sm text-slate-500">
+            <p className="text-sm text-slate-600">
               &copy; {new Date().getFullYear()} TunePoa. All rights reserved.
             </p>
             <div className="flex gap-6">
-              <button className="text-sm text-slate-500 hover:text-emerald-400 transition-colors">
+              <button className="text-sm text-slate-600 hover:text-emerald-400 transition-colors">
                 Privacy Policy
               </button>
-              <button className="text-sm text-slate-500 hover:text-emerald-400 transition-colors">
+              <button className="text-sm text-slate-600 hover:text-emerald-400 transition-colors">
                 Terms of Service
               </button>
             </div>

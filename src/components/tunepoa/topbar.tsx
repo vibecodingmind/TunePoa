@@ -48,12 +48,12 @@ export function Topbar() {
     .slice(0, 2) || 'U'
 
   return (
-    <header className="sticky top-0 z-30 h-14 bg-white border-b border-slate-200 flex items-center px-4 gap-3 shrink-0">
+    <header className="sticky top-0 z-30 h-16 flex items-center px-4 sm:px-6 gap-3 shrink-0 glass-strong border-b border-slate-200/60">
       {/* Mobile menu toggle */}
       <Button
         variant="ghost"
         size="icon"
-        className="lg:hidden text-slate-500 hover:text-slate-700"
+        className="lg:hidden text-slate-500 hover:text-slate-700 hover:bg-slate-100/60"
         onClick={toggleSidebar}
         aria-label="Toggle navigation"
       >
@@ -61,21 +61,23 @@ export function Topbar() {
       </Button>
 
       {/* Page title */}
-      <h1 className="font-semibold text-slate-900 text-base hidden sm:block">
-        {pageTitle}
-      </h1>
+      <div className="hidden sm:block">
+        <h1 className="font-semibold text-slate-900 text-[15px] tracking-tight">
+          {pageTitle}
+        </h1>
+      </div>
 
       {/* Spacer */}
       <div className="flex-1" />
 
       {/* Search placeholder */}
       <div className="hidden md:flex items-center">
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+        <div className="relative group">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 group-focus-within:text-emerald-500 transition-colors" />
           <Input
             type="search"
-            placeholder="Search..."
-            className="w-64 h-9 pl-9 text-sm bg-slate-50 border-slate-200"
+            placeholder="Search anything..."
+            className="w-64 h-9 pl-9 pr-4 text-sm bg-slate-100/60 border-slate-200/80 focus:bg-white focus:border-emerald-300 transition-all duration-200 placeholder:text-slate-400"
             readOnly
           />
         </div>
@@ -85,56 +87,63 @@ export function Topbar() {
       <Button
         variant="ghost"
         size="icon"
-        className="relative text-slate-500 hover:text-slate-700"
+        className="relative text-slate-500 hover:text-slate-700 hover:bg-slate-100/60 transition-colors duration-200"
         aria-label="Notifications"
       >
-        <Bell className="h-5 w-5" />
+        <Bell className="h-[18px] w-[18px]" />
         {/* Notification dot */}
-        <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-emerald-500" />
+        <span className="absolute top-2 right-2 h-2 w-2 rounded-full bg-emerald-500 ring-2 ring-white" />
       </Button>
+
+      {/* Separator */}
+      <div className="hidden sm:block h-6 w-px bg-slate-200/80" />
 
       {/* User dropdown */}
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button
             variant="ghost"
-            className="flex items-center gap-2 px-2 hover:bg-slate-50"
+            className="flex items-center gap-2.5 px-2 hover:bg-slate-100/60 rounded-xl transition-colors duration-200"
           >
-            <div className="h-8 w-8 rounded-full bg-emerald-600 text-white flex items-center justify-center text-xs font-semibold">
+            <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-emerald-500 to-teal-400 text-white flex items-center justify-center text-xs font-semibold shadow-sm shadow-emerald-500/20">
               {userInitials}
             </div>
-            <span className="hidden sm:block text-sm font-medium text-slate-700 max-w-[120px] truncate">
-              {currentUser?.name || 'User'}
-            </span>
+            <div className="hidden sm:block text-left">
+              <span className="text-sm font-medium text-slate-700 block leading-tight max-w-[120px] truncate">
+                {currentUser?.name || 'User'}
+              </span>
+              <span className="text-[11px] text-slate-400 block leading-tight capitalize">
+                {currentUser?.role?.replace('_', ' ')}
+              </span>
+            </div>
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-56">
-          <DropdownMenuLabel className="font-normal">
+        <DropdownMenuContent align="end" className="w-56 mt-1.5 rounded-xl border-slate-200/80 shadow-lg">
+          <DropdownMenuLabel className="font-normal px-3 py-2">
             <div className="flex flex-col space-y-1">
               <p className="text-sm font-medium text-slate-900">{currentUser?.name}</p>
               <p className="text-xs text-slate-500 truncate">{currentUser?.email}</p>
-              <p className="text-xs text-emerald-600">{currentUser?.role?.replace('_', ' ')}</p>
             </div>
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuItem
             onClick={() => navigate('settings')}
-            className="cursor-pointer"
+            className="cursor-pointer rounded-lg mx-1 px-2 text-[13px]"
           >
-            <UserIcon className="mr-2 h-4 w-4" />
+            <UserIcon className="mr-2 h-4 w-4 text-slate-400" />
             Profile
           </DropdownMenuItem>
           <DropdownMenuItem
             onClick={() => navigate('settings')}
-            className="cursor-pointer"
+            className="cursor-pointer rounded-lg mx-1 px-2 text-[13px]"
           >
-            <Settings className="mr-2 h-4 w-4" />
+            <Settings className="mr-2 h-4 w-4 text-slate-400" />
             Settings
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem
             onClick={logout}
-            className="cursor-pointer text-red-600 focus:text-red-600"
+            className="cursor-pointer text-red-600 focus:text-red-600 rounded-lg mx-1 px-2 text-[13px]"
           >
             <LogOut className="mr-2 h-4 w-4" />
             Sign Out

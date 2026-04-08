@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { useAppStore } from '@/lib/store'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
+import { Badge } from '@/components/ui/badge'
 import {
   Users,
   CreditCard,
@@ -12,8 +13,8 @@ import {
   Activity,
   DollarSign,
   BarChart3,
+  Sparkles,
 } from 'lucide-react'
-import { Badge } from '@/components/ui/badge'
 
 interface Analytics {
   totalUsers: number
@@ -40,6 +41,38 @@ interface Activity {
   user?: { id: string; name: string }
 }
 
+/* ─── Admin Stat Card ─── */
+interface AdminStatCardProps {
+  label: string
+  value: string | number
+  sub: string
+  subColor?: string
+  icon: React.ComponentType<{ className?: string }>
+  gradient: string
+  iconBg: string
+  iconColor: string
+}
+
+function AdminStatCard({ label, value, sub, subColor = 'text-emerald-600', icon: Icon, gradient, iconBg, iconColor }: AdminStatCardProps) {
+  return (
+    <div className="card-premium border-0 bg-white group overflow-hidden relative">
+      <div className={`absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r ${gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-300`} />
+      <CardContent className="p-5">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-[12px] font-medium text-slate-400 uppercase tracking-wider mb-1">{label}</p>
+            <p className="text-2xl font-bold text-slate-900 tracking-tight">{value}</p>
+            <p className={`text-xs ${subColor} font-medium mt-1`}>{sub}</p>
+          </div>
+          <div className={`h-11 w-11 rounded-xl ${iconBg} flex items-center justify-center transition-all duration-300 group-hover:scale-110 group-hover:shadow-md`}>
+            <Icon className={`h-5 w-5 ${iconColor}`} />
+          </div>
+        </div>
+      </CardContent>
+    </div>
+  )
+}
+
 export function AdminDashboard() {
   const [analytics, setAnalytics] = useState<Analytics | null>(null)
   const [loading, setLoading] = useState(true)
@@ -61,14 +94,14 @@ export function AdminDashboard() {
 
   if (loading || !analytics) {
     return (
-      <div className="space-y-6">
-        <Skeleton className="h-8 w-48" />
+      <div className="space-y-6 animate-fade-in">
+        <Skeleton className="h-8 w-48 rounded-lg bg-slate-100" />
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {[1, 2, 3, 4].map(i => <Skeleton key={i} className="h-28" />)}
+          {[1, 2, 3, 4].map(i => <Skeleton key={i} className="h-[116px] rounded-xl bg-slate-100" />)}
         </div>
         <div className="grid lg:grid-cols-2 gap-6">
-          <Skeleton className="h-64" />
-          <Skeleton className="h-64" />
+          <Skeleton className="h-72 rounded-2xl bg-slate-100" />
+          <Skeleton className="h-72 rounded-2xl bg-slate-100" />
         </div>
       </div>
     )
@@ -91,174 +124,173 @@ export function AdminDashboard() {
   const recentActivity = analytics.recentActivity || []
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-gray-900">Admin Dashboard</h1>
-        <p className="text-gray-500 text-sm mt-1">Overview of your TunePoa platform</p>
+    <div className="space-y-6 animate-fade-in">
+      {/* Header */}
+      <div className="flex items-center gap-3">
+        <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-400 flex items-center justify-center shadow-md shadow-emerald-500/20">
+          <Sparkles className="h-5 w-5 text-white" />
+        </div>
+        <div>
+          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Admin Dashboard</h1>
+          <p className="text-sm text-slate-400 mt-0.5">Overview of your TunePoa platform</p>
+        </div>
       </div>
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card className="border-0 shadow-sm">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-500">Total Users</p>
-                <p className="text-2xl font-bold text-gray-900">{safe.totalUsers}</p>
-                <p className="text-xs text-emerald-600 mt-1">
-                  {usersByRole.filter(r => r.role === 'BUSINESS_OWNER').reduce((s, r) => s + r._count, 0)} businesses
-                </p>
-              </div>
-              <div className="h-10 w-10 rounded-xl bg-blue-100 flex items-center justify-center">
-                <Users className="h-5 w-5 text-blue-600" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="border-0 shadow-sm">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-500">Active Subscriptions</p>
-                <p className="text-2xl font-bold text-gray-900">{safe.activeSubscriptions}</p>
-                <p className="text-xs text-emerald-600 mt-1">
-                  {subsByStatus.find(s => s.status === 'PENDING')?._count || 0} pending
-                </p>
-              </div>
-              <div className="h-10 w-10 rounded-xl bg-emerald-100 flex items-center justify-center">
-                <CreditCard className="h-5 w-5 text-emerald-600" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="border-0 shadow-sm">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-500">Total Revenue</p>
-                <p className="text-2xl font-bold text-gray-900">TZS {safe.totalRevenue.toLocaleString()}</p>
-                <p className="text-xs text-emerald-600 mt-1">
-                  TZS {safe.monthlyRevenue.toLocaleString()} this month
-                </p>
-              </div>
-              <div className="h-10 w-10 rounded-xl bg-green-100 flex items-center justify-center">
-                <DollarSign className="h-5 w-5 text-green-600" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="border-0 shadow-sm">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-500">Pending Requests</p>
-                <p className="text-2xl font-bold text-gray-900">{safe.pendingRequests}</p>
-                <p className="text-xs text-gray-500 mt-1">
-                  {safe.completedRequests} completed
-                </p>
-              </div>
-              <div className="h-10 w-10 rounded-xl bg-yellow-100 flex items-center justify-center">
-                <Clock className="h-5 w-5 text-yellow-600" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+        <AdminStatCard
+          label="Total Users"
+          value={safe.totalUsers}
+          sub={`${usersByRole.filter(r => r.role === 'BUSINESS_OWNER').reduce((s, r) => s + r._count, 0)} businesses`}
+          icon={Users}
+          gradient="from-emerald-400 to-teal-500"
+          iconBg="bg-emerald-50"
+          iconColor="text-emerald-600"
+        />
+        <AdminStatCard
+          label="Active Subscriptions"
+          value={safe.activeSubscriptions}
+          sub={`${subsByStatus.find(s => s.status === 'PENDING')?._count || 0} pending`}
+          icon={CreditCard}
+          gradient="from-teal-400 to-cyan-500"
+          iconBg="bg-teal-50"
+          iconColor="text-teal-600"
+        />
+        <AdminStatCard
+          label="Total Revenue"
+          value={`TZS ${safe.totalRevenue.toLocaleString()}`}
+          sub={`TZS ${safe.monthlyRevenue.toLocaleString()} this month`}
+          icon={DollarSign}
+          gradient="from-amber-400 to-orange-500"
+          iconBg="bg-amber-50"
+          iconColor="text-amber-600"
+        />
+        <AdminStatCard
+          label="Pending Requests"
+          value={safe.pendingRequests}
+          sub={`${safe.completedRequests} completed`}
+          subColor="text-slate-400"
+          icon={Clock}
+          gradient="from-violet-400 to-purple-500"
+          iconBg="bg-violet-50"
+          iconColor="text-violet-600"
+        />
       </div>
 
       <div className="grid lg:grid-cols-2 gap-6">
         {/* Package Revenue */}
-        <Card className="border-0 shadow-sm">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-lg flex items-center gap-2">
-              <BarChart3 className="h-5 w-5 text-emerald-600" />
+        <Card className="card-premium-static border-0 bg-white rounded-2xl overflow-hidden">
+          <CardHeader className="pb-2 px-6 pt-6">
+            <CardTitle className="text-[15px] font-semibold text-slate-900 flex items-center gap-2">
+              <div className="h-7 w-7 rounded-lg bg-emerald-50 flex items-center justify-center">
+                <BarChart3 className="h-4 w-4 text-emerald-600" />
+              </div>
               Revenue by Package
             </CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="px-6 pb-6">
             {pkgRevenue.length === 0 ? (
-              <p className="text-gray-400 text-center py-8">No revenue data yet</p>
+              <div className="text-center py-10">
+                <p className="text-slate-400 text-sm">No revenue data yet</p>
+              </div>
             ) : (
               <div className="space-y-4">
-                {pkgRevenue.map(pkg => (
-                  <div key={pkg.name} className="space-y-1.5">
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="font-medium text-gray-700">{pkg.name}</span>
-                      <span className="text-gray-500">TZS {pkg.amount.toLocaleString()}</span>
+                {pkgRevenue.map((pkg) => {
+                  const pct = (pkg.amount / maxPkgRevenue) * 100
+                  return (
+                    <div key={pkg.name} className="space-y-2">
+                      <div className="flex items-center justify-between text-sm">
+                        <span className="font-medium text-slate-700">{pkg.name}</span>
+                        <span className="text-slate-400 text-xs font-medium">TZS {pkg.amount.toLocaleString()}</span>
+                      </div>
+                      <div className="h-2.5 bg-slate-100 rounded-full overflow-hidden">
+                        <div
+                          className="h-full bg-gradient-to-r from-emerald-500 to-teal-400 rounded-full transition-all duration-700 ease-out"
+                          style={{ width: `${pct}%` }}
+                        />
+                      </div>
                     </div>
-                    <div className="h-2.5 bg-gray-100 rounded-full overflow-hidden">
-                      <div
-                        className="h-full bg-emerald-500 rounded-full transition-all duration-500"
-                        style={{ width: `${(pkg.amount / maxPkgRevenue) * 100}%` }}
-                      />
-                    </div>
-                  </div>
-                ))}
+                  )
+                })}
               </div>
             )}
           </CardContent>
         </Card>
 
         {/* Request Status Distribution */}
-        <Card className="border-0 shadow-sm">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-lg flex items-center gap-2">
-              <Activity className="h-5 w-5 text-emerald-600" />
+        <Card className="card-premium-static border-0 bg-white rounded-2xl overflow-hidden">
+          <CardHeader className="pb-2 px-6 pt-6">
+            <CardTitle className="text-[15px] font-semibold text-slate-900 flex items-center gap-2">
+              <div className="h-7 w-7 rounded-lg bg-emerald-50 flex items-center justify-center">
+                <Activity className="h-4 w-4 text-emerald-600" />
+              </div>
               Request Status
             </CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="space-y-3">
-              {reqsByStatus.map(rs => (
-                <div key={rs.status} className="flex items-center justify-between">
-                  <Badge
-                    className={
-                      rs.status === 'COMPLETED' || rs.status === 'APPROVED' ? 'bg-emerald-100 text-emerald-700' :
-                      rs.status === 'PENDING' ? 'bg-yellow-100 text-yellow-700' :
-                      rs.status === 'REJECTED' ? 'bg-red-100 text-red-700' :
-                      'bg-blue-100 text-blue-700'
-                    }
-                    variant="outline"
-                  >
-                    {rs.status}
-                  </Badge>
-                  <span className="font-semibold text-gray-900">{rs._count}</span>
-                </div>
-              ))}
-            </div>
+          <CardContent className="px-6 pb-6">
+            {reqsByStatus.length === 0 ? (
+              <div className="text-center py-10">
+                <p className="text-slate-400 text-sm">No request data yet</p>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {reqsByStatus.map((rs) => {
+                  const statusColor = rs.status === 'COMPLETED' || rs.status === 'APPROVED'
+                    ? 'bg-emerald-100 text-emerald-700 border-emerald-200/80'
+                    : rs.status === 'PENDING'
+                      ? 'bg-amber-100 text-amber-700 border-amber-200/80'
+                      : rs.status === 'REJECTED'
+                        ? 'bg-red-100 text-red-700 border-red-200/80'
+                        : 'bg-sky-100 text-sky-700 border-sky-200/80'
+                  return (
+                    <div key={rs.status} className="flex items-center justify-between p-2.5 rounded-xl hover:bg-slate-50 transition-colors">
+                      <Badge
+                        className={`${statusColor} rounded-lg font-medium text-[12px]`}
+                        variant="outline"
+                      >
+                        {rs.status}
+                      </Badge>
+                      <span className="font-semibold text-slate-900 text-sm">{rs._count}</span>
+                    </div>
+                  )
+                })}
+              </div>
+            )}
           </CardContent>
         </Card>
       </div>
 
       {/* Recent Activity */}
-      <Card className="border-0 shadow-sm">
-        <CardHeader className="pb-2">
-          <CardTitle className="text-lg flex items-center gap-2">
-            <TrendingUp className="h-5 w-5 text-emerald-600" />
+      <Card className="card-premium-static border-0 bg-white rounded-2xl overflow-hidden">
+        <CardHeader className="pb-2 px-6 pt-6">
+          <CardTitle className="text-[15px] font-semibold text-slate-900 flex items-center gap-2">
+            <div className="h-7 w-7 rounded-lg bg-emerald-50 flex items-center justify-center">
+              <TrendingUp className="h-4 w-4 text-emerald-600" />
+            </div>
             Recent Activity
           </CardTitle>
         </CardHeader>
-        <CardContent>
-          <div className="max-h-96 overflow-y-auto space-y-3">
+        <CardContent className="px-6 pb-6">
+          <div className="max-h-96 overflow-y-auto scrollbar-thin space-y-1">
             {recentActivity.length === 0 ? (
-              <p className="text-gray-400 text-center py-8">No recent activity</p>
+              <div className="text-center py-10">
+                <p className="text-slate-400 text-sm">No recent activity</p>
+              </div>
             ) : (
-              recentActivity.map(a => (
-                <div key={a.id} className="flex items-start gap-3 p-2 rounded-lg hover:bg-gray-50">
-                  <div className="h-8 w-8 rounded-full bg-emerald-100 flex items-center justify-center shrink-0 mt-0.5">
-                    <span className="text-xs font-semibold text-emerald-700">
+              recentActivity.map((a) => (
+                <div key={a.id} className="flex items-start gap-3 p-3 rounded-xl hover:bg-slate-50 transition-colors group">
+                  <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-emerald-50 to-teal-50 text-emerald-700 flex items-center justify-center shrink-0 mt-0.5 border border-emerald-100/80">
+                    <span className="text-[11px] font-semibold">
                       {(a.user?.name || 'S').charAt(0)}
                     </span>
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm text-gray-700">
-                      <span className="font-medium">{a.user?.name || 'System'}</span>{' '}
-                      <span className="text-gray-500">{a.action.toLowerCase()}</span>{' '}
-                      <span className="text-gray-500">{a.entityType.toLowerCase()}</span>
+                    <p className="text-sm text-slate-700">
+                      <span className="font-medium text-slate-900">{a.user?.name || 'System'}</span>{' '}
+                      <span className="text-slate-400">{a.action.toLowerCase()}</span>{' '}
+                      <span className="text-slate-400">{a.entityType.toLowerCase()}</span>
                     </p>
-                    <p className="text-xs text-gray-400 mt-0.5">
+                    <p className="text-xs text-slate-400 mt-0.5">
                       {new Date(a.createdAt).toLocaleString()}
                     </p>
                   </div>

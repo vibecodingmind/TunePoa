@@ -35,6 +35,7 @@ import {
   ArrowRight,
   Zap,
   TrendingUp,
+  Sparkles,
 } from 'lucide-react'
 
 /* ========================================================================= */
@@ -103,18 +104,21 @@ interface StatCardProps {
   label: string
   value: string | number
   icon: React.ComponentType<{ className?: string }>
+  gradient: string
   iconBg: string
   iconColor: string
   trend?: string
 }
 
-function StatCard({ label, value, icon: Icon, iconBg, iconColor, trend }: StatCardProps) {
+function StatCard({ label, value, icon: Icon, gradient, iconBg, iconColor, trend }: StatCardProps) {
   return (
-    <Card className="border-0 shadow-sm hover:shadow-md transition-all duration-200 group">
+    <div className="card-premium border-0 bg-white group overflow-hidden relative">
+      {/* Top gradient accent line */}
+      <div className={`absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r ${gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-300`} />
       <CardContent className="p-5">
         <div className="flex items-start justify-between">
-          <div className="space-y-1">
-            <p className="text-sm font-medium text-slate-500">{label}</p>
+          <div className="space-y-1.5">
+            <p className="text-[12px] font-medium text-slate-400 uppercase tracking-wider">{label}</p>
             <p className="text-2xl font-bold text-slate-900 tracking-tight">{value}</p>
             {trend && (
               <p className="text-xs text-emerald-600 font-medium flex items-center gap-1">
@@ -124,13 +128,13 @@ function StatCard({ label, value, icon: Icon, iconBg, iconColor, trend }: StatCa
             )}
           </div>
           <div
-            className={`h-12 w-12 rounded-xl ${iconBg} flex items-center justify-center transition-transform group-hover:scale-110`}
+            className={`h-11 w-11 rounded-xl ${iconBg} flex items-center justify-center transition-all duration-300 group-hover:scale-110 group-hover:shadow-md`}
           >
             <Icon className={`h-5 w-5 ${iconColor}`} />
           </div>
         </div>
       </CardContent>
-    </Card>
+    </div>
   )
 }
 
@@ -209,21 +213,21 @@ export function UserDashboard() {
 
   if (loading) {
     return (
-      <div className="space-y-6">
+      <div className="space-y-6 animate-fade-in">
         {/* Banner skeleton */}
-        <Skeleton className="h-44 w-full rounded-2xl" />
+        <Skeleton className="h-48 w-full rounded-2xl bg-slate-100" />
         {/* Stats skeletons */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {Array.from({ length: 4 }).map((_, i) => (
-            <Skeleton key={i} className="h-[108px] rounded-xl" />
+            <Skeleton key={i} className="h-[116px] rounded-xl bg-slate-100" />
           ))}
         </div>
         {/* Table skeleton */}
-        <Skeleton className="h-72 rounded-xl" />
+        <Skeleton className="h-72 rounded-xl bg-slate-100" />
         {/* Subscription cards skeleton */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {Array.from({ length: 3 }).map((_, i) => (
-            <Skeleton key={i} className="h-40 rounded-xl" />
+            <Skeleton key={i} className="h-44 rounded-xl bg-slate-100" />
           ))}
         </div>
       </div>
@@ -235,11 +239,11 @@ export function UserDashboard() {
   if (error) {
     return (
       <div className="space-y-6">
-        <Alert variant="destructive">
+        <Alert variant="destructive" className="rounded-xl">
           <AlertCircle className="h-4 w-4" />
           <AlertDescription className="flex items-center justify-between">
             <span>{error}</span>
-            <Button variant="outline" size="sm" onClick={fetchDashboardData}>
+            <Button variant="outline" size="sm" className="rounded-lg" onClick={fetchDashboardData}>
               <RefreshCw className="h-4 w-4 mr-2" />
               Retry
             </Button>
@@ -254,7 +258,7 @@ export function UserDashboard() {
   const firstName = user?.name?.split(' ')[0] || 'there'
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 animate-fade-in">
       {/* ================================================================= */}
       {/* Welcome Banner                                                     */}
       {/* ================================================================= */}
@@ -269,11 +273,11 @@ export function UserDashboard() {
 
         <div className="relative">
           <div className="flex items-center gap-2 text-emerald-100 text-sm font-medium mb-2">
-            <Zap className="h-4 w-4" />
+            <Sparkles className="h-4 w-4" />
             <span>Dashboard</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-bold mb-1">Welcome back, {firstName}</h1>
-          <p className="text-emerald-100 text-sm sm:text-base max-w-lg">
+          <h1 className="text-2xl sm:text-3xl font-bold mb-1 tracking-tight">Welcome back, {firstName}</h1>
+          <p className="text-emerald-100/90 text-sm sm:text-base max-w-lg">
             {user?.businessName
               ? `Manage your ads and subscriptions for ${user.businessName}`
               : 'Your business dashboard is ready'}
@@ -282,7 +286,7 @@ export function UserDashboard() {
           <div className="flex flex-wrap gap-3 mt-6">
             <Button
               size="sm"
-              className="bg-white text-emerald-700 hover:bg-emerald-50 shadow-sm font-medium"
+              className="bg-white text-emerald-700 hover:bg-emerald-50 shadow-md shadow-emerald-900/10 font-medium rounded-xl"
               onClick={() => navigate('new-request')}
             >
               <PlusCircle className="h-4 w-4 mr-2" />
@@ -291,7 +295,7 @@ export function UserDashboard() {
             <Button
               size="sm"
               variant="outline"
-              className="border-white/30 text-white hover:bg-white/10 bg-transparent"
+              className="border-white/25 text-white hover:bg-white/10 bg-white/10 rounded-xl backdrop-blur-sm"
               onClick={() => navigate('packages')}
             >
               <Package className="h-4 w-4 mr-2" />
@@ -309,7 +313,8 @@ export function UserDashboard() {
           label="Active Subscriptions"
           value={activeSubs}
           icon={CreditCard}
-          iconBg="bg-emerald-100"
+          gradient="from-emerald-400 to-emerald-600"
+          iconBg="bg-emerald-50"
           iconColor="text-emerald-600"
           trend={activeSubs > 0 ? `${activeSubs} running` : undefined}
         />
@@ -317,21 +322,24 @@ export function UserDashboard() {
           label="Pending Requests"
           value={pendingRequests}
           icon={Clock}
-          iconBg="bg-amber-100"
+          gradient="from-amber-400 to-amber-600"
+          iconBg="bg-amber-50"
           iconColor="text-amber-600"
         />
         <StatCard
           label="Total Spent"
           value={formatCurrency(totalSpent)}
           icon={Wallet}
-          iconBg="bg-sky-100"
+          gradient="from-sky-400 to-sky-600"
+          iconBg="bg-sky-50"
           iconColor="text-sky-600"
         />
         <StatCard
           label="Active Ads"
           value={activeAds}
           icon={Radio}
-          iconBg="bg-violet-100"
+          gradient="from-violet-400 to-violet-600"
+          iconBg="bg-violet-50"
           iconColor="text-violet-600"
         />
       </div>
@@ -339,37 +347,37 @@ export function UserDashboard() {
       {/* ================================================================= */}
       {/* Recent Service Requests                                            */}
       {/* ================================================================= */}
-      <Card className="border-0 shadow-sm">
-        <CardHeader className="pb-3">
+      <Card className="card-premium-static border-0 bg-white rounded-2xl overflow-hidden">
+        <CardHeader className="pb-3 px-6 pt-6">
           <div className="flex items-center justify-between">
             <div>
-              <CardTitle className="text-lg text-slate-900">Recent Service Requests</CardTitle>
-              <p className="text-sm text-slate-500 mt-0.5">Your latest ad creation requests</p>
+              <CardTitle className="text-[15px] font-semibold text-slate-900">Recent Service Requests</CardTitle>
+              <p className="text-sm text-slate-400 mt-0.5">Your latest ad creation requests</p>
             </div>
             {requests.length > 0 && (
               <Button
                 variant="ghost"
                 size="sm"
-                className="text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50"
+                className="text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50 text-[13px] rounded-lg"
                 onClick={() => navigate('my-requests')}
               >
                 View All
-                <ArrowRight className="h-4 w-4 ml-1" />
+                <ArrowRight className="h-3.5 w-3.5 ml-1" />
               </Button>
             )}
           </div>
         </CardHeader>
-        <CardContent>
+        <CardContent className="px-6 pb-6">
           {recentRequests.length === 0 ? (
-            <div className="text-center py-10">
-              <div className="h-14 w-14 rounded-full bg-slate-100 flex items-center justify-center mx-auto mb-3">
+            <div className="text-center py-12">
+              <div className="h-14 w-14 rounded-2xl bg-slate-100 flex items-center justify-center mx-auto mb-3">
                 <Clock className="h-6 w-6 text-slate-400" />
               </div>
-              <p className="text-slate-600 font-medium">No service requests yet</p>
+              <p className="text-slate-600 font-medium text-sm">No service requests yet</p>
               <p className="text-slate-400 text-sm mt-1">Create your first ringback tone ad request</p>
               <Button
                 variant="link"
-                className="text-emerald-600 mt-1"
+                className="text-emerald-600 mt-1 text-sm"
                 onClick={() => navigate('new-request')}
               >
                 Get started
@@ -381,39 +389,39 @@ export function UserDashboard() {
               <div className="hidden sm:block overflow-x-auto">
                 <Table>
                   <TableHeader>
-                    <TableRow className="border-slate-100">
-                      <TableHead className="text-slate-500 text-xs uppercase tracking-wide">ID</TableHead>
-                      <TableHead className="text-slate-500 text-xs uppercase tracking-wide">Business</TableHead>
-                      <TableHead className="text-slate-500 text-xs uppercase tracking-wide">Type</TableHead>
-                      <TableHead className="text-slate-500 text-xs uppercase tracking-wide">Status</TableHead>
-                      <TableHead className="text-slate-500 text-xs uppercase tracking-wide">Date</TableHead>
+                    <TableRow className="border-slate-100 hover:bg-transparent">
+                      <TableHead className="text-slate-400 text-[11px] uppercase tracking-wider font-semibold">ID</TableHead>
+                      <TableHead className="text-slate-400 text-[11px] uppercase tracking-wider font-semibold">Business</TableHead>
+                      <TableHead className="text-slate-400 text-[11px] uppercase tracking-wider font-semibold">Type</TableHead>
+                      <TableHead className="text-slate-400 text-[11px] uppercase tracking-wider font-semibold">Status</TableHead>
+                      <TableHead className="text-slate-400 text-[11px] uppercase tracking-wider font-semibold">Date</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {recentRequests.map((req) => (
                       <TableRow
                         key={req.id}
-                        className="cursor-pointer hover:bg-slate-50 transition-colors border-slate-50"
+                        className="cursor-pointer hover:bg-slate-50/50 transition-colors border-slate-50 group"
                         onClick={() => navigate('my-requests')}
                       >
                         <TableCell className="font-mono text-xs text-slate-400">
                           {shortenId(req.id)}
                         </TableCell>
-                        <TableCell className="font-medium text-slate-900">{req.businessName}</TableCell>
+                        <TableCell className="font-medium text-slate-800 text-sm">{req.businessName}</TableCell>
                         <TableCell>
-                          <Badge variant="outline" className="text-slate-600 border-slate-200 text-xs">
+                          <Badge variant="outline" className="text-slate-500 border-slate-200 text-xs font-medium rounded-md">
                             {req.adType}
                           </Badge>
                         </TableCell>
                         <TableCell>
                           <Badge
                             variant="outline"
-                            className={`${STATUS_COLORS[req.status] || 'bg-slate-100 text-slate-600 border-slate-200'} text-xs`}
+                            className={`${STATUS_COLORS[req.status] || 'bg-slate-100 text-slate-600 border-slate-200'} text-xs font-medium rounded-md`}
                           >
                             {STATUS_LABELS[req.status] || req.status}
                           </Badge>
                         </TableCell>
-                        <TableCell className="text-slate-500 text-sm">{formatDate(req.createdAt)}</TableCell>
+                        <TableCell className="text-slate-400 text-sm">{formatDate(req.createdAt)}</TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
@@ -425,13 +433,13 @@ export function UserDashboard() {
                 {recentRequests.map((req) => (
                   <div
                     key={req.id}
-                    className="flex items-center justify-between p-3 rounded-xl border border-slate-100 hover:border-slate-200 hover:bg-slate-50/50 transition-colors cursor-pointer"
+                    className="flex items-center justify-between p-3.5 rounded-xl border border-slate-100 hover:border-emerald-200 hover:bg-emerald-50/30 transition-all duration-200 cursor-pointer"
                     onClick={() => navigate('my-requests')}
                   >
                     <div className="flex-1 min-w-0">
                       <p className="font-medium text-sm text-slate-900 truncate">{req.businessName}</p>
                       <div className="flex items-center gap-2 mt-1">
-                        <Badge variant="outline" className="text-xs text-slate-500 border-slate-200">
+                        <Badge variant="outline" className="text-xs text-slate-500 border-slate-200 rounded-md">
                           {req.adType}
                         </Badge>
                         <span className="text-xs text-slate-400">{formatDate(req.createdAt)}</span>
@@ -440,7 +448,7 @@ export function UserDashboard() {
                     <div className="flex items-center gap-2 ml-2">
                       <Badge
                         variant="outline"
-                        className={`${STATUS_COLORS[req.status] || 'bg-slate-100 text-slate-600 border-slate-200'} text-xs`}
+                        className={`${STATUS_COLORS[req.status] || 'bg-slate-100 text-slate-600 border-slate-200'} text-xs rounded-md`}
                       >
                         {STATUS_LABELS[req.status] || req.status}
                       </Badge>
@@ -457,37 +465,37 @@ export function UserDashboard() {
       {/* ================================================================= */}
       {/* Active Subscriptions                                               */}
       {/* ================================================================= */}
-      <Card className="border-0 shadow-sm">
-        <CardHeader className="pb-3">
+      <Card className="card-premium-static border-0 bg-white rounded-2xl overflow-hidden">
+        <CardHeader className="pb-3 px-6 pt-6">
           <div className="flex items-center justify-between">
             <div>
-              <CardTitle className="text-lg text-slate-900">Active Subscriptions</CardTitle>
-              <p className="text-sm text-slate-500 mt-0.5">Currently running ringback tone plans</p>
+              <CardTitle className="text-[15px] font-semibold text-slate-900">Active Subscriptions</CardTitle>
+              <p className="text-sm text-slate-400 mt-0.5">Currently running ringback tone plans</p>
             </div>
             {subscriptions.length > 0 && (
               <Button
                 variant="ghost"
                 size="sm"
-                className="text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50"
+                className="text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50 text-[13px] rounded-lg"
                 onClick={() => navigate('subscriptions')}
               >
                 View All
-                <ArrowRight className="h-4 w-4 ml-1" />
+                <ArrowRight className="h-3.5 w-3.5 ml-1" />
               </Button>
             )}
           </div>
         </CardHeader>
-        <CardContent>
+        <CardContent className="px-6 pb-6">
           {activeSubscriptions.length === 0 ? (
-            <div className="text-center py-10">
-              <div className="h-14 w-14 rounded-full bg-slate-100 flex items-center justify-center mx-auto mb-3">
+            <div className="text-center py-12">
+              <div className="h-14 w-14 rounded-2xl bg-slate-100 flex items-center justify-center mx-auto mb-3">
                 <CreditCard className="h-6 w-6 text-slate-400" />
               </div>
-              <p className="text-slate-600 font-medium">No active subscriptions</p>
+              <p className="text-slate-600 font-medium text-sm">No active subscriptions</p>
               <p className="text-slate-400 text-sm mt-1">Subscribe to a package to activate your ad</p>
               <Button
                 variant="link"
-                className="text-emerald-600 mt-1"
+                className="text-emerald-600 mt-1 text-sm"
                 onClick={() => navigate('packages')}
               >
                 Browse packages
@@ -498,13 +506,13 @@ export function UserDashboard() {
               {activeSubscriptions.map((sub) => (
                 <div
                   key={sub.id}
-                  className="p-5 rounded-xl border border-slate-200 hover:border-emerald-200 hover:shadow-sm transition-all group"
+                  className="p-5 rounded-xl border border-slate-100 hover:border-emerald-200 hover:shadow-sm transition-all duration-300 group bg-white"
                 >
                   <div className="flex items-center justify-between mb-4">
                     <h3 className="font-semibold text-slate-900 text-sm">{sub.package.name}</h3>
                     <Badge
                       variant="outline"
-                      className={`${STATUS_COLORS[sub.status] || 'bg-slate-100 text-slate-600 border-slate-200'} text-xs`}
+                      className={`${STATUS_COLORS[sub.status] || 'bg-slate-100 text-slate-600 border-slate-200'} text-xs font-medium rounded-md`}
                     >
                       {STATUS_LABELS[sub.status] || sub.status}
                     </Badge>
@@ -512,26 +520,26 @@ export function UserDashboard() {
 
                   <div className="space-y-2.5 text-sm">
                     <div className="flex items-center justify-between">
-                      <span className="text-slate-500">Amount</span>
+                      <span className="text-slate-400">Amount</span>
                       <span className="font-semibold text-slate-900">
                         {formatCurrency(sub.amount)}
                       </span>
                     </div>
                     {sub.phoneNumber && (
-                      <div className="flex items-center gap-2 text-slate-600">
+                      <div className="flex items-center gap-2 text-slate-500">
                         <Phone className="h-3.5 w-3.5 text-slate-400" />
                         <span>{sub.phoneNumber}</span>
                       </div>
                     )}
                     {sub.mnoProvider && (
                       <div className="flex items-center gap-2">
-                        <Badge variant="outline" className="text-xs text-slate-500 border-slate-200">
+                        <Badge variant="outline" className="text-xs text-slate-500 border-slate-200 rounded-md">
                           {sub.mnoProvider.name}
                         </Badge>
                         {sub.mnoStatus && (
                           <Badge
                             variant="outline"
-                            className={`${STATUS_COLORS[sub.mnoStatus] || 'bg-slate-100 text-slate-600 border-slate-200'} text-xs`}
+                            className={`${STATUS_COLORS[sub.mnoStatus] || 'bg-slate-100 text-slate-600 border-slate-200'} text-xs rounded-md`}
                           >
                             {STATUS_LABELS[sub.mnoStatus] || sub.mnoStatus}
                           </Badge>
@@ -539,7 +547,7 @@ export function UserDashboard() {
                       </div>
                     )}
                     {sub.endDate && (
-                      <p className="text-slate-400 text-xs pt-1 border-t border-slate-100">
+                      <p className="text-slate-400 text-xs pt-2 border-t border-slate-50">
                         {sub.status === 'ACTIVE'
                           ? `Expires in ${daysUntil(sub.endDate)} days`
                           : `Expires ${formatDate(sub.endDate)}`}
@@ -558,15 +566,16 @@ export function UserDashboard() {
       {/* ================================================================= */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <Button
-          className="bg-emerald-600 hover:bg-emerald-700 text-white h-12 font-medium"
+          className="bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-700 hover:to-emerald-600 text-white h-12 font-medium rounded-xl shadow-md shadow-emerald-500/10 group"
           onClick={() => navigate('new-request')}
         >
           <PlusCircle className="h-4 w-4 mr-2" />
           New Service Request
+          <ArrowRight className="h-4 w-4 ml-auto opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all" />
         </Button>
         <Button
           variant="outline"
-          className="border-slate-200 text-slate-700 hover:bg-slate-50 h-12 font-medium"
+          className="border-slate-200 text-slate-700 hover:bg-slate-50 hover:border-slate-300 h-12 font-medium rounded-xl"
           onClick={() => navigate('packages')}
         >
           <Package className="h-4 w-4 mr-2" />

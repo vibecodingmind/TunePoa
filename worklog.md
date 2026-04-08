@@ -293,3 +293,74 @@ Complete rewrite of all 6 user-facing page components with professional quality,
 ### Verification:
 - ESLint: 0 errors
 - Dev server: compiles successfully, all pages render
+
+---
+
+## Task 4-ui-redesign: Premium Glassmorphism UI Redesign
+
+### What was done:
+Complete visual redesign of 7 core UI files to create a world-class, modern, glassy premium SaaS design inspired by Linear, Vercel, and Stripe aesthetics.
+
+### Critical Bug Fix:
+- **Double Site Issue**: The previous `page.tsx` rendered `<LandingPage />` when `!mounted`, causing both the landing page and app layout to flash during hydration. Fixed by replacing with a minimal branded `LoadingScreen` component (centered logo spinner + progress dots) and using `useSyncExternalStore` for hydration-safe mounted detection instead of `useState` + `useEffect`.
+
+### Files Rewritten (7 total):
+
+1. **`src/app/globals.css`** — New utility classes and design system:
+   - **Glassmorphism**: `.glass`, `.glass-strong`, `.glass-subtle`, `.glass-dark`, `.glass-dark-strong`, `.glass-emerald` with backdrop-blur and semi-transparent backgrounds
+   - **Gradient text**: `.gradient-text` (emerald-to-teal), `.gradient-text-warm` (amber)
+   - **Animations**: fadeIn, fadeInUp, fadeInDown, fadeInScale, slideInLeft, slideInRight, shimmer, pulse-glow, float, spin-slow, gradient-shift with staggered delay utilities
+   - **Premium cards**: `.card-premium` (hover lift + shadow + emerald border glow), `.card-premium-static`
+   - **Gradient borders**: `.border-gradient-emerald` using mask-composite technique
+   - **Scrollbar styling**: `.scrollbar-thin`, `.scrollbar-dark` with custom webkit scrollbars
+   - **Background patterns**: `.bg-grid-pattern`, `.bg-dot-pattern`
+   - **Loading screen**: `.animate-logo-pulse` for the branded splash screen
+
+2. **`src/app/page.tsx`** — Branded loading screen + hydration fix:
+   - `LoadingScreen` component: gradient logo icon with pulsing ring, brand name, animated progress dots
+   - `useHydrated()` hook using `useSyncExternalStore` (server returns false, client returns true)
+   - App layout background uses `bg-dot-pattern` for subtle texture
+
+3. **`src/components/tunepoa/sidebar.tsx`** — Dark premium sidebar:
+   - Dark `bg-slate-950` background replacing white
+   - Gradient logo with shadow glow and "Ringback Platform" subtitle
+   - Emerald glass active nav items with chevron indicator
+   - Dark-themed admin badges, gradient bottom accent line
+   - Custom dark scrollbar for nav area
+
+4. **`src/components/tunepoa/topbar.tsx`** — Glass effect topbar:
+   - `glass-strong` class with backdrop-blur-20
+   - Semi-transparent search with emerald focus states
+   - Gradient avatar with role subtitle in dropdown
+   - Notification bell with emerald ring
+
+5. **`src/components/tunepoa/landing-page.tsx`** — Modern glassmorphism landing:
+   - Transparent-to-glass navbar on scroll
+   - Dark animated gradient hero with mesh overlay and grid pattern
+   - Gradient text headline, dot pattern backgrounds
+   - Hover lift on pricing/feature cards
+   - Glass-dark stats bar, dark CTA/footer
+
+6. **`src/components/tunepoa/user-dashboard.tsx`** — Glass stat cards:
+   - `.card-premium` with hidden gradient accent line on hover
+   - Refined typography (uppercase tracking-wider labels)
+   - Gradient quick action button with sliding arrow icon
+
+7. **`src/components/tunepoa/admin-dashboard.tsx`** — Premium admin cards:
+   - `AdminStatCard` with gradient accent lines on hover
+   - Gradient progress bars for revenue charts
+   - Rounded-lg status badges with matching borders
+   - Thin scrollbar activity feed
+
+### Design Decisions:
+- Emerald/teal brand palette maintained, no indigo/blue
+- Tailwind CSS only, no external libraries
+- All functionality preserved (API calls, state, props, exports unchanged)
+- Untouched: login-form.tsx, register-form.tsx, all API routes, db.ts, store.ts, auth.ts, constants.ts
+- Dark sidebar + light content for premium split-layout feel
+- Micro-interactions: hover scale, translate-y, gradient reveal, sliding arrows
+- Staggered entrance animations on grid items
+
+### Verification:
+- ESLint: 0 errors
+- Dev server: compiles successfully, all pages render correctly

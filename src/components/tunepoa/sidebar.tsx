@@ -3,7 +3,6 @@
 import { useStore, useAppStore } from '@/lib/store'
 import { Button } from '@/components/ui/button'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { Separator } from '@/components/ui/separator'
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet'
 import { cn } from '@/lib/utils'
 import {
@@ -20,7 +19,7 @@ import {
   X,
   Shield,
   Music2,
-  CircleDollarSign,
+  ChevronRight,
 } from 'lucide-react'
 
 /* ─── Nav Item Type ─── */
@@ -43,28 +42,28 @@ const navSections: NavSection[] = [
   {
     title: 'Main',
     items: [
-      { id: 'dashboard', label: 'Dashboard', icon: <LayoutDashboard className="h-5 w-5" /> },
-      { id: 'my-requests', label: 'Requests', icon: <FileText className="h-5 w-5" /> },
-      { id: 'subscriptions', label: 'Subscriptions', icon: <CreditCard className="h-5 w-5" /> },
-      { id: 'packages', label: 'Packages', icon: <Package className="h-5 w-5" /> },
-      { id: 'new-request', label: 'New Request', icon: <PlusCircle className="h-5 w-5" /> },
+      { id: 'dashboard', label: 'Dashboard', icon: <LayoutDashboard className="h-[18px] w-[18px]" /> },
+      { id: 'my-requests', label: 'Requests', icon: <FileText className="h-[18px] w-[18px]" /> },
+      { id: 'subscriptions', label: 'Subscriptions', icon: <CreditCard className="h-[18px] w-[18px]" /> },
+      { id: 'packages', label: 'Packages', icon: <Package className="h-[18px] w-[18px]" /> },
+      { id: 'new-request', label: 'New Request', icon: <PlusCircle className="h-[18px] w-[18px]" /> },
     ],
   },
   {
     title: 'Admin',
     items: [
-      { id: 'admin-dashboard', label: 'Dashboard', icon: <BarChart3 className="h-5 w-5" />, adminOnly: true },
-      { id: 'admin-requests', label: 'Requests', icon: <FileText className="h-5 w-5" />, adminOnly: true },
-      { id: 'admin-subscriptions', label: 'Subscriptions', icon: <CreditCard className="h-5 w-5" />, adminOnly: true },
-      { id: 'admin-users', label: 'Users', icon: <Users className="h-5 w-5" />, adminOnly: true },
-      { id: 'admin-packages', label: 'Packages', icon: <Shield className="h-5 w-5" />, adminOnly: true },
-      { id: 'admin-mno', label: 'MNO', icon: <Radio className="h-5 w-5" />, adminOnly: true },
+      { id: 'admin-dashboard', label: 'Dashboard', icon: <BarChart3 className="h-[18px] w-[18px]" />, adminOnly: true },
+      { id: 'admin-requests', label: 'Requests', icon: <FileText className="h-[18px] w-[18px]" />, adminOnly: true },
+      { id: 'admin-subscriptions', label: 'Subscriptions', icon: <CreditCard className="h-[18px] w-[18px]" />, adminOnly: true },
+      { id: 'admin-users', label: 'Users', icon: <Users className="h-[18px] w-[18px]" />, adminOnly: true },
+      { id: 'admin-packages', label: 'Packages', icon: <Shield className="h-[18px] w-[18px]" />, adminOnly: true },
+      { id: 'admin-mno', label: 'MNO', icon: <Radio className="h-[18px] w-[18px]" />, adminOnly: true },
     ],
   },
   {
     title: 'Settings',
     items: [
-      { id: 'settings', label: 'Settings', icon: <Settings className="h-5 w-5" /> },
+      { id: 'settings', label: 'Settings', icon: <Settings className="h-[18px] w-[18px]" /> },
     ],
   },
 ]
@@ -81,20 +80,23 @@ function SidebarContent({ onClose }: { onClose?: () => void }) {
   const showAdminSection = isAdmin || isStudioManager
 
   return (
-    <div className="flex flex-col h-full">
-      {/* Logo */}
-      <div className="flex items-center justify-between px-4 h-16 shrink-0">
-        <div className="flex items-center gap-2.5">
-          <div className="h-9 w-9 rounded-lg bg-emerald-600 flex items-center justify-center">
+    <div className="flex flex-col h-full bg-slate-950">
+      {/* Logo area with gradient accent */}
+      <div className="flex items-center justify-between px-5 h-16 shrink-0">
+        <div className="flex items-center gap-3">
+          <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center shadow-lg shadow-emerald-500/20">
             <Music2 className="h-5 w-5 text-white" />
           </div>
-          <span className="font-bold text-lg text-slate-900 tracking-tight">TunePoa</span>
+          <div>
+            <span className="font-bold text-base text-white tracking-tight">TunePoa</span>
+            <p className="text-[10px] text-slate-500 leading-none -mt-0.5">Ringback Platform</p>
+          </div>
         </div>
         {onClose && (
           <Button
             variant="ghost"
             size="icon"
-            className="lg:hidden text-slate-500"
+            className="lg:hidden text-slate-500 hover:text-white hover:bg-slate-800"
             onClick={onClose}
           >
             <X className="h-5 w-5" />
@@ -102,35 +104,32 @@ function SidebarContent({ onClose }: { onClose?: () => void }) {
         )}
       </div>
 
-      <Separator />
+      {/* Divider with gradient */}
+      <div className="mx-4 h-px bg-gradient-to-r from-transparent via-slate-800 to-transparent" />
 
       {/* User info */}
       <div className="px-4 py-4 shrink-0">
-        <div className="flex items-center gap-3">
-          <div className="h-10 w-10 rounded-full bg-emerald-600 text-white flex items-center justify-center font-semibold text-sm shrink-0">
+        <div className="flex items-center gap-3 p-2 rounded-xl bg-slate-900/80 border border-slate-800/80">
+          <div className="h-9 w-9 rounded-lg bg-gradient-to-br from-emerald-500 to-teal-400 text-white flex items-center justify-center font-semibold text-xs shrink-0 shadow-md shadow-emerald-500/10">
             {currentUser?.name?.charAt(0)?.toUpperCase() || 'U'}
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-semibold text-slate-900 truncate">
+            <p className="text-sm font-medium text-slate-200 truncate">
               {currentUser?.name || 'User'}
             </p>
-            <p className="text-xs text-slate-500 truncate">
+            <p className="text-[11px] text-slate-500 truncate">
               {currentUser?.businessName || currentUser?.email}
             </p>
           </div>
         </div>
       </div>
 
-      <Separator />
-
       {/* Navigation */}
-      <ScrollArea className="flex-1 px-3 py-3">
-        <nav className="space-y-6">
+      <ScrollArea className="flex-1 px-3 py-2 scrollbar-dark">
+        <nav className="space-y-5">
           {navSections.map((section) => {
-            // Filter out admin section for non-admin users
             if (section.title === 'Admin' && !showAdminSection) return null
 
-            // Filter items within admin section for manager-only items
             const items = section.items.filter((item) => {
               if (item.adminOnly && !isAdmin) return false
               if (item.managerOnly && !isAdmin && !isStudioManager) return false
@@ -141,7 +140,7 @@ function SidebarContent({ onClose }: { onClose?: () => void }) {
 
             return (
               <div key={section.title}>
-                <p className="px-3 mb-2 text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+                <p className="px-3 mb-2 text-[10px] font-semibold uppercase tracking-[0.1em] text-slate-600">
                   {section.title}
                 </p>
                 <div className="space-y-0.5">
@@ -152,18 +151,24 @@ function SidebarContent({ onClose }: { onClose?: () => void }) {
                         key={item.id}
                         onClick={() => handleNav(item.id)}
                         className={cn(
-                          'w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors text-left',
+                          'w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] transition-all duration-200 text-left group',
                           isActive
-                            ? 'bg-emerald-50 text-emerald-700 font-medium border-l-[3px] border-emerald-600'
-                            : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900 border-l-[3px] border-transparent'
+                            ? 'bg-emerald-500/10 text-emerald-400 font-medium border border-emerald-500/20 shadow-sm shadow-emerald-500/5'
+                            : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900 border border-transparent'
                         )}
                       >
-                        <span className={cn('shrink-0', isActive ? 'text-emerald-600' : 'text-slate-400')}>
+                        <span className={cn(
+                          'shrink-0 transition-colors duration-200',
+                          isActive ? 'text-emerald-400' : 'text-slate-600 group-hover:text-slate-400'
+                        )}>
                           {item.icon}
                         </span>
                         <span className="flex-1">{item.label}</span>
-                        {item.adminOnly && (
-                          <span className="text-[10px] px-1.5 py-0.5 rounded bg-amber-100 text-amber-700 font-medium">
+                        {isActive && (
+                          <ChevronRight className="h-3.5 w-3.5 text-emerald-500/60" />
+                        )}
+                        {item.adminOnly && !isActive && (
+                          <span className="text-[9px] px-1.5 py-0.5 rounded-md bg-amber-500/10 text-amber-500/80 font-semibold border border-amber-500/10">
                             ADMIN
                           </span>
                         )}
@@ -177,19 +182,23 @@ function SidebarContent({ onClose }: { onClose?: () => void }) {
         </nav>
       </ScrollArea>
 
-      <Separator />
+      {/* Divider */}
+      <div className="mx-4 h-px bg-gradient-to-r from-transparent via-slate-800 to-transparent" />
 
       {/* Logout */}
       <div className="p-3 shrink-0">
         <Button
-          variant="outline"
-          className="w-full text-slate-600 hover:text-red-600 hover:bg-red-50 hover:border-red-200 justify-start gap-2"
+          variant="ghost"
+          className="w-full text-slate-500 hover:text-red-400 hover:bg-red-500/10 justify-start gap-2.5 rounded-xl text-[13px] font-medium transition-colors duration-200"
           onClick={logout}
         >
           <LogOut className="h-4 w-4" />
           Sign Out
         </Button>
       </div>
+
+      {/* Bottom gradient accent */}
+      <div className="h-1 bg-gradient-to-r from-emerald-600 via-teal-500 to-emerald-600 opacity-60" />
     </div>
   )
 }
@@ -201,13 +210,13 @@ export function Sidebar() {
   return (
     <>
       {/* Desktop sidebar - always visible on lg+ */}
-      <aside className="hidden lg:flex lg:flex-col lg:w-64 lg:shrink-0 bg-white border-r border-slate-200 h-screen sticky top-0">
+      <aside className="hidden lg:flex lg:flex-col lg:w-[260px] lg:shrink-0 h-screen sticky top-0 bg-slate-950 border-r border-slate-900">
         <SidebarContent />
       </aside>
 
       {/* Mobile sidebar - Sheet overlay */}
       <Sheet open={isSidebarOpen} onOpenChange={setSidebarOpen}>
-        <SheetContent side="left" className="w-72 p-0">
+        <SheetContent side="left" className="w-72 p-0 bg-slate-950 border-slate-800">
           <SheetHeader className="sr-only">
             <SheetTitle>Navigation Menu</SheetTitle>
           </SheetHeader>
