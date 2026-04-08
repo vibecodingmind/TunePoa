@@ -153,8 +153,7 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
   }
 
   return (
-    <div>
-      {/* Logo and header */}
+    <div className="p-6 sm:p-8">
       <div className="text-center mb-6">
         <div className="inline-flex items-center justify-center h-12 w-12 rounded-xl bg-emerald-600 mb-3">
           <Music2 className="h-7 w-7 text-white" />

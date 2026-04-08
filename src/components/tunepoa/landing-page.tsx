@@ -4,6 +4,10 @@ import { useState, useEffect, useCallback } from 'react'
 import { useStore } from '@/lib/store'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
+import {
+  Dialog,
+  DialogContent,
+} from '@/components/ui/dialog'
 import { Badge } from '@/components/ui/badge'
 import {
   Accordion,
@@ -38,6 +42,7 @@ import {
   ArrowRight,
   Shield,
   Headphones,
+  LogIn,
 } from 'lucide-react'
 
 /* ─── FAQ Data ─── */
@@ -194,6 +199,7 @@ export function LandingPage() {
   const [packagesLoading, setPackagesLoading] = useState(true)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
+  const [authDialogOpen, setAuthDialogOpen] = useState(false)
 
   // Fetch packages from API
   useEffect(() => {
@@ -290,16 +296,17 @@ export function LandingPage() {
                 className="text-slate-600 hover:text-emerald-600"
                 onClick={() => {
                   setAuthMode('login')
-                  scrollTo('auth-section')
+                  setAuthDialogOpen(true)
                 }}
               >
+                <LogIn className="h-4 w-4 mr-1.5" />
                 Sign In
               </Button>
               <Button
                 className="bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm"
                 onClick={() => {
                   setAuthMode('register')
-                  scrollTo('auth-section')
+                  setAuthDialogOpen(true)
                 }}
               >
                 Get Started
@@ -347,7 +354,8 @@ export function LandingPage() {
                   className="flex-1"
                   onClick={() => {
                     setAuthMode('login')
-                    scrollTo('auth-section')
+                    setAuthDialogOpen(true)
+                    setMobileMenuOpen(false)
                   }}
                 >
                   Sign In
@@ -356,7 +364,8 @@ export function LandingPage() {
                   className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white"
                   onClick={() => {
                     setAuthMode('register')
-                    scrollTo('auth-section')
+                    setAuthDialogOpen(true)
+                    setMobileMenuOpen(false)
                   }}
                 >
                   Get Started
@@ -428,7 +437,7 @@ export function LandingPage() {
                 className="bg-white text-emerald-700 hover:bg-emerald-50 font-semibold text-base px-8 h-12 rounded-xl shadow-lg"
                 onClick={() => {
                   setAuthMode('register')
-                  scrollTo('auth-section')
+                  setAuthDialogOpen(true)
                 }}
               >
                 Get Started Free
@@ -649,7 +658,7 @@ export function LandingPage() {
                         }`}
                         onClick={() => {
                           setAuthMode('register')
-                          scrollTo('auth-section')
+                          setAuthDialogOpen(true)
                         }}
                       >
                         Get Started
@@ -778,7 +787,7 @@ export function LandingPage() {
             className="bg-white text-emerald-700 hover:bg-emerald-50 font-semibold text-base px-10 h-12 rounded-xl shadow-lg"
             onClick={() => {
               setAuthMode('register')
-              scrollTo('auth-section')
+              setAuthDialogOpen(true)
             }}
           >
             Get Started Now
@@ -787,20 +796,16 @@ export function LandingPage() {
         </div>
       </section>
 
-      {/* ─── AUTH SECTION ─── */}
-      <section id="auth-section" className="py-20 sm:py-24 bg-slate-50">
-        <div className="max-w-md mx-auto px-4">
-          <Card className="shadow-lg border-0">
-            <CardContent className="p-6 sm:p-8">
-              {authMode === 'login' ? (
-                <LoginForm onSwitchToRegister={() => setAuthMode('register')} />
-              ) : (
-                <RegisterForm onSwitchToLogin={() => setAuthMode('login')} />
-              )}
-            </CardContent>
-          </Card>
-        </div>
-      </section>
+      {/* ─── AUTH DIALOG (popup from navbar / CTAs) ─── */}
+      <Dialog open={authDialogOpen} onOpenChange={setAuthDialogOpen}>
+        <DialogContent className="sm:max-w-md p-0 gap-0 overflow-hidden border-0 shadow-2xl">
+          {authMode === 'login' ? (
+            <LoginForm onSwitchToRegister={() => setAuthMode('register')} />
+          ) : (
+            <RegisterForm onSwitchToLogin={() => setAuthMode('login')} />
+          )}
+        </DialogContent>
+      </Dialog>
 
       {/* ─── I. FOOTER ─── */}
       <footer id="footer" className="bg-slate-900 text-slate-400">

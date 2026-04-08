@@ -80,7 +80,7 @@ export function LoginForm({ onSwitchToRegister }: LoginFormProps) {
   }
 
   return (
-    <div>
+    <div className="p-6 sm:p-8">
       {/* Logo and header */}
       <div className="text-center mb-6">
         <div className="inline-flex items-center justify-center h-12 w-12 rounded-xl bg-emerald-600 mb-3">
