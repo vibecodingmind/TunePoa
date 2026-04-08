@@ -136,7 +136,7 @@ export async function POST(request: NextRequest) {
     // Create pricing tiers (from user's pricing module)
     const tier1_10 = await db.pricingTier.create({
       data: {
-        name: '1-10',
+        name: 'Starter',
         minUsers: 1,
         maxUsers: 10,
         price1Month: 15000,
@@ -150,7 +150,7 @@ export async function POST(request: NextRequest) {
 
     const tier11_25 = await db.pricingTier.create({
       data: {
-        name: '11-25',
+        name: 'Growth',
         minUsers: 11,
         maxUsers: 25,
         price1Month: 14000,
@@ -164,7 +164,7 @@ export async function POST(request: NextRequest) {
 
     const tier25_50 = await db.pricingTier.create({
       data: {
-        name: '25-50',
+        name: 'Business',
         minUsers: 26,
         maxUsers: 50,
         price1Month: 13000,
@@ -178,7 +178,7 @@ export async function POST(request: NextRequest) {
 
     const tier50plus = await db.pricingTier.create({
       data: {
-        name: '50+',
+        name: 'Enterprise',
         minUsers: 51,
         maxUsers: 999,
         price1Month: 12000,
@@ -199,9 +199,19 @@ export async function POST(request: NextRequest) {
           label: 'Audio Recording Price (TZS) — Bei ya kurekordi sauti',
         },
         {
-          key: 'starter_package_price',
-          value: '30000',
-          label: 'Starter Package Price (TZS) — Kifurushi cha Kuanzia',
+          key: 'starter_package_basic',
+          value: '50000',
+          label: 'Starter Basic Package (TZS) — 1 number, 1 month, includes audio recording',
+        },
+        {
+          key: 'starter_package_standard',
+          value: '120000',
+          label: 'Starter Standard Package (TZS) — 5 numbers, 3 months, includes audio recording',
+        },
+        {
+          key: 'starter_package_premium',
+          value: '250000',
+          label: 'Starter Premium Package (TZS) — 10 numbers, 6 months, includes audio recording, dedicated support',
         },
       ],
     })

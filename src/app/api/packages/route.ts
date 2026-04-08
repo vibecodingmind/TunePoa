@@ -19,6 +19,11 @@ export async function GET() {
     return success({ packages })
   } catch (err) {
     console.error('Get packages error:', err)
+    const msg = err instanceof Error ? err.message : String(err)
+    // If table doesn't exist, return empty list gracefully
+    if (msg.includes('_prisma') || msg.includes('relation') || msg.includes('table') || msg.includes('does not exist')) {
+      return success({ packages: [], needsSetup: true })
+    }
     return error('Internal server error', 500)
   }
 }

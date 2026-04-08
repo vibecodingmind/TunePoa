@@ -56,6 +56,49 @@ export const STATUS_COLORS: Record<string, string> = {
   FINAL: 'bg-blue-100 text-blue-800 border-blue-200',
 }
 
+// Starter subscription packages with fixed pricing
+export const STARTER_PACKAGES = [
+  {
+    key: 'starter_package_basic',
+    name: 'Starter Basic',
+    price: 50000,
+    description: 'Perfect for small businesses just getting started with ringback tone advertising.',
+    features: ['1 phone number', '1 month subscription', 'Audio recording included', '15-second ad duration', 'Email support', 'Basic analytics'],
+    icon: 'Sparkles' as const,
+    color: 'emerald' as const,
+    popular: false,
+    userCount: 1,
+    durationMonths: 1,
+    includesAudio: true,
+  },
+  {
+    key: 'starter_package_standard',
+    name: 'Starter Standard',
+    price: 120000,
+    description: 'Great for growing businesses wanting to reach more customers through ringback tones.',
+    features: ['5 phone numbers', '3 months subscription', 'Audio recording included', '30-second ad duration', 'Priority support', 'Weekly analytics', 'Multi-network support'],
+    icon: 'Zap' as const,
+    color: 'blue' as const,
+    popular: true,
+    userCount: 5,
+    durationMonths: 3,
+    includesAudio: true,
+  },
+  {
+    key: 'starter_package_premium',
+    name: 'Starter Premium',
+    price: 250000,
+    description: 'Best value for businesses serious about maximizing brand awareness and reach.',
+    features: ['10 phone numbers', '6 months subscription', 'Audio recording included', '45-second ad duration', 'Dedicated support manager', 'Daily analytics', 'All networks supported', 'A/B testing', 'Priority activation'],
+    icon: 'Crown' as const,
+    color: 'violet' as const,
+    popular: false,
+    userCount: 10,
+    durationMonths: 6,
+    includesAudio: true,
+  },
+] as const
+
 export const PACKAGE_FEATURES: Record<string, string[]> = {
   Bronze: ['15-second ad duration', 'Single phone number', 'Basic ad script', 'WhatsApp verification', 'Email support', 'Monthly report'],
   Silver: ['30-second ad duration', 'Up to 2 phone numbers', 'Custom ad script', 'Professional voice-over', 'WhatsApp verification', 'Priority support', 'Monthly report'],

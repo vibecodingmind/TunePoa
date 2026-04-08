@@ -13,6 +13,11 @@ export async function GET() {
     return success({ tiers })
   } catch (err) {
     console.error('Get pricing tiers error:', err)
+    const msg = err instanceof Error ? err.message : String(err)
+    // If table doesn't exist, return a helpful message
+    if (msg.includes('_prisma') || msg.includes('relation') || msg.includes('table') || msg.includes('does not exist')) {
+      return success({ tiers: [], needsSetup: true })
+    }
     return error('Internal server error', 500)
   }
 }

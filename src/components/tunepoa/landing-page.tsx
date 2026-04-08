@@ -48,6 +48,8 @@ import {
   Globe,
   Clock,
   Users,
+  Calculator,
+  Crown,
 } from 'lucide-react'
 
 /* ─── FAQ Data ─── */
@@ -229,39 +231,81 @@ const footerServices = [
 ]
 
 export function LandingPage() {
-  const { isAuthenticated, authMode, setAuthMode } = useStore()
+  const { isAuthenticated, navigate, authMode, setAuthMode } = useStore()
   const [packages, setPackages] = useState<PackageData[]>([])
   const [packagesLoading, setPackagesLoading] = useState(true)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const [authDialogOpen, setAuthDialogOpen] = useState(false)
 
-  // Fetch packages from API
+  // Fetch packages from API — auto-seed if database is empty
   useEffect(() => {
-    fetch('/api/packages')
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.success && Array.isArray(data.data)) {
-          setPackages(
-            data.data
-              .filter((p: PackageData) => p.isActive)
-              .map((p: PackageData & { features?: string }) => ({
-                ...p,
-                features:
-                  typeof p.features === 'string'
-                    ? JSON.parse(p.features)
-                    : Array.isArray(p.features)
-                      ? p.features
-                      : [],
-              }))
-              .sort((a: PackageData, b: PackageData) => a.price - b.price),
-          )
+    let cancelled = false
+
+    async function loadPackages() {
+      try {
+        const res = await fetch('/api/packages')
+        const data = await res.json()
+
+        // Check if database needs seeding (empty response or needsSetup flag)
+        if (data.needsSetup || (data.success && Array.isArray(data.data) && data.data.length === 0)) {
+          console.log('Database appears empty, triggering auto-seed...')
+          try {
+            const seedRes = await fetch('/api/seed', { method: 'POST' })
+            const seedData = await seedRes.json()
+            if (seedData.success) {
+              console.log('Auto-seed successful, re-fetching packages...')
+              const retryRes = await fetch('/api/packages')
+              const retryData = await retryRes.json()
+              if (!cancelled && retryData.success && Array.isArray(retryData.data)) {
+                setPackages(
+                  retryData.data
+                    .filter((p: PackageData) => p.isActive)
+                    .map((p: PackageData & { features?: string }) => ({
+                      ...p,
+                      features:
+                        typeof p.features === 'string'
+                          ? JSON.parse(p.features)
+                          : Array.isArray(p.features)
+                            ? p.features
+                            : [],
+                    }))
+                    .sort((a: PackageData, b: PackageData) => a.price - b.price),
+                )
+              }
+            } else {
+              console.warn('Auto-seed failed:', seedData.error)
+            }
+          } catch (seedErr) {
+            console.warn('Auto-seed request failed:', seedErr)
+          }
+        } else if (data.success && Array.isArray(data.data)) {
+          if (!cancelled) {
+            setPackages(
+              data.data
+                .filter((p: PackageData) => p.isActive)
+                .map((p: PackageData & { features?: string }) => ({
+                  ...p,
+                  features:
+                    typeof p.features === 'string'
+                      ? JSON.parse(p.features)
+                      : Array.isArray(p.features)
+                        ? p.features
+                        : [],
+                }))
+                .sort((a: PackageData, b: PackageData) => a.price - b.price),
+            )
+          }
         }
-      })
-      .catch(() => {
-        // Silently fail -- pricing section will show skeletons
-      })
-      .finally(() => setPackagesLoading(false))
+      } catch {
+        // Silently fail -- pricing section will show static packages
+      } finally {
+        if (!cancelled) setPackagesLoading(false)
+      }
+    }
+
+    loadPackages()
+    return () => { cancelled = true }
   }, [])
 
   // Scroll helper
@@ -638,18 +682,14 @@ export function LandingPage() {
       </section>
 
       {/* ════════════════════════════════════════════════════════════════
-          PRICING
+          PRICING — Starter Packages + Custom Calculator
           ════════════════════════════════════════════════════════════════ */}
       <section id="pricing" className="py-24 sm:py-32 relative overflow-hidden">
         {/* Dark dramatic background */}
         <div className="absolute inset-0 bg-gradient-to-b from-slate-50 via-slate-900/95 to-slate-900" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(16,185,129,0.08),transparent_50%)]" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,rgba(20,184,166,0.06),transparent_50%)]" />
-
-        {/* Subtle grid */}
         <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.015)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.015)_1px,transparent_1px)] bg-[size:60px_60px]" />
-
-        {/* Floating orbs */}
         <div className="absolute top-20 left-[15%] w-[400px] h-[400px] bg-emerald-500/[0.04] rounded-full blur-[100px]" />
         <div className="absolute bottom-10 right-[10%] w-[300px] h-[300px] bg-teal-400/[0.05] rounded-full blur-[80px]" />
 
@@ -658,19 +698,189 @@ export function LandingPage() {
           <div className="text-center mb-16">
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 text-emerald-400 text-[11px] font-bold uppercase tracking-[0.15em] mb-5 border border-emerald-500/20 backdrop-blur-sm">
               <Wallet className="h-3.5 w-3.5" />
-              Service Pricing
+              Pricing Plans
             </div>
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white mb-5 tracking-tight">
-              Simple, Transparent Pricing
+              Choose Your Perfect Plan
             </h2>
-            <p className="text-slate-400 max-w-xl mx-auto text-base sm:text-lg leading-relaxed">
-              No hidden fees. No long-term contracts. All prices in Tanzanian Shillings.
+            <p className="text-slate-400 max-w-2xl mx-auto text-base sm:text-lg leading-relaxed">
+              All-inclusive starter packages with everything you need. Or build a custom plan with our pricing calculator below. No hidden fees, no long-term contracts.
             </p>
+          </div>
+
+          {/* ── Starter Package Cards ── */}
+          <div className="grid md:grid-cols-3 gap-6 lg:gap-8 mb-20">
+            {/* Starter Basic */}
+            <div className="group relative rounded-2xl bg-gradient-to-b from-white/[0.08] to-white/[0.03] border border-white/[0.08] backdrop-blur-sm p-8 hover:border-emerald-500/30 transition-all duration-500 hover:-translate-y-1 hover:shadow-2xl hover:shadow-emerald-500/10">
+              <div className="h-1.5 w-16 rounded-full bg-gradient-to-r from-emerald-500 to-teal-400 mb-6" />
+              <div className="flex items-center gap-3 mb-4">
+                <div className="h-12 w-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center">
+                  <Sparkles className="h-6 w-6 text-emerald-400" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-white">Starter Basic</h3>
+                  <p className="text-xs text-slate-400">For individuals & sole traders</p>
+                </div>
+              </div>
+              <div className="mb-6">
+                <div className="flex items-baseline gap-1">
+                  <span className="text-4xl font-extrabold text-white tracking-tight">50,000</span>
+                  <span className="text-sm font-medium text-slate-400 ml-1">TZS</span>
+                </div>
+                <p className="text-xs text-slate-500 mt-1">One-time payment · 1 month</p>
+              </div>
+              <p className="text-sm text-slate-400 leading-relaxed mb-6">
+                Perfect for small businesses just getting started with ringback tone advertising. Includes everything you need to go live.
+              </p>
+              <ul className="space-y-3 mb-8">
+                {['1 phone number', '1 month subscription', 'Audio recording included', '15-second ad duration', 'Email support', 'Basic analytics'].map((f) => (
+                  <li key={f} className="flex items-center gap-2.5 text-sm text-slate-300">
+                    <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0" />
+                    {f}
+                  </li>
+                ))}
+              </ul>
+              <button
+                onClick={() => {
+                  if (!isAuthenticated) {
+                    window.dispatchEvent(new CustomEvent('open-auth', { detail: 'register' }))
+                  } else {
+                    navigate('packages')
+                  }
+                }}
+                className="w-full py-3.5 rounded-xl bg-white/[0.08] border border-white/[0.12] text-white font-semibold text-sm hover:bg-emerald-500 hover:border-emerald-500 transition-all duration-300 hover:shadow-lg hover:shadow-emerald-500/25"
+              >
+                Get Started
+              </button>
+            </div>
+
+            {/* Starter Standard — Popular */}
+            <div className="group relative rounded-2xl overflow-hidden">
+              {/* Animated gradient border */}
+              <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-blue-500 via-emerald-500 to-teal-500 animate-gradient p-[2px]">
+                <div className="w-full h-full rounded-2xl bg-gradient-to-b from-slate-900 via-slate-900/98 to-slate-900" />
+              </div>
+              {/* Popular badge */}
+              <div className="absolute top-0 right-0 z-10">
+                <div className="flex items-center gap-1 px-3 py-1.5 bg-gradient-to-r from-amber-500 to-orange-500 text-white text-[10px] font-extrabold uppercase tracking-widest rounded-bl-xl shadow-lg shadow-amber-500/30">
+                  <Star className="h-3 w-3" />
+                  Most Popular
+                </div>
+              </div>
+              <div className="relative p-8">
+                <div className="h-1.5 w-16 rounded-full bg-gradient-to-r from-blue-500 to-emerald-400 mb-6" />
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="h-12 w-12 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center">
+                    <Zap className="h-6 w-6 text-blue-400" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-bold text-white">Starter Standard</h3>
+                    <p className="text-xs text-slate-400">For growing businesses</p>
+                  </div>
+                </div>
+                <div className="mb-6">
+                  <div className="flex items-baseline gap-1">
+                    <span className="text-4xl font-extrabold text-white tracking-tight">120,000</span>
+                    <span className="text-sm font-medium text-slate-400 ml-1">TZS</span>
+                  </div>
+                  <div className="flex items-center gap-2 mt-1">
+                    <p className="text-xs text-slate-500">One-time payment · 3 months</p>
+                    <span className="px-2 py-0.5 rounded-md bg-emerald-500/10 border border-emerald-500/20 text-[10px] font-bold text-emerald-400 uppercase">Save 20%</span>
+                  </div>
+                </div>
+                <p className="text-sm text-slate-400 leading-relaxed mb-6">
+                  Great for growing businesses wanting to reach more customers through ringback tones on multiple numbers.
+                </p>
+                <ul className="space-y-3 mb-8">
+                  {['5 phone numbers', '3 months subscription', 'Audio recording included', '30-second ad duration', 'Priority support', 'Weekly analytics', 'Multi-network support'].map((f) => (
+                    <li key={f} className="flex items-center gap-2.5 text-sm text-slate-300">
+                      <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0" />
+                      {f}
+                    </li>
+                  ))}
+                </ul>
+                <button
+                  onClick={() => {
+                    if (!isAuthenticated) {
+                      window.dispatchEvent(new CustomEvent('open-auth', { detail: 'register' }))
+                    } else {
+                      navigate('packages')
+                    }
+                  }}
+                  className="w-full py-3.5 rounded-xl bg-gradient-to-r from-blue-500 to-emerald-500 text-white font-semibold text-sm hover:from-blue-600 hover:to-emerald-600 transition-all duration-300 shadow-lg shadow-blue-500/25 hover:shadow-xl hover:shadow-emerald-500/30 hover:-translate-y-0.5"
+                >
+                  Get Started
+                </button>
+              </div>
+            </div>
+
+            {/* Starter Premium */}
+            <div className="group relative rounded-2xl bg-gradient-to-b from-white/[0.08] to-white/[0.03] border border-white/[0.08] backdrop-blur-sm p-8 hover:border-violet-500/30 transition-all duration-500 hover:-translate-y-1 hover:shadow-2xl hover:shadow-violet-500/10">
+              <div className="h-1.5 w-16 rounded-full bg-gradient-to-r from-violet-500 to-purple-400 mb-6" />
+              <div className="flex items-center gap-3 mb-4">
+                <div className="h-12 w-12 rounded-xl bg-violet-500/10 border border-violet-500/20 flex items-center justify-center">
+                  <Crown className="h-6 w-6 text-violet-400" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-white">Starter Premium</h3>
+                  <p className="text-xs text-slate-400">For serious brand builders</p>
+                </div>
+              </div>
+              <div className="mb-6">
+                <div className="flex items-baseline gap-1">
+                  <span className="text-4xl font-extrabold text-white tracking-tight">250,000</span>
+                  <span className="text-sm font-medium text-slate-400 ml-1">TZS</span>
+                </div>
+                <div className="flex items-center gap-2 mt-1">
+                  <p className="text-xs text-slate-500">One-time payment · 6 months</p>
+                  <span className="px-2 py-0.5 rounded-md bg-violet-500/10 border border-violet-500/20 text-[10px] font-bold text-violet-400 uppercase">Save 33%</span>
+                </div>
+              </div>
+              <p className="text-sm text-slate-400 leading-relaxed mb-6">
+                Best value for businesses serious about maximizing brand awareness and reach across all networks.
+              </p>
+              <ul className="space-y-3 mb-8">
+                {['10 phone numbers', '6 months subscription', 'Audio recording included', '45-second ad duration', 'Dedicated support manager', 'Daily analytics', 'All networks supported', 'A/B testing', 'Priority activation'].map((f) => (
+                  <li key={f} className="flex items-center gap-2.5 text-sm text-slate-300">
+                    <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0" />
+                    {f}
+                  </li>
+                ))}
+              </ul>
+              <button
+                onClick={() => {
+                  if (!isAuthenticated) {
+                    window.dispatchEvent(new CustomEvent('open-auth', { detail: 'register' }))
+                  } else {
+                    navigate('packages')
+                  }
+                }}
+                className="w-full py-3.5 rounded-xl bg-white/[0.08] border border-white/[0.12] text-white font-semibold text-sm hover:bg-violet-500 hover:border-violet-500 transition-all duration-300 hover:shadow-lg hover:shadow-violet-500/25"
+              >
+                Get Started
+              </button>
+            </div>
+          </div>
+
+          {/* ── Custom Pricing Calculator ── */}
+          <div className="mb-12">
+            <div className="text-center mb-10">
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/[0.06] text-slate-300 text-[11px] font-bold uppercase tracking-[0.15em] mb-4 border border-white/[0.08]">
+                <Calculator className="h-3.5 w-3.5" />
+                Custom Pricing
+              </div>
+              <h3 className="text-2xl sm:text-3xl font-extrabold text-white mb-3 tracking-tight">
+                Need a Custom Plan?
+              </h3>
+              <p className="text-slate-400 max-w-lg mx-auto text-sm sm:text-base leading-relaxed">
+                Calculate the exact price based on your number of users and preferred duration. Volume discounts apply automatically.
+              </p>
+            </div>
           </div>
 
           <PricingCalculator mode="landing" isAuthenticated={isAuthenticated} />
 
-          <div className="mt-16 flex flex-wrap items-center justify-center gap-6 text-sm text-slate-500">
+          <div className="mt-16 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-sm text-slate-500">
             <div className="flex items-center gap-2">
               <CheckCircle2 className="h-4 w-4 text-emerald-500" />
               <span>No setup fees</span>
@@ -686,6 +896,10 @@ export function LandingPage() {
             <div className="flex items-center gap-2">
               <CheckCircle2 className="h-4 w-4 text-emerald-500" />
               <span>WhatsApp support</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <CheckCircle2 className="h-4 w-4 text-emerald-500" />
+              <span>All TZ prices</span>
             </div>
           </div>
         </div>
