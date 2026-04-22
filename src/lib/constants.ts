@@ -21,17 +21,16 @@ export const STATUS_LABELS: Record<string, string> = {
 }
 
 export const STATUS_COLORS: Record<string, string> = {
-  PENDING: 'bg-yellow-100 text-yellow-800 border-yellow-200',
-  APPROVED: 'bg-tp-100 text-tp-800 border-tp-200',
-  REJECTED: 'bg-red-100 text-red-800 border-red-200',
-  ACTIVE: 'bg-tp-100 text-tp-800 border-tp-200',
-  EXPIRED: 'bg-gray-100 text-gray-800 border-gray-200',
-  CANCELLED: 'bg-red-100 text-red-800 border-red-200',
-  SUSPENDED: 'bg-orange-100 text-orange-800 border-orange-200',
-  UNPAID: 'bg-yellow-100 text-yellow-800 border-yellow-200',
-  PAID: 'bg-tp-100 text-tp-800 border-tp-200',
-  OVERDUE: 'bg-red-100 text-red-800 border-red-200',
-
+  PENDING: 'bg-amber-500/15 text-amber-400 border-amber-500/25',
+  APPROVED: 'bg-emerald-500/15 text-emerald-400 border-emerald-500/25',
+  REJECTED: 'bg-red-500/15 text-red-400 border-red-500/25',
+  ACTIVE: 'bg-teal-500/15 text-teal-400 border-teal-500/25',
+  EXPIRED: 'bg-slate-500/15 text-slate-400 border-slate-500/25',
+  CANCELLED: 'bg-red-500/15 text-red-400 border-red-500/25',
+  SUSPENDED: 'bg-orange-500/15 text-orange-400 border-orange-500/25',
+  UNPAID: 'bg-amber-500/15 text-amber-400 border-amber-500/25',
+  PAID: 'bg-teal-500/15 text-teal-400 border-teal-500/25',
+  OVERDUE: 'bg-red-500/15 text-red-400 border-red-500/25',
 }
 
 // Starter subscription packages with fixed pricing

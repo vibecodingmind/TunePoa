@@ -62,7 +62,6 @@ const settingsNavItems: NavItem[] = [
 /* ─── Sidebar Content (shared between desktop and mobile) ─── */
 function SidebarContent({ onClose }: { onClose?: () => void }) {
   const { currentUser, currentView, navigate, logout, isAdmin } = useAppStore()
-  const { theme } = useStore()
 
   const handleNav = (viewId: string) => {
     navigate(viewId as ViewId)
@@ -77,21 +76,21 @@ function SidebarContent({ onClose }: { onClose?: () => void }) {
     : [{ title: 'Main', items: userNavItems }, { title: 'Settings', items: settingsNavItems }]
 
   return (
-    <div className="flex flex-col h-full bg-white dark:bg-slate-900">
+    <div className="flex flex-col h-full">
       {/* Logo area */}
       <div className="flex items-center justify-between px-5 h-16 shrink-0">
         <div className="flex items-center gap-3">
           <Image src="/logo-mark-36.png" alt="TunePoa" width={36} height={36} className="rounded-lg shadow-md" />
           <div>
-            <span className="font-bold text-base text-slate-900 dark:text-white tracking-tight">TunePoa</span>
-            <p className="text-[10px] text-slate-400 dark:text-slate-500 leading-none -mt-0.5">Ringback Platform</p>
+            <span className="font-bold text-base text-white tracking-tight">TunePoa</span>
+            <p className="text-[10px] text-slate-500 leading-none -mt-0.5">Ringback Platform</p>
           </div>
         </div>
         {onClose && (
           <Button
             variant="ghost"
             size="icon"
-            className="lg:hidden text-slate-400 hover:text-slate-700 dark:text-slate-500 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800"
+            className="lg:hidden text-slate-400 hover:text-slate-200 hover:bg-white/5"
             onClick={onClose}
           >
             <X className="h-5 w-5" />
@@ -100,22 +99,22 @@ function SidebarContent({ onClose }: { onClose?: () => void }) {
       </div>
 
       {/* Divider */}
-      <div className="mx-4 h-px bg-slate-100 dark:bg-slate-800" />
+      <div className="mx-4 h-px bg-white/[0.06]" />
 
       {/* User info card */}
       <div className="px-4 py-4 shrink-0">
-        <div className="flex items-center gap-3 p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700/60">
+        <div className="flex items-center gap-3 p-3 rounded-xl bg-teal-500/10 border border-teal-500/15">
           <div className="relative shrink-0">
             <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-tp-500 to-ts-400 text-white flex items-center justify-center font-semibold text-sm shadow-md shadow-tp-500/15">
               {currentUser?.name?.charAt(0)?.toUpperCase() || 'U'}
             </div>
-            <div className="absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full bg-tp-500 border-2 border-white dark:border-slate-800" />
+            <div className="absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full bg-tp-500 border-2 border-[#081426]" />
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-semibold text-slate-800 dark:text-slate-100 truncate">
+            <p className="text-sm font-semibold text-slate-100 truncate">
               {currentUser?.name || 'User'}
             </p>
-            <p className="text-[11px] text-slate-400 dark:text-slate-500 truncate">
+            <p className="text-[11px] text-slate-500 truncate">
               {currentUser?.businessName || currentUser?.email}
             </p>
           </div>
@@ -135,7 +134,7 @@ function SidebarContent({ onClose }: { onClose?: () => void }) {
 
             return (
               <div key={section.title}>
-                <p className="px-3 mb-2 text-[10px] font-semibold uppercase tracking-[0.1em] text-slate-400 dark:text-slate-500">
+                <p className="px-3 mb-2 text-[10px] font-semibold uppercase tracking-[0.1em] text-slate-500">
                   {section.title}
                 </p>
                 <div className="space-y-0.5">
@@ -148,24 +147,24 @@ function SidebarContent({ onClose }: { onClose?: () => void }) {
                         className={cn(
                           'w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] transition-all duration-200 text-left group',
                           isActive
-                            ? 'bg-tp-500/10 dark:bg-tp-500/15 text-tp-600 dark:text-tp-400 font-medium border border-tp-500/20 shadow-sm shadow-tp-500/5'
-                            : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-tp-50 dark:hover:bg-tp-900/30 border border-transparent'
+                            ? 'bg-teal-500/15 text-teal-400 font-medium border border-teal-500/20 shadow-sm shadow-teal-500/5'
+                            : 'text-slate-400 hover:text-slate-200 hover:bg-white/5 border border-transparent'
                         )}
                       >
                         <span className={cn(
                           'shrink-0 transition-colors duration-200',
                           isActive
-                            ? 'text-tp-600 dark:text-tp-400'
-                            : 'text-slate-400 dark:text-slate-500 group-hover:text-slate-600 dark:group-hover:text-slate-300'
+                            ? 'text-teal-400'
+                            : 'text-slate-500 group-hover:text-slate-300'
                         )}>
                           {item.icon}
                         </span>
                         <span className="flex-1">{item.label}</span>
                         {isActive && (
-                          <ChevronRight className="h-3.5 w-3.5 text-tp-500/60" />
+                          <ChevronRight className="h-3.5 w-3.5 text-teal-500/60" />
                         )}
                         {item.adminOnly && !isActive && (
-                          <span className="text-[9px] px-1.5 py-0.5 rounded-md bg-amber-50 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400 font-semibold border border-amber-200/60 dark:border-amber-500/20">
+                          <span className="text-[9px] px-1.5 py-0.5 rounded-md bg-teal-500/10 text-teal-400 font-semibold border border-teal-500/20">
                             ADMIN
                           </span>
                         )}
@@ -180,13 +179,13 @@ function SidebarContent({ onClose }: { onClose?: () => void }) {
       </ScrollArea>
 
       {/* Divider */}
-      <div className="mx-4 h-px bg-slate-100 dark:bg-slate-800" />
+      <div className="mx-4 h-px bg-white/[0.06]" />
 
       {/* Sign out */}
       <div className="p-3 shrink-0">
         <Button
           variant="ghost"
-          className="w-full text-slate-500 dark:text-slate-400 hover:text-red-500 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/10 justify-start gap-2.5 rounded-xl text-[13px] font-medium transition-colors duration-200"
+          className="w-full text-slate-400 hover:text-red-400 hover:bg-red-500/10 justify-start gap-2.5 rounded-xl text-[13px] font-medium transition-colors duration-200"
           onClick={logout}
         >
           <LogOut className="h-4 w-4" />
@@ -195,7 +194,7 @@ function SidebarContent({ onClose }: { onClose?: () => void }) {
       </div>
 
       {/* Bottom brand accent bar */}
-      <div className="h-1 bg-gradient-to-r from-tp-500 via-ts-400 to-tp-500 opacity-70 dark:opacity-50" />
+      <div className="h-1 bg-gradient-to-r from-teal-500 via-cyan-400 to-teal-500 opacity-50" />
     </div>
   )
 }
@@ -207,13 +206,13 @@ export function Sidebar() {
   return (
     <>
       {/* Desktop sidebar - always visible on lg+ */}
-      <aside className="hidden lg:flex lg:flex-col lg:w-[260px] lg:shrink-0 h-screen sticky top-0 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800">
+      <aside className="hidden lg:flex lg:flex-col lg:w-[260px] lg:shrink-0 h-screen sticky top-0 glass-sidebar">
         <SidebarContent />
       </aside>
 
       {/* Mobile sidebar - Sheet overlay */}
       <Sheet open={isSidebarOpen} onOpenChange={setSidebarOpen}>
-        <SheetContent side="left" className="w-72 p-0 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800">
+        <SheetContent side="left" className="w-72 p-0 glass-sidebar border-none">
           <SheetHeader className="sr-only">
             <SheetTitle>Navigation Menu</SheetTitle>
           </SheetHeader>

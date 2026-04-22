@@ -22,7 +22,7 @@ import Image from 'next/image'
 /* ─── Branded Loading Screen ─── */
 function LoadingScreen() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-950">
+    <div className="min-h-screen flex items-center justify-center bg-[#0a1628]">
       <div className="flex flex-col items-center gap-5 animate-fade-in-scale">
         {/* Logo */}
         <div className="relative">
@@ -30,18 +30,18 @@ function LoadingScreen() {
             <Image src="/logo-mark-64.png" alt="TunePoa" width={64} height={64} className="rounded-xl" />
           </div>
           {/* Orbiting ring */}
-          <div className="absolute -inset-3 rounded-3xl border-2 border-tp-200/50 animate-spin-slow" />
+          <div className="absolute -inset-3 rounded-3xl border-2 border-teal-500/30 animate-spin-slow" />
         </div>
         {/* Brand name */}
         <div className="text-center">
-          <h1 className="text-xl font-bold text-slate-900 tracking-tight">TunePoa</h1>
-          <p className="text-sm text-slate-400 mt-0.5">Loading your experience...</p>
+          <h1 className="text-xl font-bold text-white tracking-tight">TunePoa</h1>
+          <p className="text-sm text-slate-500 mt-0.5">Loading your experience...</p>
         </div>
         {/* Progress dots */}
         <div className="flex gap-1.5">
-          <span className="h-1.5 w-1.5 rounded-full bg-tp-500 animate-bounce" style={{ animationDelay: '0ms' }} />
-          <span className="h-1.5 w-1.5 rounded-full bg-tp-400 animate-bounce" style={{ animationDelay: '150ms' }} />
-          <span className="h-1.5 w-1.5 rounded-full bg-ts-500 animate-bounce" style={{ animationDelay: '300ms' }} />
+          <span className="h-1.5 w-1.5 rounded-full bg-teal-500 animate-bounce" style={{ animationDelay: '0ms' }} />
+          <span className="h-1.5 w-1.5 rounded-full bg-teal-400 animate-bounce" style={{ animationDelay: '150ms' }} />
+          <span className="h-1.5 w-1.5 rounded-full bg-cyan-400 animate-bounce" style={{ animationDelay: '300ms' }} />
         </div>
       </div>
     </div>
@@ -110,7 +110,7 @@ function ViewRouter() {
 /* ─── Authenticated App Layout ─── */
 function AppLayout() {
   return (
-    <div className="min-h-screen flex bg-slate-50 dark:bg-slate-950 bg-dot-pattern">
+    <div className="min-h-screen flex bg-[#0a1628] bg-dot-pattern">
       <Sidebar />
       <div className="flex-1 flex flex-col min-w-0">
         <Topbar />

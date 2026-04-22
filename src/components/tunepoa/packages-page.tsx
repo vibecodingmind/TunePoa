@@ -88,12 +88,12 @@ const TIER_STYLES = [
     gradient: 'from-tp-500 to-ts-400',
     shadow: 'shadow-tp-500/20',
     ring: 'ring-tp-500/30',
-    bgLight: 'bg-tp-50',
+    bgLight: 'bg-teal-500/10',
     bgDark: 'dark:bg-tp-950/40',
     borderLight: 'border-tp-200',
     borderDark: 'dark:border-tp-800/50',
     icon: Crown,
-    iconBg: 'bg-tp-500',
+    iconBg: 'bg-teal-500/100',
     label: 'Starter',
   },
   {
@@ -114,7 +114,7 @@ const TIER_STYLES = [
     ring: 'ring-violet-500/30',
     bgLight: 'bg-violet-50',
     bgDark: 'dark:bg-violet-950/40',
-    borderLight: 'border-violet-200',
+    borderLight: 'border-violet-500/20',
     borderDark: 'dark:border-violet-800/50',
     icon: Zap,
     iconBg: 'bg-violet-500',
@@ -126,7 +126,7 @@ const TIER_STYLES = [
     ring: 'ring-rose-500/30',
     bgLight: 'bg-rose-50',
     bgDark: 'dark:bg-rose-950/40',
-    borderLight: 'border-rose-200',
+    borderLight: 'border-rose-500/20',
     borderDark: 'dark:border-rose-800/50',
     icon: Shield,
     iconBg: 'bg-rose-500',
@@ -191,9 +191,9 @@ function TierCard({
       className={`
         relative overflow-hidden rounded-2xl transition-all duration-500 ease-out
         hover:-translate-y-2 hover:shadow-2xl group
-        ${isPopular ? `ring-2 ${style.ring} shadow-xl ${style.shadow}` : 'shadow-lg shadow-slate-200/50 dark:shadow-slate-900/50'}
+        ${isPopular ? `ring-2 ${style.ring} shadow-xl ${style.shadow}` : 'shadow-lg shadow-black/30 dark:shadow-slate-900/50'}
         ${!tier.isActive ? 'opacity-60 grayscale pointer-events-none' : ''}
-        bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-700/60
+         dark:bg-slate-900 border border-white/[0.06]/80 dark:border-slate-700/60
       `}
     >
       {/* Most Popular ribbon */}
@@ -209,14 +209,14 @@ function TierCard({
       {/* Status indicator */}
       <div className="absolute top-4 left-4 z-10">
         {tier.isActive ? (
-          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-tp-50 dark:bg-tp-900/40 border border-tp-200 dark:border-tp-700/50">
-            <div className="h-1.5 w-1.5 rounded-full bg-tp-500 animate-pulse" />
+          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-teal-500/10 dark:bg-tp-900/40 border border-tp-200 dark:border-tp-700/50">
+            <div className="h-1.5 w-1.5 rounded-full bg-teal-500/100 animate-pulse" />
             <span className="text-[10px] font-bold text-tp-700 dark:text-tp-300 uppercase tracking-wider">
               Active
             </span>
           </div>
         ) : (
-          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/5 dark:bg-slate-800 border border-white/[0.06] dark:border-slate-700">
             <XCircle className="h-3 w-3 text-slate-400" />
             <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">
               Inactive
@@ -238,7 +238,7 @@ function TierCard({
               <Icon className="h-6 w-6" />
             </div>
             <div className="min-w-0">
-              <h3 className="text-lg font-extrabold text-slate-900 dark:text-white truncate">
+              <h3 className="text-lg font-extrabold text-white dark:text-white truncate">
                 {tier.name} Users
               </h3>
               <p className="text-sm text-slate-500 dark:text-slate-400 font-medium">
@@ -254,7 +254,7 @@ function TierCard({
           </div>
 
           {/* Divider */}
-          <div className="h-px bg-slate-100 dark:bg-slate-800" />
+          <div className="h-px bg-white/5 dark:bg-slate-800" />
 
           {/* Starting price */}
           <div>
@@ -262,7 +262,7 @@ function TierCard({
               Starting from
             </p>
             <div className="flex items-baseline gap-1">
-              <span className="text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+              <span className="text-3xl font-extrabold text-white dark:text-white tracking-tight">
                 {formatTZS(tier.price1Month)}
               </span>
               <span className="text-sm font-medium text-slate-400 dark:text-slate-500">
@@ -288,7 +288,7 @@ function TierCard({
                       ${
                         d.months === 6
                           ? `${style.bgLight} ${style.borderLight} dark:bg-slate-800 dark:border-slate-600`
-                          : 'bg-slate-50 dark:bg-slate-800/50 border-slate-100 dark:border-slate-700/50'
+                          : 'bg-white/[0.03] dark:bg-slate-800/50 border-white/[0.06] dark:border-slate-700/50'
                       }
                     `}
                   >
@@ -298,11 +298,11 @@ function TierCard({
                       </span>
                     )}
                     <p className={`text-xs font-bold uppercase tracking-wider ${
-                      d.months === 6 ? 'text-slate-700 dark:text-slate-200' : 'text-slate-500 dark:text-slate-400'
+                      d.months === 6 ? 'text-slate-300 dark:text-slate-200' : 'text-slate-500 dark:text-slate-400'
                     }`}>
                       {d.label}
                     </p>
-                    <p className="text-lg font-extrabold text-slate-900 dark:text-white mt-0.5">
+                    <p className="text-lg font-extrabold text-white dark:text-white mt-0.5">
                       {formatTZS(price)}
                     </p>
                     <p className="text-[10px] text-slate-400 dark:text-slate-500 font-medium">
@@ -315,7 +315,7 @@ function TierCard({
           </div>
 
           {/* Divider */}
-          <div className="h-px bg-slate-100 dark:bg-slate-800" />
+          <div className="h-px bg-white/5 dark:bg-slate-800" />
 
           {/* Features */}
           <div className="space-y-2.5">
@@ -341,7 +341,7 @@ function TierCard({
                 ${
                   isPopular
                     ? `bg-gradient-to-r ${style.gradient} text-white shadow-lg ${style.shadow} hover:shadow-xl hover:shadow-tp-500/30`
-                    : 'bg-slate-900 dark:bg-white text-white dark:text-slate-900 hover:bg-slate-800 dark:hover:bg-slate-100 shadow-md hover:shadow-lg'
+                    : 'bg-slate-900 dark: text-white dark:text-white hover:bg-slate-800 dark:hover:bg-white/5 shadow-md hover:shadow-lg'
                 }
               `}
               onClick={() => onSubscribe(tier)}
@@ -363,7 +363,7 @@ function TierCard({
 
 function TierCardSkeleton() {
   return (
-    <Card className="rounded-2xl overflow-hidden border border-slate-200/80 dark:border-slate-700/60 bg-white dark:bg-slate-900">
+    <Card className="rounded-2xl overflow-hidden border border-white/[0.06]/80 dark:border-slate-700/60  dark:bg-slate-900">
       <Skeleton className="h-2 w-full rounded-none" />
       <CardContent className="p-6 space-y-5">
         <div className="flex items-start gap-3 pt-4">
@@ -545,13 +545,13 @@ export function PackagesPage() {
     <div className="space-y-10">
       {/* ── Page Header ─────────────────────────────────────────────── */}
       <div className="text-center max-w-2xl mx-auto space-y-3">
-        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-tp-50 dark:bg-tp-900/30 border border-tp-200 dark:border-tp-700/40">
-          <Sparkles className="h-4 w-4 text-tp-600 dark:text-tp-400" />
+        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-teal-500/10 dark:bg-tp-900/30 border border-tp-200 dark:border-tp-700/40">
+          <Sparkles className="h-4 w-4 text-teal-400 dark:text-tp-400" />
           <span className="text-xs font-bold text-tp-700 dark:text-tp-300 uppercase tracking-wider">
             Flexible Plans
           </span>
         </div>
-        <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+        <h1 className="text-3xl sm:text-4xl font-extrabold text-white dark:text-white tracking-tight">
           Packages & Pricing
         </h1>
         <p className="text-base text-slate-500 dark:text-slate-400 leading-relaxed max-w-lg mx-auto">
@@ -569,7 +569,7 @@ export function PackagesPage() {
         ].map(({ icon: TrustIcon, label, color }) => (
           <div
             key={label}
-            className="flex flex-col items-center gap-2 p-3 rounded-xl bg-white dark:bg-slate-800/50 border border-slate-200/80 dark:border-slate-700/50 text-center"
+            className="flex flex-col items-center gap-2 p-3 rounded-xl  dark:bg-slate-800/50 border border-white/[0.06]/80 dark:border-slate-700/50 text-center"
           >
             <TrustIcon className={`h-5 w-5 ${color}`} />
             <span className="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider leading-tight">
@@ -595,7 +595,7 @@ export function PackagesPage() {
               <XCircle className="h-8 w-8 text-red-500" />
             </div>
             <div>
-              <h3 className="text-lg font-bold text-slate-900 dark:text-white">
+              <h3 className="text-lg font-bold text-white dark:text-white">
                 Couldn&apos;t load pricing
               </h3>
               <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">{error}</p>
@@ -612,10 +612,10 @@ export function PackagesPage() {
 
         {!loading && !error && tiers.length === 0 && (
           <div className="text-center py-16 space-y-4">
-            <div className="mx-auto h-16 w-16 rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
+            <div className="mx-auto h-16 w-16 rounded-2xl bg-white/5 dark:bg-slate-800 flex items-center justify-center">
               <Users className="h-8 w-8 text-slate-400" />
             </div>
-            <h3 className="text-lg font-bold text-slate-900 dark:text-white">
+            <h3 className="text-lg font-bold text-white dark:text-white">
               No Pricing Tiers Available
             </h3>
             <p className="text-sm text-slate-500 dark:text-slate-400">
@@ -643,7 +643,7 @@ export function PackagesPage() {
       {isAuthenticated && (
         <section id="pricing-calculator-section" className="scroll-mt-8">
           <div className="text-center mb-6 space-y-2">
-            <h2 className="text-2xl font-extrabold text-slate-900 dark:text-white">
+            <h2 className="text-2xl font-extrabold text-white dark:text-white">
               Calculate & Subscribe
             </h2>
             <p className="text-sm text-slate-500 dark:text-slate-400 max-w-lg mx-auto">
@@ -662,9 +662,9 @@ export function PackagesPage() {
       {/* ── Subscribe loading overlay ──────────────────────────────── */}
       {subscribing && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
-          <Card className="p-8 flex flex-col items-center gap-4 shadow-2xl border-0 bg-white dark:bg-slate-900">
-            <Loader2 className="h-8 w-8 text-tp-600 dark:text-tp-400 animate-spin" />
-            <p className="text-sm font-bold text-slate-700 dark:text-slate-200">
+          <Card className="p-8 flex flex-col items-center gap-4 shadow-2xl border-0  dark:bg-slate-900">
+            <Loader2 className="h-8 w-8 text-teal-400 dark:text-tp-400 animate-spin" />
+            <p className="text-sm font-bold text-slate-300 dark:text-slate-200">
               Processing subscription...
             </p>
             <p className="text-xs text-slate-400 dark:text-slate-500">

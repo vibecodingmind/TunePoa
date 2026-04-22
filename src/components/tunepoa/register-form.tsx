@@ -54,8 +54,8 @@ function getPasswordStrength(password: string): { score: number; label: string; 
   if (score <= 1) return { score: 20, label: 'Weak', color: 'bg-red-500' }
   if (score <= 2) return { score: 40, label: 'Fair', color: 'bg-orange-500' }
   if (score <= 3) return { score: 60, label: 'Good', color: 'bg-amber-500' }
-  if (score <= 4) return { score: 80, label: 'Strong', color: 'bg-tp-500' }
-  return { score: 100, label: 'Very Strong', color: 'bg-tp-600' }
+  if (score <= 4) return { score: 80, label: 'Strong', color: 'bg-teal-500' }
+  return { score: 100, label: 'Very Strong', color: 'bg-teal-600' }
 }
 
 export function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
@@ -167,8 +167,8 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
     <div className="p-6 sm:p-8">
       <div className="text-center mb-6">
         <Image src="/logo-mark-48.png" alt="TunePoa" width={48} height={48} className="rounded-xl mb-3" />
-        <h1 className="text-xl font-bold text-slate-900">Create Your Account</h1>
-        <p className="text-sm text-slate-500 mt-1">
+        <h1 className="text-xl font-bold text-white">Create Your Account</h1>
+        <p className="text-sm text-slate-400 mt-1">
           Start turning calls into marketing opportunities
         </p>
       </div>
@@ -177,11 +177,11 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
       <form onSubmit={handleSubmit} className="space-y-4">
         {/* Full Name */}
         <div className="space-y-2">
-          <Label htmlFor="reg-name" className="text-sm font-medium text-slate-700">
+          <Label htmlFor="reg-name" className="text-sm font-medium text-slate-300">
             Full Name
           </Label>
           <div className="relative">
-            <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+            <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500" />
             <Input
               id="reg-name"
               placeholder="Your full name"
@@ -189,18 +189,18 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
               onChange={(e) => updateField('name', e.target.value)}
               required
               autoComplete="name"
-              className="h-11 pl-10"
+              className="h-11 pl-10 bg-white/5 border-white/[0.08] text-white placeholder:text-slate-500 focus:border-teal-500/40"
             />
           </div>
         </div>
 
         {/* Email */}
         <div className="space-y-2">
-          <Label htmlFor="reg-email" className="text-sm font-medium text-slate-700">
+          <Label htmlFor="reg-email" className="text-sm font-medium text-slate-300">
             Email Address
           </Label>
           <div className="relative">
-            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500" />
             <Input
               id="reg-email"
               type="email"
@@ -209,18 +209,18 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
               onChange={(e) => updateField('email', e.target.value)}
               required
               autoComplete="email"
-              className="h-11 pl-10"
+              className="h-11 pl-10 bg-white/5 border-white/[0.08] text-white placeholder:text-slate-500 focus:border-teal-500/40"
             />
           </div>
         </div>
 
         {/* Phone */}
         <div className="space-y-2">
-          <Label htmlFor="reg-phone" className="text-sm font-medium text-slate-700">
+          <Label htmlFor="reg-phone" className="text-sm font-medium text-slate-300">
             Phone Number
           </Label>
           <div className="relative">
-            <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+            <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500" />
             <Input
               id="reg-phone"
               type="tel"
@@ -229,7 +229,7 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
               onChange={(e) => updateField('phone', e.target.value)}
               required
               autoComplete="tel"
-              className="h-11 pl-10"
+              className="h-11 pl-10 bg-white/5 border-white/[0.08] text-white placeholder:text-slate-500 focus:border-teal-500/40"
             />
           </div>
         </div>
@@ -237,36 +237,36 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
         {/* Business Name + Category row */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div className="space-y-2">
-            <Label htmlFor="reg-business" className="text-sm font-medium text-slate-700">
+            <Label htmlFor="reg-business" className="text-sm font-medium text-slate-300">
               Business Name
             </Label>
             <div className="relative">
-              <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+              <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500" />
               <Input
                 id="reg-business"
                 placeholder="Your business"
                 value={form.businessName}
                 onChange={(e) => updateField('businessName', e.target.value)}
                 required
-                className="h-11 pl-10"
+                className="h-11 pl-10 bg-white/5 border-white/[0.08] text-white placeholder:text-slate-500 focus:border-teal-500/40"
               />
             </div>
           </div>
           <div className="space-y-2">
-            <Label htmlFor="reg-category" className="text-sm font-medium text-slate-700">
+            <Label htmlFor="reg-category" className="text-sm font-medium text-slate-300">
               Category
             </Label>
             <div className="relative">
-              <Briefcase className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+              <Briefcase className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500" />
               <select
                 id="reg-category"
                 value={form.businessCategory}
                 onChange={(e) => updateField('businessCategory', e.target.value)}
-                className="h-11 w-full pl-10 pr-3 rounded-md border border-input bg-background text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 text-slate-700"
+                className="h-11 w-full pl-10 pr-3 rounded-md border border-white/[0.08] bg-white/5 text-sm text-white ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500/40 focus-visible:ring-offset-2"
               >
-                <option value="">Select category</option>
+                <option value="" className="bg-[#0a1628] text-slate-300">Select category</option>
                 {businessCategories.map((cat) => (
-                  <option key={cat} value={cat}>
+                  <option key={cat} value={cat} className="bg-[#0a1628] text-slate-300">
                     {cat}
                   </option>
                 ))}
@@ -277,11 +277,11 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
 
         {/* Password */}
         <div className="space-y-2">
-          <Label htmlFor="reg-password" className="text-sm font-medium text-slate-700">
+          <Label htmlFor="reg-password" className="text-sm font-medium text-slate-300">
             Password
           </Label>
           <div className="relative">
-            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500" />
             <Input
               id="reg-password"
               type={showPassword ? 'text' : 'password'}
@@ -290,12 +290,12 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
               onChange={(e) => updateField('password', e.target.value)}
               required
               autoComplete="new-password"
-              className="h-11 pl-10 pr-10"
+              className="h-11 pl-10 pr-10 bg-white/5 border-white/[0.08] text-white placeholder:text-slate-500 focus:border-teal-500/40"
             />
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 transition-colors"
               aria-label={showPassword ? 'Hide password' : 'Show password'}
             >
               {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
@@ -305,7 +305,7 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
           {form.password.length > 0 && (
             <div className="space-y-1">
               <Progress value={passwordStrength.score} className="h-1.5" />
-              <p className={`text-xs ${passwordStrength.score >= 60 ? 'text-tp-600' : passwordStrength.score >= 40 ? 'text-amber-600' : 'text-red-600'}`}>
+              <p className={`text-xs ${passwordStrength.score >= 60 ? 'text-teal-400' : passwordStrength.score >= 40 ? 'text-amber-400' : 'text-red-400'}`}>
                 {passwordStrength.label}
               </p>
             </div>
@@ -314,11 +314,11 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
 
         {/* Confirm Password */}
         <div className="space-y-2">
-          <Label htmlFor="reg-confirm" className="text-sm font-medium text-slate-700">
+          <Label htmlFor="reg-confirm" className="text-sm font-medium text-slate-300">
             Confirm Password
           </Label>
           <div className="relative">
-            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500" />
             <Input
               id="reg-confirm"
               type={showConfirm ? 'text' : 'password'}
@@ -327,18 +327,18 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
               onChange={(e) => updateField('confirmPassword', e.target.value)}
               required
               autoComplete="new-password"
-              className={`h-11 pl-10 pr-10 ${
+              className={`h-11 pl-10 pr-10 bg-white/5 border-white/[0.08] text-white placeholder:text-slate-500 focus:border-teal-500/40 ${
                 form.confirmPassword && form.password !== form.confirmPassword
-                  ? 'border-red-300 focus-visible:ring-red-300'
+                  ? 'border-red-500/30 focus-visible:ring-red-500/30'
                   : form.confirmPassword && form.password === form.confirmPassword
-                    ? 'border-tp-300 focus-visible:ring-tp-300'
+                    ? 'border-teal-500/30 focus-visible:ring-teal-500/30'
                     : ''
               }`}
             />
             <button
               type="button"
               onClick={() => setShowConfirm(!showConfirm)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 transition-colors"
               aria-label={showConfirm ? 'Hide password' : 'Show password'}
             >
               {showConfirm ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
@@ -352,15 +352,15 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
             id="accept-terms"
             checked={acceptTerms}
             onCheckedChange={(checked) => setAcceptTerms(checked === true)}
-            className="mt-0.5 data-[state=checked]:bg-tp-600 data-[state=checked]:border-tp-600"
+            className="mt-0.5 data-[state=checked]:bg-teal-600 data-[state=checked]:border-teal-600"
           />
-          <Label htmlFor="accept-terms" className="text-sm text-slate-600 leading-relaxed cursor-pointer">
+          <Label htmlFor="accept-terms" className="text-sm text-slate-400 leading-relaxed cursor-pointer">
             I agree to the{' '}
-            <span className="text-tp-600 font-medium hover:underline cursor-pointer">
+            <span className="text-teal-400 font-medium hover:underline cursor-pointer">
               Terms of Service
             </span>{' '}
             and{' '}
-            <span className="text-tp-600 font-medium hover:underline cursor-pointer">
+            <span className="text-teal-400 font-medium hover:underline cursor-pointer">
               Privacy Policy
             </span>
           </Label>
@@ -368,7 +368,7 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
 
         {/* Error */}
         {error && (
-          <div className="bg-red-50 text-red-600 text-sm p-3 rounded-lg border border-red-100">
+          <div className="bg-red-500/10 text-red-400 text-sm p-3 rounded-lg border border-red-500/20">
             {error}
           </div>
         )}
@@ -376,7 +376,7 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
         {/* Submit */}
         <Button
           type="submit"
-          className="w-full h-11 bg-tp-600 hover:bg-tp-700 text-white font-medium"
+          className="w-full h-11 bg-gradient-to-r from-teal-500 to-teal-600 hover:from-teal-600 hover:to-teal-700 text-white font-medium"
           disabled={loading}
         >
           {loading ? (
@@ -393,11 +393,11 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
         </Button>
 
         {/* Switch to login */}
-        <p className="text-center text-sm text-slate-500">
+        <p className="text-center text-sm text-slate-400">
           Already have an account?{' '}
           <button
             type="button"
-            className="text-tp-600 font-medium hover:text-tp-700 transition-colors"
+            className="text-teal-400 font-medium hover:text-teal-300 transition-colors"
             onClick={onSwitchToLogin}
           >
             Sign in

@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "TunePoa - Ringback Tone Advertising Platform",
   description: "Tanzania's #1 ringback tone management platform. Turn every call into an opportunity for your business.",
-  keywords: ["TunePoa", "ringback tone", "Tanzania", "advertising", "MNO", "business"],
+  keywords: ["TunePoa", "ringback tone", "Tanzania", "advertising", "business"],
   icons: {
     icon: '/favicon.ico',
     apple: '/apple-touch-icon.png',
@@ -29,24 +29,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <head>
-        {/* Inline script to prevent dark mode flash (FOUC) */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              (function() {
-                try {
-                  var t = localStorage.getItem('tunepoa_theme');
-                  if (t === 'dark') {
-                    document.documentElement.classList.add('dark');
-                  }
-                } catch(e) {}
-              })();
-            `,
-          }}
-        />
-      </head>
+    <html lang="en" className="dark" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-foreground`}
       >

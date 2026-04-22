@@ -110,16 +110,16 @@ interface StatCardProps {
 
 function StatCard({ label, value, icon: Icon, gradient, iconBg, iconColor, trend }: StatCardProps) {
   return (
-    <div className="card-premium border-0 bg-white group overflow-hidden relative">
+    <div className="glass-card border-0 group overflow-hidden relative">
       {/* Top gradient accent line */}
       <div className={`absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r ${gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-300`} />
       <CardContent className="p-5">
         <div className="flex items-start justify-between">
           <div className="space-y-1.5">
             <p className="text-[12px] font-medium text-slate-400 uppercase tracking-wider">{label}</p>
-            <p className="text-2xl font-bold text-slate-900 tracking-tight">{value}</p>
+            <p className="text-2xl font-bold text-white tracking-tight">{value}</p>
             {trend && (
-              <p className="text-xs text-tp-600 font-medium flex items-center gap-1">
+              <p className="text-xs text-teal-400 font-medium flex items-center gap-1">
                 <TrendingUp className="h-3 w-3" />
                 {trend}
               </p>
@@ -213,19 +213,19 @@ export function UserDashboard() {
     return (
       <div className="space-y-6 animate-fade-in">
         {/* Banner skeleton */}
-        <Skeleton className="h-48 w-full rounded-2xl bg-slate-100" />
+        <Skeleton className="h-48 w-full rounded-2xl bg-white/[0.05]" />
         {/* Stats skeletons */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {Array.from({ length: 4 }).map((_, i) => (
-            <Skeleton key={i} className="h-[116px] rounded-xl bg-slate-100" />
+            <Skeleton key={i} className="h-[116px] rounded-xl bg-white/[0.05]" />
           ))}
         </div>
         {/* Table skeleton */}
-        <Skeleton className="h-72 rounded-xl bg-slate-100" />
+        <Skeleton className="h-72 rounded-xl bg-white/[0.05]" />
         {/* Subscription cards skeleton */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {Array.from({ length: 3 }).map((_, i) => (
-            <Skeleton key={i} className="h-44 rounded-xl bg-slate-100" />
+            <Skeleton key={i} className="h-44 rounded-xl bg-white/[0.05]" />
           ))}
         </div>
       </div>
@@ -260,7 +260,7 @@ export function UserDashboard() {
       {/* ================================================================= */}
       {/* Welcome Banner                                                     */}
       {/* ================================================================= */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-tp-600 via-tp-500 to-ts-400 p-6 sm:p-8 text-white">
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-teal-600 via-teal-500 to-cyan-500 p-6 sm:p-8 text-white">
         {/* Decorative background elements */}
         <div className="absolute top-0 right-0 w-80 h-80 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/3" />
         <div className="absolute bottom-0 left-1/3 w-56 h-56 bg-white/5 rounded-full translate-y-1/2" />
@@ -270,12 +270,12 @@ export function UserDashboard() {
         <div className="absolute top-1/4 left-1/4 w-4 h-4 bg-white/10 rounded-full" />
 
         <div className="relative">
-          <div className="flex items-center gap-2 text-tp-100 text-sm font-medium mb-2">
+          <div className="flex items-center gap-2 text-white/80 text-sm font-medium mb-2">
             <Sparkles className="h-4 w-4" />
             <span>Dashboard</span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-bold mb-1 tracking-tight">Welcome back, {firstName}</h1>
-          <p className="text-tp-100/90 text-sm sm:text-base max-w-lg">
+          <p className="text-white/80 text-sm sm:text-base max-w-lg">
             {user?.businessName
               ? `Manage your ads and subscriptions for ${user.businessName}`
               : 'Your business dashboard is ready'}
@@ -284,7 +284,7 @@ export function UserDashboard() {
           <div className="flex flex-wrap gap-3 mt-6">
             <Button
               size="sm"
-              className="bg-white text-tp-700 hover:bg-tp-50 shadow-md shadow-tp-900/10 font-medium rounded-xl"
+              className="bg-white/15 text-white hover:bg-white/20 shadow-md font-medium rounded-xl"
               onClick={() => navigate('new-request')}
             >
               <PlusCircle className="h-4 w-4 mr-2" />
@@ -293,7 +293,7 @@ export function UserDashboard() {
             <Button
               size="sm"
               variant="outline"
-              className="border-white/25 text-white hover:bg-white/10 bg-white/10 rounded-xl backdrop-blur-sm"
+              className="border-white/20 text-white hover:bg-white/10 bg-white/10 rounded-xl backdrop-blur-sm"
               onClick={() => navigate('packages')}
             >
               <Package className="h-4 w-4 mr-2" />
@@ -311,9 +311,9 @@ export function UserDashboard() {
           label="Active Subscriptions"
           value={activeSubs}
           icon={CreditCard}
-          gradient="from-tp-400 to-tp-600"
-          iconBg="bg-tp-50"
-          iconColor="text-tp-600"
+          gradient="from-teal-400 to-teal-600"
+          iconBg="bg-teal-500/15"
+          iconColor="text-teal-400"
           trend={activeSubs > 0 ? `${activeSubs} running` : undefined}
         />
         <StatCard
@@ -321,42 +321,42 @@ export function UserDashboard() {
           value={pendingRequests}
           icon={Clock}
           gradient="from-amber-400 to-amber-600"
-          iconBg="bg-amber-50"
-          iconColor="text-amber-600"
+          iconBg="bg-amber-500/15"
+          iconColor="text-amber-400"
         />
         <StatCard
           label="Total Spent"
           value={formatCurrency(totalSpent)}
           icon={Wallet}
           gradient="from-sky-400 to-sky-600"
-          iconBg="bg-sky-50"
-          iconColor="text-sky-600"
+          iconBg="bg-sky-500/15"
+          iconColor="text-sky-400"
         />
         <StatCard
           label="Active Ads"
           value={activeAds}
           icon={Zap}
           gradient="from-violet-400 to-violet-600"
-          iconBg="bg-violet-50"
-          iconColor="text-violet-600"
+          iconBg="bg-violet-500/15"
+          iconColor="text-violet-400"
         />
       </div>
 
       {/* ================================================================= */}
       {/* Recent Service Requests                                            */}
       {/* ================================================================= */}
-      <Card className="card-premium-static border-0 bg-white rounded-2xl overflow-hidden">
+      <Card className="glass-card border-0 rounded-2xl overflow-hidden">
         <CardHeader className="pb-3 px-6 pt-6">
           <div className="flex items-center justify-between">
             <div>
-              <CardTitle className="text-[15px] font-semibold text-slate-900">Recent Service Requests</CardTitle>
+              <CardTitle className="text-[15px] font-semibold text-white">Recent Service Requests</CardTitle>
               <p className="text-sm text-slate-400 mt-0.5">Your latest ad creation requests</p>
             </div>
             {requests.length > 0 && (
               <Button
                 variant="ghost"
                 size="sm"
-                className="text-tp-600 hover:text-tp-700 hover:bg-tp-50 text-[13px] rounded-lg"
+                className="text-teal-400 hover:text-teal-300 hover:bg-teal-500/10 text-[13px] rounded-lg"
                 onClick={() => navigate('my-requests')}
               >
                 View All
@@ -368,14 +368,14 @@ export function UserDashboard() {
         <CardContent className="px-6 pb-6">
           {recentRequests.length === 0 ? (
             <div className="text-center py-12">
-              <div className="h-14 w-14 rounded-2xl bg-slate-100 flex items-center justify-center mx-auto mb-3">
+              <div className="h-14 w-14 rounded-2xl bg-white/5 flex items-center justify-center mx-auto mb-3">
                 <Clock className="h-6 w-6 text-slate-400" />
               </div>
-              <p className="text-slate-600 font-medium text-sm">No service requests yet</p>
-              <p className="text-slate-400 text-sm mt-1">Create your first ringback tone ad request</p>
+              <p className="text-slate-400 font-medium text-sm">No service requests yet</p>
+              <p className="text-slate-500 text-sm mt-1">Create your first ringback tone ad request</p>
               <Button
                 variant="link"
-                className="text-tp-600 mt-1 text-sm"
+                className="text-teal-400 mt-1 text-sm"
                 onClick={() => navigate('new-request')}
               >
                 Get started
@@ -387,34 +387,34 @@ export function UserDashboard() {
               <div className="hidden sm:block overflow-x-auto">
                 <Table>
                   <TableHeader>
-                    <TableRow className="border-slate-100 hover:bg-transparent">
-                      <TableHead className="text-slate-400 text-[11px] uppercase tracking-wider font-semibold">ID</TableHead>
-                      <TableHead className="text-slate-400 text-[11px] uppercase tracking-wider font-semibold">Business</TableHead>
-                      <TableHead className="text-slate-400 text-[11px] uppercase tracking-wider font-semibold">Type</TableHead>
-                      <TableHead className="text-slate-400 text-[11px] uppercase tracking-wider font-semibold">Status</TableHead>
-                      <TableHead className="text-slate-400 text-[11px] uppercase tracking-wider font-semibold">Date</TableHead>
+                    <TableRow className="border-white/[0.04] hover:bg-transparent">
+                      <TableHead className="text-slate-500 text-[11px] uppercase tracking-wider font-semibold">ID</TableHead>
+                      <TableHead className="text-slate-500 text-[11px] uppercase tracking-wider font-semibold">Business</TableHead>
+                      <TableHead className="text-slate-500 text-[11px] uppercase tracking-wider font-semibold">Type</TableHead>
+                      <TableHead className="text-slate-500 text-[11px] uppercase tracking-wider font-semibold">Status</TableHead>
+                      <TableHead className="text-slate-500 text-[11px] uppercase tracking-wider font-semibold">Date</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {recentRequests.map((req) => (
                       <TableRow
                         key={req.id}
-                        className="cursor-pointer hover:bg-slate-50/50 transition-colors border-slate-50 group"
+                        className="cursor-pointer hover:bg-white/[0.03] transition-colors border-white/[0.04] group"
                         onClick={() => navigate('my-requests')}
                       >
                         <TableCell className="font-mono text-xs text-slate-400">
                           {shortenId(req.id)}
                         </TableCell>
-                        <TableCell className="font-medium text-slate-800 text-sm">{req.businessName}</TableCell>
+                        <TableCell className="font-medium text-slate-300 text-sm">{req.businessName}</TableCell>
                         <TableCell>
-                          <Badge variant="outline" className="text-slate-500 border-slate-200 text-xs font-medium rounded-md">
+                          <Badge variant="outline" className="text-slate-400 border-white/[0.08] text-xs font-medium rounded-md">
                             {req.adType}
                           </Badge>
                         </TableCell>
                         <TableCell>
                           <Badge
                             variant="outline"
-                            className={`${STATUS_COLORS[req.status] || 'bg-slate-100 text-slate-600 border-slate-200'} text-xs font-medium rounded-md`}
+                            className={`${STATUS_COLORS[req.status] || 'bg-white/5 text-slate-400 border-white/[0.08]'} text-xs font-medium rounded-md`}
                           >
                             {STATUS_LABELS[req.status] || req.status}
                           </Badge>
@@ -431,13 +431,13 @@ export function UserDashboard() {
                 {recentRequests.map((req) => (
                   <div
                     key={req.id}
-                    className="flex items-center justify-between p-3.5 rounded-xl border border-slate-100 hover:border-tp-200 hover:bg-tp-50/30 transition-all duration-200 cursor-pointer"
+                    className="flex items-center justify-between p-3.5 rounded-xl border border-white/[0.06] hover:border-teal-500/20 hover:bg-teal-500/5 transition-all duration-200 cursor-pointer"
                     onClick={() => navigate('my-requests')}
                   >
                     <div className="flex-1 min-w-0">
-                      <p className="font-medium text-sm text-slate-900 truncate">{req.businessName}</p>
+                      <p className="font-medium text-sm text-white truncate">{req.businessName}</p>
                       <div className="flex items-center gap-2 mt-1">
-                        <Badge variant="outline" className="text-xs text-slate-500 border-slate-200 rounded-md">
+                        <Badge variant="outline" className="text-xs text-slate-400 border-white/[0.08] rounded-md">
                           {req.adType}
                         </Badge>
                         <span className="text-xs text-slate-400">{formatDate(req.createdAt)}</span>
@@ -446,11 +446,11 @@ export function UserDashboard() {
                     <div className="flex items-center gap-2 ml-2">
                       <Badge
                         variant="outline"
-                        className={`${STATUS_COLORS[req.status] || 'bg-slate-100 text-slate-600 border-slate-200'} text-xs rounded-md`}
+                        className={`${STATUS_COLORS[req.status] || 'bg-white/5 text-slate-400 border-white/[0.08]'} text-xs rounded-md`}
                       >
                         {STATUS_LABELS[req.status] || req.status}
                       </Badge>
-                      <ChevronRight className="h-4 w-4 text-slate-300" />
+                      <ChevronRight className="h-4 w-4 text-slate-500" />
                     </div>
                   </div>
                 ))}
@@ -463,18 +463,18 @@ export function UserDashboard() {
       {/* ================================================================= */}
       {/* Active Subscriptions                                               */}
       {/* ================================================================= */}
-      <Card className="card-premium-static border-0 bg-white rounded-2xl overflow-hidden">
+      <Card className="glass-card border-0 rounded-2xl overflow-hidden">
         <CardHeader className="pb-3 px-6 pt-6">
           <div className="flex items-center justify-between">
             <div>
-              <CardTitle className="text-[15px] font-semibold text-slate-900">Active Subscriptions</CardTitle>
+              <CardTitle className="text-[15px] font-semibold text-white">Active Subscriptions</CardTitle>
               <p className="text-sm text-slate-400 mt-0.5">Currently running ringback tone plans</p>
             </div>
             {subscriptions.length > 0 && (
               <Button
                 variant="ghost"
                 size="sm"
-                className="text-tp-600 hover:text-tp-700 hover:bg-tp-50 text-[13px] rounded-lg"
+                className="text-teal-400 hover:text-teal-300 hover:bg-teal-500/10 text-[13px] rounded-lg"
                 onClick={() => navigate('subscriptions')}
               >
                 View All
@@ -486,14 +486,14 @@ export function UserDashboard() {
         <CardContent className="px-6 pb-6">
           {activeSubscriptions.length === 0 ? (
             <div className="text-center py-12">
-              <div className="h-14 w-14 rounded-2xl bg-slate-100 flex items-center justify-center mx-auto mb-3">
+              <div className="h-14 w-14 rounded-2xl bg-white/5 flex items-center justify-center mx-auto mb-3">
                 <CreditCard className="h-6 w-6 text-slate-400" />
               </div>
-              <p className="text-slate-600 font-medium text-sm">No active subscriptions</p>
-              <p className="text-slate-400 text-sm mt-1">Subscribe to a package to activate your ad</p>
+              <p className="text-slate-400 font-medium text-sm">No active subscriptions</p>
+              <p className="text-slate-500 text-sm mt-1">Subscribe to a package to activate your ad</p>
               <Button
                 variant="link"
-                className="text-tp-600 mt-1 text-sm"
+                className="text-teal-400 mt-1 text-sm"
                 onClick={() => navigate('packages')}
               >
                 Browse packages
@@ -504,13 +504,13 @@ export function UserDashboard() {
               {activeSubscriptions.map((sub) => (
                 <div
                   key={sub.id}
-                  className="p-5 rounded-xl border border-slate-100 hover:border-tp-200 hover:shadow-sm transition-all duration-300 group bg-white"
+                  className="p-5 rounded-xl border border-white/[0.06] hover:border-teal-500/20 hover:shadow-sm transition-all duration-300 group bg-white/[0.03]"
                 >
                   <div className="flex items-center justify-between mb-4">
-                    <h3 className="font-semibold text-slate-900 text-sm">{sub.package.name}</h3>
+                    <h3 className="font-semibold text-white text-sm">{sub.package.name}</h3>
                     <Badge
                       variant="outline"
-                      className={`${STATUS_COLORS[sub.status] || 'bg-slate-100 text-slate-600 border-slate-200'} text-xs font-medium rounded-md`}
+                      className={`${STATUS_COLORS[sub.status] || 'bg-white/5 text-slate-400 border-white/[0.08]'} text-xs font-medium rounded-md`}
                     >
                       {STATUS_LABELS[sub.status] || sub.status}
                     </Badge>
@@ -519,23 +519,23 @@ export function UserDashboard() {
                   <div className="space-y-2.5 text-sm">
                     <div className="flex items-center justify-between">
                       <span className="text-slate-400">Amount</span>
-                      <span className="font-semibold text-slate-900">
+                      <span className="font-semibold text-white">
                         {formatCurrency(sub.amount)}
                       </span>
                     </div>
                     {sub.phoneNumber && (
-                      <div className="flex items-center gap-2 text-slate-500">
-                        <Phone className="h-3.5 w-3.5 text-slate-400" />
+                      <div className="flex items-center gap-2 text-slate-400">
+                        <Phone className="h-3.5 w-3.5 text-slate-500" />
                         <span>{sub.phoneNumber}</span>
                       </div>
                     )}
                     <div className="flex items-center gap-2">
-                      <Badge variant="outline" className="text-xs text-tp-600 border-tp-200 rounded-md">
+                      <Badge variant="outline" className="text-xs text-teal-400 border-teal-500/20 rounded-md">
                         Vodacom
                       </Badge>
                     </div>
                     {sub.endDate && (
-                      <p className="text-slate-400 text-xs pt-2 border-t border-slate-50">
+                      <p className="text-slate-400 text-xs pt-2 border-t border-white/[0.04]">
                         {sub.status === 'ACTIVE'
                           ? `Expires in ${daysUntil(sub.endDate)} days`
                           : `Expires ${formatDate(sub.endDate)}`}
@@ -554,7 +554,7 @@ export function UserDashboard() {
       {/* ================================================================= */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <Button
-          className="bg-gradient-to-r from-tp-600 to-tp-500 hover:from-tp-700 hover:to-tp-600 text-white h-12 font-medium rounded-xl shadow-md shadow-tp-500/10 group"
+          className="bg-gradient-to-r from-teal-500 to-teal-600 hover:from-teal-600 hover:to-teal-700 text-white h-12 font-medium rounded-xl shadow-md shadow-teal-500/20 group"
           onClick={() => navigate('new-request')}
         >
           <PlusCircle className="h-4 w-4 mr-2" />
@@ -563,7 +563,7 @@ export function UserDashboard() {
         </Button>
         <Button
           variant="outline"
-          className="border-slate-200 text-slate-700 hover:bg-slate-50 hover:border-slate-300 h-12 font-medium rounded-xl"
+          className="border-white/[0.08] text-slate-300 hover:bg-white/5 hover:border-white/[0.12] h-12 font-medium rounded-xl"
           onClick={() => navigate('packages')}
         >
           <Package className="h-4 w-4 mr-2" />

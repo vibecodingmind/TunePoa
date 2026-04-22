@@ -77,19 +77,19 @@ export function LoginForm({ onSwitchToRegister }: LoginFormProps) {
       {/* Logo and header */}
       <div className="text-center mb-6">
         <Image src="/logo-mark-48.png" alt="TunePoa" width={48} height={48} className="rounded-xl mb-3" />
-        <h1 className="text-xl font-bold text-slate-900">Welcome Back</h1>
-        <p className="text-sm text-slate-500 mt-1">Sign in to your TunePoa account</p>
+        <h1 className="text-xl font-bold text-white">Welcome Back</h1>
+        <p className="text-sm text-slate-400 mt-1">Sign in to your TunePoa account</p>
       </div>
 
       {/* Form */}
       <form onSubmit={handleSubmit} className="space-y-4">
         {/* Email field */}
         <div className="space-y-2">
-          <Label htmlFor="login-email" className="text-sm font-medium text-slate-700">
+          <Label htmlFor="login-email" className="text-sm font-medium text-slate-300">
             Email Address
           </Label>
           <div className="relative">
-            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500" />
             <Input
               id="login-email"
               type="email"
@@ -98,18 +98,18 @@ export function LoginForm({ onSwitchToRegister }: LoginFormProps) {
               onChange={(e) => setEmail(e.target.value)}
               required
               autoComplete="email"
-              className="h-11 pl-10"
+              className="h-11 pl-10 bg-white/5 border-white/[0.08] text-white placeholder:text-slate-500 focus:border-teal-500/40"
             />
           </div>
         </div>
 
         {/* Password field */}
         <div className="space-y-2">
-          <Label htmlFor="login-password" className="text-sm font-medium text-slate-700">
+          <Label htmlFor="login-password" className="text-sm font-medium text-slate-300">
             Password
           </Label>
           <div className="relative">
-            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500" />
             <Input
               id="login-password"
               type={showPassword ? 'text' : 'password'}
@@ -118,12 +118,12 @@ export function LoginForm({ onSwitchToRegister }: LoginFormProps) {
               onChange={(e) => setPassword(e.target.value)}
               required
               autoComplete="current-password"
-              className="h-11 pl-10 pr-10"
+              className="h-11 pl-10 pr-10 bg-white/5 border-white/[0.08] text-white placeholder:text-slate-500 focus:border-teal-500/40"
             />
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 transition-colors"
               aria-label={showPassword ? 'Hide password' : 'Show password'}
             >
               {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
@@ -138,15 +138,15 @@ export function LoginForm({ onSwitchToRegister }: LoginFormProps) {
               id="remember"
               checked={rememberMe}
               onCheckedChange={(checked) => setRememberMe(checked === true)}
-              className="data-[state=checked]:bg-tp-600 data-[state=checked]:border-tp-600"
+              className="data-[state=checked]:bg-teal-600 data-[state=checked]:border-teal-600"
             />
-            <Label htmlFor="remember" className="text-sm text-slate-600 cursor-pointer">
+            <Label htmlFor="remember" className="text-sm text-slate-400 cursor-pointer">
               Remember me
             </Label>
           </div>
           <a
             href="#"
-            className="text-sm text-tp-600 hover:text-tp-700 font-medium"
+            className="text-sm text-teal-400 hover:text-teal-300 font-medium"
             onClick={(e) => {
               e.preventDefault()
               toast({
@@ -161,7 +161,7 @@ export function LoginForm({ onSwitchToRegister }: LoginFormProps) {
 
         {/* Error message */}
         {error && (
-          <div className="bg-red-50 text-red-600 text-sm p-3 rounded-lg border border-red-100">
+          <div className="bg-red-500/10 text-red-400 text-sm p-3 rounded-lg border border-red-500/20">
             {error}
           </div>
         )}
@@ -169,7 +169,7 @@ export function LoginForm({ onSwitchToRegister }: LoginFormProps) {
         {/* Submit button */}
         <Button
           type="submit"
-          className="w-full h-11 bg-tp-600 hover:bg-tp-700 text-white font-medium"
+          className="w-full h-11 bg-gradient-to-r from-teal-500 to-teal-600 hover:from-teal-600 hover:to-teal-700 text-white font-medium"
           disabled={loading}
         >
           {loading ? (
@@ -185,19 +185,19 @@ export function LoginForm({ onSwitchToRegister }: LoginFormProps) {
         {/* Divider */}
         <div className="relative">
           <div className="absolute inset-0 flex items-center">
-            <span className="w-full border-t border-slate-200" />
+            <span className="w-full border-t border-white/[0.08]" />
           </div>
           <div className="relative flex justify-center text-xs uppercase">
-            <span className="bg-white px-2 text-slate-400">or</span>
+            <span className="bg-transparent px-2 text-slate-500">or</span>
           </div>
         </div>
 
         {/* Switch to register */}
-        <p className="text-center text-sm text-slate-500">
+        <p className="text-center text-sm text-slate-400">
           Don&apos;t have an account?{' '}
           <button
             type="button"
-            className="text-tp-600 font-medium hover:text-tp-700 transition-colors"
+            className="text-teal-400 font-medium hover:text-teal-300 transition-colors"
             onClick={onSwitchToRegister}
           >
             Create one

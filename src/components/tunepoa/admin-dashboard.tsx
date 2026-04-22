@@ -53,15 +53,15 @@ interface AdminStatCardProps {
   iconColor: string
 }
 
-function AdminStatCard({ label, value, sub, subColor = 'text-tp-600', icon: Icon, gradient, iconBg, iconColor }: AdminStatCardProps) {
+function AdminStatCard({ label, value, sub, subColor = 'text-teal-400', icon: Icon, gradient, iconBg, iconColor }: AdminStatCardProps) {
   return (
-    <div className="card-premium border-0 bg-white group overflow-hidden relative">
+    <div className="glass-card border-0 group overflow-hidden relative">
       <div className={`absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r ${gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-300`} />
       <CardContent className="p-5">
         <div className="flex items-center justify-between">
           <div>
             <p className="text-[12px] font-medium text-slate-400 uppercase tracking-wider mb-1">{label}</p>
-            <p className="text-2xl font-bold text-slate-900 tracking-tight">{value}</p>
+            <p className="text-2xl font-bold text-white tracking-tight">{value}</p>
             <p className={`text-xs ${subColor} font-medium mt-1`}>{sub}</p>
           </div>
           <div className={`h-11 w-11 rounded-xl ${iconBg} flex items-center justify-center transition-all duration-300 group-hover:scale-110 group-hover:shadow-md`}>
@@ -98,13 +98,13 @@ export function AdminDashboard() {
   if (loading || !analytics) {
     return (
       <div className="space-y-6 animate-fade-in">
-        <Skeleton className="h-8 w-48 rounded-lg bg-slate-100" />
+        <Skeleton className="h-8 w-48 rounded-lg bg-white/[0.05]" />
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {[1, 2, 3, 4].map(i => <Skeleton key={i} className="h-[116px] rounded-xl bg-slate-100" />)}
+          {[1, 2, 3, 4].map(i => <Skeleton key={i} className="h-[116px] rounded-xl bg-white/[0.05]" />)}
         </div>
         <div className="grid lg:grid-cols-2 gap-6">
-          <Skeleton className="h-72 rounded-2xl bg-slate-100" />
-          <Skeleton className="h-72 rounded-2xl bg-slate-100" />
+          <Skeleton className="h-72 rounded-2xl bg-white/[0.05]" />
+          <Skeleton className="h-72 rounded-2xl bg-white/[0.05]" />
         </div>
       </div>
     )
@@ -130,11 +130,11 @@ export function AdminDashboard() {
     <div className="space-y-6 animate-fade-in">
       {/* Header */}
       <div className="flex items-center gap-3">
-        <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-tp-500 to-ts-400 flex items-center justify-center shadow-md shadow-tp-500/20">
+        <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-teal-500 to-cyan-400 flex items-center justify-center shadow-md shadow-teal-500/20">
           <Sparkles className="h-5 w-5 text-white" />
         </div>
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Admin Dashboard</h1>
+          <h1 className="text-2xl font-bold text-white tracking-tight">Admin Dashboard</h1>
           <p className="text-sm text-slate-400 mt-0.5">Overview of your TunePoa platform</p>
         </div>
       </div>
@@ -146,18 +146,18 @@ export function AdminDashboard() {
           value={safe.totalUsers}
           sub={`${usersByRole.filter(r => r.role === 'BUSINESS_OWNER').reduce((s, r) => s + r._count, 0)} businesses`}
           icon={Users}
-          gradient="from-tp-400 to-ts-500"
-          iconBg="bg-tp-50"
-          iconColor="text-tp-600"
+          gradient="from-teal-400 to-cyan-500"
+          iconBg="bg-teal-500/10"
+          iconColor="text-teal-400"
         />
         <AdminStatCard
           label="Active Subscriptions"
           value={safe.activeSubscriptions}
           sub={`${subsByStatus.find(s => s.status === 'PENDING')?._count || 0} pending`}
           icon={CreditCard}
-          gradient="from-ts-400 to-cyan-500"
-          iconBg="bg-ts-50"
-          iconColor="text-ts-600"
+          gradient="from-cyan-400 to-cyan-500"
+          iconBg="bg-cyan-500/10"
+          iconColor="text-cyan-400"
         />
         <AdminStatCard
           label="Total Revenue"
@@ -165,8 +165,8 @@ export function AdminDashboard() {
           sub={`TZS ${safe.monthlyRevenue.toLocaleString()} this month`}
           icon={DollarSign}
           gradient="from-amber-400 to-orange-500"
-          iconBg="bg-amber-50"
-          iconColor="text-amber-600"
+          iconBg="bg-amber-500/10"
+          iconColor="text-amber-400"
         />
         <AdminStatCard
           label="Pending Requests"
@@ -175,18 +175,18 @@ export function AdminDashboard() {
           subColor="text-slate-400"
           icon={Clock}
           gradient="from-violet-400 to-purple-500"
-          iconBg="bg-violet-50"
-          iconColor="text-violet-600"
+          iconBg="bg-violet-500/10"
+          iconColor="text-violet-400"
         />
       </div>
 
       <div className="grid lg:grid-cols-2 gap-6">
         {/* Package Revenue */}
-        <Card className="card-premium-static border-0 bg-white rounded-2xl overflow-hidden">
+        <Card className="glass-card border-0 rounded-2xl overflow-hidden">
           <CardHeader className="pb-2 px-6 pt-6">
-            <CardTitle className="text-[15px] font-semibold text-slate-900 flex items-center gap-2">
-              <div className="h-7 w-7 rounded-lg bg-tp-50 flex items-center justify-center">
-                <BarChart3 className="h-4 w-4 text-tp-600" />
+            <CardTitle className="text-[15px] font-semibold text-white flex items-center gap-2">
+              <div className="h-7 w-7 rounded-lg bg-teal-500/10 flex items-center justify-center">
+                <BarChart3 className="h-4 w-4 text-teal-400" />
               </div>
               Revenue by Package
             </CardTitle>
@@ -203,12 +203,12 @@ export function AdminDashboard() {
                   return (
                     <div key={pkg.name} className="space-y-2">
                       <div className="flex items-center justify-between text-sm">
-                        <span className="font-medium text-slate-700">{pkg.name}</span>
+                        <span className="font-medium text-slate-300">{pkg.name}</span>
                         <span className="text-slate-400 text-xs font-medium">TZS {pkg.amount.toLocaleString()}</span>
                       </div>
-                      <div className="h-2.5 bg-slate-100 rounded-full overflow-hidden">
+                      <div className="h-2.5 bg-white/[0.06] rounded-full overflow-hidden">
                         <div
-                          className="h-full bg-gradient-to-r from-tp-500 to-ts-400 rounded-full transition-all duration-700 ease-out"
+                          className="h-full bg-gradient-to-r from-teal-500 to-cyan-400 rounded-full transition-all duration-700 ease-out"
                           style={{ width: `${pct}%` }}
                         />
                       </div>
@@ -221,11 +221,11 @@ export function AdminDashboard() {
         </Card>
 
         {/* Request Status Distribution */}
-        <Card className="card-premium-static border-0 bg-white rounded-2xl overflow-hidden">
+        <Card className="glass-card border-0 rounded-2xl overflow-hidden">
           <CardHeader className="pb-2 px-6 pt-6">
-            <CardTitle className="text-[15px] font-semibold text-slate-900 flex items-center gap-2">
-              <div className="h-7 w-7 rounded-lg bg-tp-50 flex items-center justify-center">
-                <Activity className="h-4 w-4 text-tp-600" />
+            <CardTitle className="text-[15px] font-semibold text-white flex items-center gap-2">
+              <div className="h-7 w-7 rounded-lg bg-teal-500/10 flex items-center justify-center">
+                <Activity className="h-4 w-4 text-teal-400" />
               </div>
               Request Status
             </CardTitle>
@@ -239,21 +239,21 @@ export function AdminDashboard() {
               <div className="space-y-3">
                 {reqsByStatus.map((rs) => {
                   const statusColor = rs.status === 'COMPLETED' || rs.status === 'APPROVED'
-                    ? 'bg-tp-100 text-tp-700 border-tp-200/80'
+                    ? 'bg-emerald-500/15 text-emerald-400 border-emerald-500/25'
                     : rs.status === 'PENDING'
-                      ? 'bg-amber-100 text-amber-700 border-amber-200/80'
+                      ? 'bg-amber-500/15 text-amber-400 border-amber-500/25'
                       : rs.status === 'REJECTED'
-                        ? 'bg-red-100 text-red-700 border-red-200/80'
-                        : 'bg-sky-100 text-sky-700 border-sky-200/80'
+                        ? 'bg-red-500/15 text-red-400 border-red-500/25'
+                        : 'bg-sky-500/15 text-sky-400 border-sky-500/25'
                   return (
-                    <div key={rs.status} className="flex items-center justify-between p-2.5 rounded-xl hover:bg-slate-50 transition-colors">
+                    <div key={rs.status} className="flex items-center justify-between p-2.5 rounded-xl hover:bg-white/[0.03] transition-colors">
                       <Badge
                         className={`${statusColor} rounded-lg font-medium text-[12px]`}
                         variant="outline"
                       >
                         {rs.status}
                       </Badge>
-                      <span className="font-semibold text-slate-900 text-sm">{rs._count}</span>
+                      <span className="font-semibold text-white text-sm">{rs._count}</span>
                     </div>
                   )
                 })}
@@ -264,11 +264,11 @@ export function AdminDashboard() {
       </div>
 
       {/* Recent Activity */}
-      <Card className="card-premium-static border-0 bg-white rounded-2xl overflow-hidden">
+      <Card className="glass-card border-0 rounded-2xl overflow-hidden">
         <CardHeader className="pb-2 px-6 pt-6">
-          <CardTitle className="text-[15px] font-semibold text-slate-900 flex items-center gap-2">
-            <div className="h-7 w-7 rounded-lg bg-tp-50 flex items-center justify-center">
-              <TrendingUp className="h-4 w-4 text-tp-600" />
+          <CardTitle className="text-[15px] font-semibold text-white flex items-center gap-2">
+            <div className="h-7 w-7 rounded-lg bg-teal-500/10 flex items-center justify-center">
+              <TrendingUp className="h-4 w-4 text-teal-400" />
             </div>
             Recent Activity
           </CardTitle>
@@ -281,19 +281,19 @@ export function AdminDashboard() {
               </div>
             ) : (
               recentActivity.map((a) => (
-                <div key={a.id} className="flex items-start gap-3 p-3 rounded-xl hover:bg-slate-50 transition-colors group">
-                  <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-tp-50 to-ts-50 text-tp-700 flex items-center justify-center shrink-0 mt-0.5 border border-tp-100/80">
+                <div key={a.id} className="flex items-start gap-3 p-3 rounded-xl hover:bg-white/[0.03] transition-colors group">
+                  <div className="h-8 w-8 rounded-lg bg-teal-500/10 text-teal-400 flex items-center justify-center shrink-0 mt-0.5 border border-teal-500/15">
                     <span className="text-[11px] font-semibold">
                       {(a.user?.name || 'S').charAt(0)}
                     </span>
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm text-slate-700">
-                      <span className="font-medium text-slate-900">{a.user?.name || 'System'}</span>{' '}
+                    <p className="text-sm text-slate-300">
+                      <span className="font-medium text-slate-200">{a.user?.name || 'System'}</span>{' '}
                       <span className="text-slate-400">{a.action.toLowerCase()}</span>{' '}
                       <span className="text-slate-400">{a.entityType.toLowerCase()}</span>
                     </p>
-                    <p className="text-xs text-slate-400 mt-0.5">
+                    <p className="text-xs text-slate-500 mt-0.5">
                       {new Date(a.createdAt).toLocaleString()}
                     </p>
                   </div>
