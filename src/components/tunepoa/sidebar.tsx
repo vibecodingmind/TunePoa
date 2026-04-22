@@ -1,6 +1,8 @@
 'use client'
 
 import { useStore, useAppStore, type ViewId } from '@/lib/store'
+import { t } from '@/lib/i18n'
+import type { Locale } from '@/lib/i18n'
 import Image from 'next/image'
 import { Button } from '@/components/ui/button'
 import { ScrollArea } from '@/components/ui/scroll-area'
@@ -27,12 +29,14 @@ import {
   ScrollText,
   Headphones,
   Receipt,
+  Download,
 } from 'lucide-react'
 
 /* ─── Nav Item Type ─── */
 interface NavItem {
   id: string
   label: string
+  i18nKey: string
   icon: React.ReactNode
   adminOnly?: boolean
   managerOnly?: boolean
@@ -46,37 +50,39 @@ interface NavSection {
 
 /* ─── Navigation Definition ─── */
 const userNavItems: NavItem[] = [
-  { id: 'dashboard', label: 'Dashboard', icon: <LayoutDashboard className="h-[18px] w-[18px]" /> },
-  { id: 'my-requests', label: 'Requests', icon: <FileText className="h-[18px] w-[18px]" /> },
-  { id: 'subscriptions', label: 'Subscriptions', icon: <CreditCard className="h-[18px] w-[18px]" /> },
-  { id: 'packages', label: 'Packages', icon: <Package className="h-[18px] w-[18px]" /> },
-  { id: 'new-request', label: 'New Request', icon: <PlusCircle className="h-[18px] w-[18px]" /> },
-  { id: 'notifications', label: 'Notifications', icon: <Bell className="h-[18px] w-[18px]" /> },
-  { id: 'profile', label: 'My Profile', icon: <UserCircle className="h-[18px] w-[18px]" /> },
-  { id: 'audio-library', label: 'Audio Library', icon: <Music className="h-[18px] w-[18px]" /> },
-  { id: 'my-invoices', label: 'Invoices', icon: <FileText className="h-[18px] w-[18px]" /> },
+  { id: 'dashboard', label: 'Dashboard', i18nKey: 'nav.dashboard', icon: <LayoutDashboard className="h-[18px] w-[18px]" /> },
+  { id: 'my-requests', label: 'Requests', i18nKey: 'nav.requests', icon: <FileText className="h-[18px] w-[18px]" /> },
+  { id: 'subscriptions', label: 'Subscriptions', i18nKey: 'nav.subscriptions', icon: <CreditCard className="h-[18px] w-[18px]" /> },
+  { id: 'packages', label: 'Packages', i18nKey: 'nav.packages', icon: <Package className="h-[18px] w-[18px]" /> },
+  { id: 'new-request', label: 'New Request', i18nKey: 'nav.newRequest', icon: <PlusCircle className="h-[18px] w-[18px]" /> },
+  { id: 'notifications', label: 'Notifications', i18nKey: 'nav.notifications', icon: <Bell className="h-[18px] w-[18px]" /> },
+  { id: 'profile', label: 'My Profile', i18nKey: 'nav.profile', icon: <UserCircle className="h-[18px] w-[18px]" /> },
+  { id: 'audio-library', label: 'Audio Library', i18nKey: 'nav.audioLibrary', icon: <Music className="h-[18px] w-[18px]" /> },
+  { id: 'my-invoices', label: 'Invoices', i18nKey: 'nav.invoices', icon: <FileText className="h-[18px] w-[18px]" /> },
 ]
 
 const adminNavItems: NavItem[] = [
-  { id: 'admin-dashboard', label: 'Dashboard', icon: <BarChart3 className="h-[18px] w-[18px]" />, adminOnly: true },
-  { id: 'admin-requests', label: 'Requests', icon: <FileText className="h-[18px] w-[18px]" />, adminOnly: true },
-  { id: 'admin-subscriptions', label: 'Subscriptions', icon: <CreditCard className="h-[18px] w-[18px]" />, adminOnly: true },
-  { id: 'admin-users', label: 'Users', icon: <Users className="h-[18px] w-[18px]" />, adminOnly: true },
-  { id: 'admin-packages', label: 'Packages', icon: <Shield className="h-[18px] w-[18px]" />, adminOnly: true },
-  { id: 'admin-pricing', label: 'Pricing', icon: <DollarSign className="h-[18px] w-[18px]" />, adminOnly: true },
-  { id: 'admin-analytics', label: 'Analytics', icon: <TrendingUp className="h-[18px] w-[18px]" />, adminOnly: true },
-  { id: 'admin-activity-logs', label: 'Activity Logs', icon: <ScrollText className="h-[18px] w-[18px]" />, adminOnly: true },
-  { id: 'admin-audio', label: 'Audio Library', icon: <Headphones className="h-[18px] w-[18px]" />, adminOnly: true },
-  { id: 'admin-invoices', label: 'Invoices', icon: <Receipt className="h-[18px] w-[18px]" />, adminOnly: true },
+  { id: 'admin-dashboard', label: 'Dashboard', i18nKey: 'nav.admin.dashboard', icon: <BarChart3 className="h-[18px] w-[18px]" />, adminOnly: true },
+  { id: 'admin-requests', label: 'Requests', i18nKey: 'nav.admin.requests', icon: <FileText className="h-[18px] w-[18px]" />, adminOnly: true },
+  { id: 'admin-subscriptions', label: 'Subscriptions', i18nKey: 'nav.admin.subscriptions', icon: <CreditCard className="h-[18px] w-[18px]" />, adminOnly: true },
+  { id: 'admin-users', label: 'Users', i18nKey: 'nav.admin.users', icon: <Users className="h-[18px] w-[18px]" />, adminOnly: true },
+  { id: 'admin-packages', label: 'Packages', i18nKey: 'nav.admin.packages', icon: <Shield className="h-[18px] w-[18px]" />, adminOnly: true },
+  { id: 'admin-pricing', label: 'Pricing', i18nKey: 'nav.admin.pricing', icon: <DollarSign className="h-[18px] w-[18px]" />, adminOnly: true },
+  { id: 'admin-analytics', label: 'Analytics', i18nKey: 'nav.admin.analytics', icon: <TrendingUp className="h-[18px] w-[18px]" />, adminOnly: true },
+  { id: 'admin-activity-logs', label: 'Activity Logs', i18nKey: 'nav.admin.activityLogs', icon: <ScrollText className="h-[18px] w-[18px]" />, adminOnly: true },
+  { id: 'admin-audio', label: 'Audio Library', i18nKey: 'nav.admin.audio', icon: <Headphones className="h-[18px] w-[18px]" />, adminOnly: true },
+  { id: 'admin-invoices', label: 'Invoices', i18nKey: 'nav.admin.invoices', icon: <Receipt className="h-[18px] w-[18px]" />, adminOnly: true },
+  { id: 'admin-export', label: 'Data Export', i18nKey: 'common.export', icon: <Download className="h-[18px] w-[18px]" />, adminOnly: true },
 ]
 
 const settingsNavItems: NavItem[] = [
-  { id: 'settings', label: 'Settings', icon: <Settings className="h-[18px] w-[18px]" /> },
+  { id: 'settings', label: 'Settings', i18nKey: 'nav.settings', icon: <Settings className="h-[18px] w-[18px]" /> },
 ]
 
 /* ─── Sidebar Content (shared between desktop and mobile) ─── */
 function SidebarContent({ onClose }: { onClose?: () => void }) {
   const { currentUser, currentView, navigate, logout, isAdmin, unreadCount } = useAppStore()
+  const { locale } = useStore()
 
   const handleNav = (viewId: string) => {
     navigate(viewId as ViewId)
@@ -155,6 +161,7 @@ function SidebarContent({ onClose }: { onClose?: () => void }) {
                 <div className="space-y-0.5">
                   {items.map((item) => {
                     const isActive = currentView === item.id
+                    const displayLabel = t(item.i18nKey, locale as Locale)
                     return (
                       <button
                         key={item.id}
@@ -174,7 +181,7 @@ function SidebarContent({ onClose }: { onClose?: () => void }) {
                         )}>
                           {item.icon}
                         </span>
-                        <span className="flex-1">{item.label}</span>
+                        <span className="flex-1">{displayLabel}</span>
                         {item.id === 'notifications' && unreadCount > 0 && (
                           <span className="ml-auto mr-1 inline-flex items-center justify-center h-5 min-w-[20px] px-1.5 rounded-full bg-red-500 text-white text-[10px] font-bold leading-none">
                             {unreadCount > 99 ? '99+' : unreadCount}
@@ -209,7 +216,7 @@ function SidebarContent({ onClose }: { onClose?: () => void }) {
           onClick={logout}
         >
           <LogOut className="h-4 w-4" />
-          Sign Out
+          {t('nav.signOut', locale as Locale)}
         </Button>
       </div>
 

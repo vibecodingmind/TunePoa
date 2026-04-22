@@ -36,6 +36,18 @@ export async function POST(request: NextRequest) {
       return error('Account is inactive. Contact support.', 403)
     }
 
+    // Return user WITHOUT password
+    const safeUser = excludePassword(user)
+
+    // Check if 2FA is enabled — if so, require verification before issuing a token
+    if (user.twoFactorEnabled) {
+      return success({
+        twoFactorRequired: true,
+        userId: user.id,
+        user: safeUser,
+      })
+    }
+
     // Create token with 24h expiry
     const token = createToken({ id: user.id, email: user.email, role: user.role, name: user.name })
 
@@ -49,9 +61,6 @@ export async function POST(request: NextRequest) {
         details: JSON.stringify({ email }),
       },
     })
-
-    // Return user WITHOUT password
-    const safeUser = excludePassword(user)
 
     return success({ token, user: safeUser })
   } catch {

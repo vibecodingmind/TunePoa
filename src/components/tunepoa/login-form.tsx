@@ -13,6 +13,9 @@ import {
   Loader2,
   Eye,
   EyeOff,
+  Shield,
+  KeyRound,
+  ArrowLeft,
 } from 'lucide-react'
 import { useToast } from '@/hooks/use-toast'
 
@@ -23,12 +26,29 @@ interface LoginFormProps {
 export function LoginForm({ onSwitchToRegister }: LoginFormProps) {
   const { setAuth, navigate } = useStore()
   const { toast } = useToast()
+
+  // Login state
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [rememberMe, setRememberMe] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+
+  // 2FA state
+  const [twoFactorRequired, setTwoFactorRequired] = useState(false)
+  const [twoFactorUserId, setTwoFactorUserId] = useState<string | null>(null)
+  const [twoFactorCode, setTwoFactorCode] = useState('')
+  const [twoFactorLoading, setTwoFactorLoading] = useState(false)
+  const [twoFactorError, setTwoFactorError] = useState('')
+
+  const handleBackToLogin = () => {
+    setTwoFactorRequired(false)
+    setTwoFactorUserId(null)
+    setTwoFactorCode('')
+    setTwoFactorError('')
+    setError('')
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -49,7 +69,14 @@ export function LoginForm({ onSwitchToRegister }: LoginFormProps) {
         return
       }
 
-      // data is from API: { success, data: { token, user } } or { success: false, error }
+      // Check if 2FA is required
+      if (data.data?.twoFactorRequired) {
+        setTwoFactorRequired(true)
+        setTwoFactorUserId(data.data.userId)
+        return
+      }
+
+      // Normal login flow
       const user = data.data?.user
       const token = data.data?.token
 
@@ -71,6 +98,150 @@ export function LoginForm({ onSwitchToRegister }: LoginFormProps) {
       setLoading(false)
     }
   }
+
+  const handleVerify2FA = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setTwoFactorError('')
+
+    if (!twoFactorCode || twoFactorCode.length !== 6) {
+      setTwoFactorError('Please enter the full 6-digit code.')
+      return
+    }
+
+    if (!twoFactorUserId) return
+
+    setTwoFactorLoading(true)
+
+    try {
+      // Step 1: Verify the 2FA code
+      const verifyRes = await fetch('/api/2fa/verify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: twoFactorUserId, code: twoFactorCode }),
+      })
+
+      const verifyData = await verifyRes.json()
+
+      if (!verifyRes.ok || !verifyData.success) {
+        setTwoFactorError('Invalid code. Please try again.')
+        return
+      }
+
+      // Step 2: Call login again to get the token (2FA secret was cleared by verify)
+      const loginRes = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      })
+
+      const loginData = await loginRes.json()
+
+      if (!loginRes.ok || !loginData.success) {
+        setTwoFactorError('Verification succeeded but login failed. Please try again.')
+        return
+      }
+
+      const user = loginData.data?.user
+      const token = loginData.data?.token
+
+      if (!user || !token) {
+        setTwoFactorError('Verification succeeded but login failed. Please try again.')
+        return
+      }
+
+      setAuth(user, token)
+      toast({
+        title: 'Welcome back!',
+        description: `Signed in as ${user.name}`,
+      })
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : 'Unknown error'
+      console.error('2FA verify error:', msg)
+      setTwoFactorError('Network error. Please try again.')
+    } finally {
+      setTwoFactorLoading(false)
+    }
+  }
+
+  // ─── 2FA Verification Screen ────────────────────────────────────────────
+
+  if (twoFactorRequired) {
+    return (
+      <div className="p-6 sm:p-8">
+        {/* Logo and header */}
+        <div className="text-center mb-6">
+          <div className="h-14 w-14 rounded-2xl bg-gradient-to-br from-teal-500/20 to-teal-600/20 border border-teal-500/20 flex items-center justify-center mx-auto mb-4">
+            <Shield className="h-7 w-7 text-teal-400" />
+          </div>
+          <h1 className="text-xl font-bold text-white">Two-Factor Authentication</h1>
+          <p className="text-sm text-slate-400 mt-1">Enter the 6-digit code sent to you</p>
+        </div>
+
+        {/* 2FA Form */}
+        <form onSubmit={handleVerify2FA} className="space-y-4">
+          {/* Code input */}
+          <div className="space-y-2">
+            <Label htmlFor="two-factor-code" className="text-sm font-medium text-slate-300">
+              Verification Code
+            </Label>
+            <div className="relative">
+              <KeyRound className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500" />
+              <Input
+                id="two-factor-code"
+                type="text"
+                inputMode="numeric"
+                placeholder="000000"
+                maxLength={6}
+                value={twoFactorCode}
+                onChange={(e) => {
+                  const val = e.target.value.replace(/\D/g, '').slice(0, 6)
+                  setTwoFactorCode(val)
+                  if (twoFactorError) setTwoFactorError('')
+                }}
+                className="h-11 pl-10 pr-4 bg-white/5 border-white/[0.08] text-white text-center text-lg tracking-[0.3em] placeholder:text-slate-500 placeholder:tracking-normal focus:border-teal-500/40"
+                autoFocus
+              />
+            </div>
+          </div>
+
+          {/* Error message */}
+          {twoFactorError && (
+            <div className="bg-red-500/10 text-red-400 text-sm p-3 rounded-lg border border-red-500/20">
+              {twoFactorError}
+            </div>
+          )}
+
+          {/* Verify button */}
+          <Button
+            type="submit"
+            className="w-full h-11 bg-gradient-to-r from-teal-500 to-teal-600 hover:from-teal-600 hover:to-teal-700 text-white font-medium"
+            disabled={twoFactorLoading || twoFactorCode.length !== 6}
+          >
+            {twoFactorLoading ? (
+              <>
+                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                Verifying...
+              </>
+            ) : (
+              'Verify'
+            )}
+          </Button>
+
+          {/* Back to login */}
+          <button
+            type="button"
+            className="w-full flex items-center justify-center gap-2 text-sm text-slate-400 hover:text-slate-300 transition-colors py-2"
+            onClick={handleBackToLogin}
+          >
+            <ArrowLeft className="h-4 w-4" />
+            Back to login
+          </button>
+        </form>
+      </div>
+    )
+  }
+
+  // ─── Normal Login Screen ────────────────────────────────────────────────
 
   return (
     <div className="p-6 sm:p-8">

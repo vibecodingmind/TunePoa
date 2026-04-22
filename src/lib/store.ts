@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import type { Locale } from '@/lib/i18n'
 
 // ---------------------------------------------------------------------------
 // Types
@@ -39,6 +40,7 @@ export type ViewId =
   | 'admin-analytics'
   | 'admin-audio'
   | 'admin-invoices'
+  | 'admin-export'
   | 'settings'
 
 export type AuthMode = 'login' | 'register'
@@ -53,6 +55,9 @@ export interface AppState {
 
   // Navigation
   currentView: ViewId
+
+  // i18n
+  locale: Locale
 
   // UI state
   isSidebarOpen: boolean
@@ -76,6 +81,9 @@ export interface AppState {
   // Notification actions
   setUnreadCount: (count: number | ((prev: number) => number)) => void
   incrementUnreadCount: () => void
+
+  // i18n actions
+  setLocale: (locale: Locale) => void
 
   // Role helpers
   isAdmin: () => boolean
@@ -151,11 +159,15 @@ export function isTokenFresh(token: string, bufferMs = 60 * 60 * 1000): boolean 
 
 function getInitialState(): Pick<
   AppState,
-  'user' | 'token' | 'isAuthenticated' | 'currentView'
+  'user' | 'token' | 'isAuthenticated' | 'currentView' | 'locale'
 > {
   if (typeof window === 'undefined') {
-    return { user: null, token: null, isAuthenticated: false, currentView: 'landing' }
+    return { user: null, token: null, isAuthenticated: false, currentView: 'landing', locale: 'en' }
   }
+
+  // Read locale from localStorage
+  const savedLocale = localStorage.getItem('tunepoa_locale') as Locale | null
+  const locale: Locale = savedLocale === 'en' || savedLocale === 'sw' ? savedLocale : 'en'
 
   const savedToken = localStorage.getItem(TOKEN_KEY)
   const savedUser = localStorage.getItem(USER_KEY)
@@ -172,7 +184,7 @@ function getInitialState(): Pick<
           defaultView = 'admin-dashboard'
         }
 
-        return { user, token: savedToken, isAuthenticated: true, currentView: defaultView }
+        return { user, token: savedToken, isAuthenticated: true, currentView: defaultView, locale }
       } catch {
         // Corrupted user JSON -- fall through to clear
       }
@@ -183,7 +195,7 @@ function getInitialState(): Pick<
     localStorage.removeItem(USER_KEY)
   }
 
-  return { user: null, token: null, isAuthenticated: false, currentView: 'landing' }
+  return { user: null, token: null, isAuthenticated: false, currentView: 'landing', locale }
 }
 
 // ---------------------------------------------------------------------------
@@ -203,6 +215,7 @@ export const useStore = create<AppState>((set, get) => ({
   authMode: 'login',
   theme: 'dark' as const,
   unreadCount: 0,
+  locale: hydrated.locale || 'en',
 
   // --- Auth actions ---
 
@@ -272,6 +285,12 @@ export const useStore = create<AppState>((set, get) => ({
 
   setUnreadCount: (count) => set({ unreadCount: typeof count === 'function' ? count(get().unreadCount) : count }),
   incrementUnreadCount: () => set((s) => ({ unreadCount: s.unreadCount + 1 })),
+
+  // --- i18n ---
+  setLocale: (locale) => {
+    if (typeof window !== 'undefined') localStorage.setItem('tunepoa_locale', locale)
+    set({ locale })
+  },
 
   // --- Role helpers ---
 
