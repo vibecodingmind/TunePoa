@@ -23,7 +23,19 @@ export async function POST(request: NextRequest) {
     await db.mnoProvider.deleteMany({})
     await db.user.deleteMany({})
 
-    // Create users with hashed passwords
+    // ─── Create Vodacom MNO Provider (only one we work with) ───
+    const vodacom = await db.mnoProvider.create({
+      data: {
+        name: 'Vodacom Tanzania',
+        country: 'Tanzania',
+        code: 'VODACOM',
+        apiEndpoint: 'https://api.vodacom.co.tz/rbt',
+        isActive: true,
+        notes: 'Primary MNO partner - only network provider for ringback tone delivery',
+      },
+    })
+
+    // ─── Create Admin Users ───
     const superAdmin = await db.user.create({
       data: {
         name: 'TunePoa Super Admin',
@@ -33,24 +45,24 @@ export async function POST(request: NextRequest) {
         businessCategory: 'technology',
         role: 'SUPER_ADMIN',
         status: 'ACTIVE',
-        password: hashPassword('admin123'),
+        password: hashPassword('Admin@2025'),
       },
     })
 
     const admin = await db.user.create({
       data: {
-        name: 'TunePoa Admin',
-        email: 'admin2@tunepoa.co.tz',
+        name: 'TunePoa Operations',
+        email: 'ops@tunepoa.co.tz',
         phone: '+255700000002',
         businessName: 'TunePoa Ltd',
         businessCategory: 'technology',
         role: 'ADMIN',
         status: 'ACTIVE',
-        password: hashPassword('admin123'),
+        password: hashPassword('Admin@2025'),
       },
     })
 
-    // Business owners
+    // ─── Create Business Owner Users (real customers) ───
     const fatima = await db.user.create({
       data: {
         name: 'Fatima Hassan',
@@ -60,7 +72,7 @@ export async function POST(request: NextRequest) {
         businessCategory: 'restaurant',
         role: 'BUSINESS_OWNER',
         status: 'ACTIVE',
-        password: hashPassword('password123'),
+        password: hashPassword('Customer@2025'),
       },
     })
 
@@ -73,7 +85,7 @@ export async function POST(request: NextRequest) {
         businessCategory: 'technology',
         role: 'BUSINESS_OWNER',
         status: 'ACTIVE',
-        password: hashPassword('password123'),
+        password: hashPassword('Customer@2025'),
       },
     })
 
@@ -86,7 +98,7 @@ export async function POST(request: NextRequest) {
         businessCategory: 'fashion',
         role: 'BUSINESS_OWNER',
         status: 'ACTIVE',
-        password: hashPassword('password123'),
+        password: hashPassword('Customer@2025'),
       },
     })
 
@@ -99,26 +111,26 @@ export async function POST(request: NextRequest) {
         businessCategory: 'electronics',
         role: 'BUSINESS_OWNER',
         status: 'ACTIVE',
-        password: hashPassword('password123'),
+        password: hashPassword('Customer@2025'),
       },
     })
 
-    const grace = await db.user.create({
+    const mariam = await db.user.create({
       data: {
-        name: 'Grace Mwakyusa',
-        email: 'grace@salonbeauty.tz',
+        name: 'Mariam Said',
+        email: 'mariam@dalali.tz',
         phone: '+255756789012',
-        businessName: 'Salon Beauty Pro',
-        businessCategory: 'beauty',
+        businessName: 'Dalali Real Estate',
+        businessCategory: 'real_estate',
         role: 'BUSINESS_OWNER',
-        status: 'SUSPENDED',
-        password: hashPassword('password123'),
+        status: 'ACTIVE',
+        password: hashPassword('Customer@2025'),
       },
     })
 
-    const businessOwners = [fatima, peter, asha, joseph, grace]
+    const businessOwners = [fatima, peter, asha, joseph, mariam]
 
-    // Create pricing tiers (from user's pricing module)
+    // ─── Create Pricing Tiers ───
     const tier1_10 = await db.pricingTier.create({
       data: {
         name: 'Starter',
@@ -175,7 +187,7 @@ export async function POST(request: NextRequest) {
       },
     })
 
-    // Create pricing settings (add-on prices)
+    // ─── Create Pricing Settings (add-on prices) ───
     await db.pricingSettings.createMany({
       data: [
         {
@@ -201,7 +213,7 @@ export async function POST(request: NextRequest) {
       ],
     })
 
-    // Create legacy packages (kept for backward compatibility)
+    // ─── Create Legacy Packages ───
     const bronzePkg = await db.package.create({
       data: {
         name: 'Bronze',
@@ -258,41 +270,7 @@ export async function POST(request: NextRequest) {
       },
     })
 
-    // Create MNO providers
-    const vodacom = await db.mnoProvider.create({
-      data: {
-        name: 'Vodacom Tanzania',
-        country: 'Tanzania',
-        code: 'VODACOM',
-        apiEndpoint: 'https://api.vodacom.co.tz/rbt',
-        isActive: true,
-        notes: 'Largest MNO in Tanzania with 40%+ market share',
-      },
-    })
-
-    const airtel = await db.mnoProvider.create({
-      data: {
-        name: 'Airtel Tanzania',
-        country: 'Tanzania',
-        code: 'AIRTEL',
-        apiEndpoint: 'https://api.airtel.co.tz/rbt',
-        isActive: true,
-        notes: 'Second largest MNO with growing subscriber base',
-      },
-    })
-
-    const tigo = await db.mnoProvider.create({
-      data: {
-        name: 'Tigo Tanzania',
-        country: 'Tanzania',
-        code: 'TIGO',
-        apiEndpoint: 'https://api.tigo.co.tz/rbt',
-        isActive: true,
-        notes: 'Third largest MNO, popular among younger demographics',
-      },
-    })
-
-    // Create service requests (simplified statuses: PENDING, APPROVED, REJECTED)
+    // ─── Create Service Requests ───
     const sr1 = await db.serviceRequest.create({
       data: {
         userId: fatima.id,
@@ -351,20 +329,19 @@ export async function POST(request: NextRequest) {
 
     const sr5 = await db.serviceRequest.create({
       data: {
-        userId: grace.id,
-        businessName: 'Salon Beauty Pro',
-        businessCategory: 'beauty',
+        userId: mariam.id,
+        businessName: 'Dalali Real Estate',
+        businessCategory: 'real_estate',
         adType: 'PROMO',
-        targetAudience: 'Women aged 20-45',
-        adScript: 'Salon Beauty Pro - mahali pazuri pa urembo wako! Tunafanya nywele, manikyua, na makeup kwa ubora. Tupo Kimara, karibu na stendi ya mabasi.',
+        targetAudience: 'Property investors and home seekers',
+        adScript: 'Dalali Real Estate - Malazi bora yanako Dalali! Tuna nyumba, viwanja na ofisi kwa bei nafuu Dar es Salaam. Piga simu sasa au tembelea ofisi yetu Kijitonyama.',
         preferredLanguage: 'swahili',
-        specialInstructions: 'Gentle and elegant voice.',
-        status: 'REJECTED',
-        rejectionReason: 'Ad script too long for the selected package. Please shorten to under 20 seconds.',
+        specialInstructions: 'Confident and trustworthy tone.',
+        status: 'PENDING',
       },
     })
 
-    // Create subscriptions (auto-created for APPROVED requests)
+    // ─── Create Subscriptions (auto-created for APPROVED requests) ───
     const sub1 = await db.subscription.create({
       data: {
         userId: fatima.id,
@@ -397,8 +374,8 @@ export async function POST(request: NextRequest) {
         amount: silverPkg.price,
         currency: 'TZS',
         paymentStatus: 'PAID',
-        mnoProviderId: airtel.id,
-        mnoReference: 'AIR-RBT-2025-00456',
+        mnoProviderId: vodacom.id,
+        mnoReference: 'VOD-RBT-2025-00456',
         mnoStatus: 'ACTIVE_MNO',
         mnoSubmittedAt: new Date('2025-02-10'),
         mnoActivatedAt: new Date('2025-02-15'),
@@ -407,24 +384,7 @@ export async function POST(request: NextRequest) {
       },
     })
 
-    const sub3 = await db.subscription.create({
-      data: {
-        userId: asha.id,
-        packageId: bronzePkg.id,
-        requestId: sr3.id,
-        startDate: new Date(),
-        endDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
-        status: 'PENDING',
-        amount: bronzePkg.price,
-        currency: 'TZS',
-        paymentStatus: 'UNPAID',
-        mnoStatus: 'NOT_SUBMITTED',
-        phoneNumber: '+255734567890',
-        autoRenew: false,
-      },
-    })
-
-    // Create payments
+    // ─── Create Payments ───
     await db.payment.create({
       data: {
         subscriptionId: sub1.id,
@@ -444,28 +404,16 @@ export async function POST(request: NextRequest) {
         subscriptionId: sub2.id,
         amount: silverPkg.price,
         currency: 'TZS',
-        method: 'TIGO_PESA',
+        method: 'M_PESA',
         status: 'COMPLETED',
-        reference: 'TIGO-PR8N2K5J1',
+        reference: 'MPESA-PR8N2K5J1',
         paidAt: new Date('2025-02-12'),
         verifiedBy: admin.id,
         notes: 'Full payment for Silver package - 3 months',
       },
     })
 
-    await db.payment.create({
-      data: {
-        subscriptionId: sub2.id,
-        amount: silverPkg.price,
-        currency: 'TZS',
-        method: 'M_PESA',
-        status: 'PENDING',
-        reference: 'MPESA-PENDING-001',
-        notes: 'Renewal payment initiated but not confirmed',
-      },
-    })
-
-    // Create activity logs
+    // ─── Create Activity Logs ───
     await db.activityLog.createMany({
       data: [
         {
@@ -473,28 +421,14 @@ export async function POST(request: NextRequest) {
           action: 'LOGIN',
           entityType: 'USER',
           entityId: superAdmin.id,
-          details: JSON.stringify({ message: 'First admin login' }),
-        },
-        {
-          userId: superAdmin.id,
-          action: 'CREATED',
-          entityType: 'PACKAGE',
-          entityId: goldPkg.id,
-          details: JSON.stringify({ name: 'Gold Package' }),
-        },
-        {
-          userId: superAdmin.id,
-          action: 'STATUS_CHANGE',
-          entityType: 'SUBSCRIPTION',
-          entityId: sub1.id,
-          details: JSON.stringify({ mnoStatus: 'ACTIVE_MNO' }),
+          details: JSON.stringify({ message: 'System initialized' }),
         },
         {
           userId: fatima.id,
           action: 'CREATED',
           entityType: 'SERVICE_REQUEST',
           entityId: sr1.id,
-          details: JSON.stringify({ adType: 'PROMO' }),
+          details: JSON.stringify({ adType: 'PROMO', businessName: 'Kijani Bora Restaurant' }),
         },
         {
           userId: superAdmin.id,
@@ -503,11 +437,24 @@ export async function POST(request: NextRequest) {
           entityId: sr1.id,
           details: JSON.stringify({ from: 'PENDING', to: 'APPROVED' }),
         },
+        {
+          userId: peter.id,
+          action: 'CREATED',
+          entityType: 'SERVICE_REQUEST',
+          entityId: sr2.id,
+          details: JSON.stringify({ adType: 'BRANDING', businessName: 'Tech Solutions Hub' }),
+        },
+        {
+          userId: admin.id,
+          action: 'STATUS_CHANGE',
+          entityType: 'SERVICE_REQUEST',
+          entityId: sr2.id,
+          details: JSON.stringify({ from: 'PENDING', to: 'APPROVED' }),
+        },
       ],
     })
 
-    // Generate tokens for convenience
-    const pricingTiers = [tier1_10, tier11_25, tier25_50, tier50plus]
+    // ─── Generate tokens ───
     const tokens = {
       superAdmin: createToken({ id: superAdmin.id, email: superAdmin.email, role: superAdmin.role, name: superAdmin.name }),
       admin: createToken({ id: admin.id, email: admin.email, role: admin.role, name: admin.name }),
@@ -515,19 +462,19 @@ export async function POST(request: NextRequest) {
     }
 
     return success({
-      message: 'Database seeded successfully!',
+      message: 'Database seeded successfully! Platform is ready for production use.',
       data: {
         users: {
-          superAdmin: { email: superAdmin.email, password: 'admin123', role: superAdmin.role },
-          admin: { email: admin.email, password: 'admin123', role: admin.role },
-          businessOwners: businessOwners.map(u => ({ email: u.email, password: 'password123', role: u.role, status: u.status })),
+          superAdmin: { email: superAdmin.email, password: 'Admin@2025', role: superAdmin.role },
+          admin: { email: admin.email, password: 'Admin@2025', role: admin.role },
+          businessOwners: businessOwners.map(u => ({ email: u.email, password: 'Customer@2025', role: u.role, status: u.status })),
         },
         packages: [bronzePkg.name, silverPkg.name, goldPkg.name, platinumPkg.name],
         serviceRequests: 5,
-        subscriptions: 3,
-        payments: 3,
-        mnoProviders: [vodacom.name, airtel.name, tigo.name],
-        pricingTiers: pricingTiers.map(t => t.name),
+        subscriptions: 2,
+        payments: 2,
+        mnoProvider: vodacom.name,
+        pricingTiers: [tier1_10, tier11_25, tier25_50, tier50plus].map(t => t.name),
         tokens,
       },
     })

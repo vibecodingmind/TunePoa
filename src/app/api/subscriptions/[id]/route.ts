@@ -110,7 +110,8 @@ export async function PATCH(
     }
 
     // Validate MNO status independently
-    if (body.mnoStatus && !(VALID_STATUSES.MNO_STATUS as readonly string[]).includes(body.mnoStatus)) {
+    const VALID_MNO_STATUSES = ['NOT_SUBMITTED', 'PENDING_MNO', 'ACTIVE_MNO', 'FAILED_MNO', 'REMOVED_MNO']
+    if (body.mnoStatus && !VALID_MNO_STATUSES.includes(body.mnoStatus)) {
       return error(`Invalid MNO status: ${body.mnoStatus}`, 400)
     }
 
@@ -186,10 +187,10 @@ export async function DELETE(
       return error('Subscription not found', 404)
     }
 
-    // Soft cancel - set status to CANCELLED and MNO to REMOVED
+    // Soft cancel - set status to CANCELLED
     await db.subscription.update({
       where: { id },
-      data: { status: 'CANCELLED', mnoStatus: 'REMOVED_MNO' },
+      data: { status: 'CANCELLED' },
     })
 
     // Log activity
@@ -199,7 +200,7 @@ export async function DELETE(
         action: 'STATUS_CHANGE',
         entityType: 'SUBSCRIPTION',
         entityId: id,
-        details: JSON.stringify({ from: existing.status, to: 'CANCELLED', mnoStatus: 'REMOVED_MNO' }),
+        details: JSON.stringify({ from: existing.status, to: 'CANCELLED' }),
       },
     })
 

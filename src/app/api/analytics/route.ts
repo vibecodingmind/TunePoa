@@ -106,16 +106,6 @@ export async function GET(request: NextRequest) {
       _count: true,
     })
 
-    // Active MNO providers
-    const activeMnoProviders = await db.mnoProvider.count({
-      where: { isActive: true },
-    })
-
-    // Subscriptions active on MNO
-    const activeOnMno = await db.subscription.count({
-      where: { mnoStatus: 'ACTIVE_MNO' },
-    })
-
     return success({
       totalUsers,
       activeSubscriptions,
@@ -130,8 +120,6 @@ export async function GET(request: NextRequest) {
       recentActivity,
       packageRevenue: Object.entries(packageRevenueMap).map(([name, amount]) => ({ name, amount })),
       paymentsByMethod,
-      activeMnoProviders,
-      activeOnMno,
     })
   } catch (err) {
     console.error('Get analytics error:', err)

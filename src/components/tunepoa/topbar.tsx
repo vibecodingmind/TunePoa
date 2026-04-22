@@ -36,7 +36,6 @@ const viewTitles: Record<string, string> = {
   'admin-users': 'Users',
   'admin-packages': 'Packages',
   'admin-pricing': 'Pricing',
-  'admin-mno': 'MNO Providers',
   settings: 'Settings',
 }
 

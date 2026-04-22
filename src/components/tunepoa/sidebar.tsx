@@ -12,7 +12,6 @@ import {
   CreditCard,
   Users,
   Package,
-  Radio,
   BarChart3,
   Settings,
   LogOut,
@@ -54,7 +53,6 @@ const adminNavItems: NavItem[] = [
   { id: 'admin-users', label: 'Users', icon: <Users className="h-[18px] w-[18px]" />, adminOnly: true },
   { id: 'admin-packages', label: 'Packages', icon: <Shield className="h-[18px] w-[18px]" />, adminOnly: true },
   { id: 'admin-pricing', label: 'Pricing', icon: <DollarSign className="h-[18px] w-[18px]" />, adminOnly: true },
-  { id: 'admin-mno', label: 'MNO', icon: <Radio className="h-[18px] w-[18px]" />, adminOnly: true },
 ]
 
 const settingsNavItems: NavItem[] = [

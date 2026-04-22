@@ -1,11 +1,15 @@
 import { NextRequest } from 'next/server'
 import { db } from '@/lib/db'
-import { success, error, forbidden } from '@/lib/api-response'
-import { authenticate, isAdmin } from '@/lib/auth'
+import { success, error } from '@/lib/api-response'
 
+/**
+ * GET /api/mno-providers — Read-only (public)
+ * Returns the list of MNO providers. Kept for subscription management
+ * where admin needs to look up Vodacom provider ID.
+ * Note: MNO management has been removed - Vodacom is the only provider.
+ */
 export async function GET() {
   try {
-    // No auth required for viewing MNO providers (public data)
     const providers = await db.mnoProvider.findMany({
       orderBy: { name: 'asc' },
       include: {
@@ -18,52 +22,6 @@ export async function GET() {
     return success({ providers })
   } catch (err) {
     console.error('Get MNO providers error:', err)
-    return error('Internal server error', 500)
-  }
-}
-
-export async function POST(request: NextRequest) {
-  try {
-    // Auth required - admin only
-    const auth = await authenticate(request)
-    if (!auth.authenticated || !auth.user || !isAdmin(auth.user.role)) {
-      return forbidden()
-    }
-
-    const body = await request.json()
-    const { name, country, code, apiEndpoint, apiKey, isActive, notes } = body
-
-    if (!name || !code) {
-      return error('name and code are required')
-    }
-
-    // Check for duplicate code
-    const existingCode = await db.mnoProvider.findUnique({ where: { code: code.toUpperCase() } })
-    if (existingCode) {
-      return error('MNO provider with this code already exists', 409)
-    }
-
-    // Check for duplicate name
-    const existingName = await db.mnoProvider.findUnique({ where: { name } })
-    if (existingName) {
-      return error('MNO provider with this name already exists', 409)
-    }
-
-    const provider = await db.mnoProvider.create({
-      data: {
-        name,
-        country: country || 'Tanzania',
-        code: code.toUpperCase(),
-        apiEndpoint,
-        apiKey,
-        isActive: isActive !== undefined ? isActive : true,
-        notes,
-      },
-    })
-
-    return success({ provider }, 201)
-  } catch (err) {
-    console.error('Create MNO provider error:', err)
     return error('Internal server error', 500)
   }
 }

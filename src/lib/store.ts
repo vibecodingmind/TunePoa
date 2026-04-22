@@ -31,7 +31,6 @@ export type ViewId =
   | 'admin-users'
   | 'admin-packages'
   | 'admin-pricing'
-  | 'admin-mno'
   | 'settings'
 
 export type AuthMode = 'login' | 'register'

@@ -2,7 +2,6 @@ export const VALID_STATUSES = {
   SERVICE_REQUEST: ['PENDING', 'APPROVED', 'REJECTED'],
   SUBSCRIPTION: ['PENDING', 'ACTIVE', 'EXPIRED', 'CANCELLED', 'SUSPENDED'],
   PAYMENT: ['PENDING', 'COMPLETED', 'FAILED', 'REFUNDED'],
-  MNO_STATUS: ['NOT_SUBMITTED', 'PENDING_MNO', 'ACTIVE_MNO', 'FAILED_MNO', 'REMOVED_MNO'],
   PAYMENT_STATUS: ['UNPAID', 'PAID', 'OVERDUE', 'REFUNDED'],
 } as const
 
@@ -18,11 +17,7 @@ export const STATUS_LABELS: Record<string, string> = {
   PAID: 'Paid',
   OVERDUE: 'Overdue',
   REFUNDED: 'Refunded',
-  NOT_SUBMITTED: 'Not Submitted',
-  PENDING_MNO: 'Pending at MNO',
-  ACTIVE_MNO: 'Active on MNO',
-  FAILED_MNO: 'Failed at MNO',
-  REMOVED_MNO: 'Removed from MNO',
+
 }
 
 export const STATUS_COLORS: Record<string, string> = {
@@ -36,11 +31,7 @@ export const STATUS_COLORS: Record<string, string> = {
   UNPAID: 'bg-yellow-100 text-yellow-800 border-yellow-200',
   PAID: 'bg-emerald-100 text-emerald-800 border-emerald-200',
   OVERDUE: 'bg-red-100 text-red-800 border-red-200',
-  NOT_SUBMITTED: 'bg-gray-100 text-gray-800 border-gray-200',
-  PENDING_MNO: 'bg-yellow-100 text-yellow-800 border-yellow-200',
-  ACTIVE_MNO: 'bg-emerald-100 text-emerald-800 border-emerald-200',
-  FAILED_MNO: 'bg-red-100 text-red-800 border-red-200',
-  REMOVED_MNO: 'bg-gray-100 text-gray-800 border-gray-200',
+
 }
 
 // Starter subscription packages with fixed pricing

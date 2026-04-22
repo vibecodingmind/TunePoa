@@ -25,7 +25,6 @@ import {
   CreditCard,
   Clock,
   Wallet,
-  Radio,
   Phone,
   PlusCircle,
   Package,
@@ -60,7 +59,6 @@ interface Subscription {
   endDate: string | null
   amount: number
   package: { id: string; name: string; price: number; durationMonths: number }
-  mnoProvider: { id: string; name: string } | null
 }
 
 interface Payment {
@@ -199,7 +197,7 @@ export function UserDashboard() {
   const totalSpent = payments
     .filter((p) => p.status === 'COMPLETED')
     .reduce((sum, p) => sum + p.amount, 0)
-  const activeAds = subscriptions.filter((s) => s.mnoStatus === 'ACTIVE_MNO').length
+  const activeAds = subscriptions.filter((s) => s.status === 'ACTIVE').length
 
   const recentRequests = [...requests]
     .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
@@ -337,7 +335,7 @@ export function UserDashboard() {
         <StatCard
           label="Active Ads"
           value={activeAds}
-          icon={Radio}
+          icon={Zap}
           gradient="from-violet-400 to-violet-600"
           iconBg="bg-violet-50"
           iconColor="text-violet-600"
@@ -531,21 +529,11 @@ export function UserDashboard() {
                         <span>{sub.phoneNumber}</span>
                       </div>
                     )}
-                    {sub.mnoProvider && (
-                      <div className="flex items-center gap-2">
-                        <Badge variant="outline" className="text-xs text-slate-500 border-slate-200 rounded-md">
-                          {sub.mnoProvider.name}
-                        </Badge>
-                        {sub.mnoStatus && (
-                          <Badge
-                            variant="outline"
-                            className={`${STATUS_COLORS[sub.mnoStatus] || 'bg-slate-100 text-slate-600 border-slate-200'} text-xs rounded-md`}
-                          >
-                            {STATUS_LABELS[sub.mnoStatus] || sub.mnoStatus}
-                          </Badge>
-                        )}
-                      </div>
-                    )}
+                    <div className="flex items-center gap-2">
+                      <Badge variant="outline" className="text-xs text-emerald-600 border-emerald-200 rounded-md">
+                        Vodacom
+                      </Badge>
+                    </div>
                     {sub.endDate && (
                       <p className="text-slate-400 text-xs pt-2 border-t border-slate-50">
                         {sub.status === 'ACTIVE'

@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState, useCallback } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
@@ -71,11 +71,8 @@ export function AdminSubscriptions() {
   const [selectedSub, setSelectedSub] = useState<Subscription | null>(null)
   const [detailOpen, setDetailOpen] = useState(false)
   const [paymentOpen, setPaymentOpen] = useState(false)
-  const [mnoDialogOpen, setMnoDialogOpen] = useState(false)
   const [actionLoading, setActionLoading] = useState(false)
   const [paymentForm, setPaymentForm] = useState({ amount: '', method: 'M_PESA', reference: '' })
-  const [mnoForm, setMnoForm] = useState({ mnoProviderId: '', mnoReference: '' })
-  const [mnoProviders, setMnoProviders] = useState<{ id: string; name: string; code: string }[]>([])
 
   const fetchSubscriptions = useCallback(async () => {
     try {
@@ -100,7 +97,6 @@ export function AdminSubscriptions() {
 
   useEffect(() => {
     fetchSubscriptions()
-    fetch('/api/mno-providers').then(r => r.json()).then(d => setMnoProviders(d.data?.providers || [])).catch(() => {})
   }, [fetchSubscriptions])
 
   const filteredSubs = subscriptions.filter(s =>
@@ -124,7 +120,6 @@ export function AdminSubscriptions() {
         fetchSubscriptions()
         setDetailOpen(false)
         setPaymentOpen(false)
-        setMnoDialogOpen(false)
       }
     } catch {
       toast({ title: 'Error', description: 'Failed to update', variant: 'destructive' })
@@ -157,6 +152,36 @@ export function AdminSubscriptions() {
       }
     } catch {
       toast({ title: 'Error', description: 'Failed to record payment', variant: 'destructive' })
+    } finally {
+      setActionLoading(false)
+    }
+  }
+
+  /** Submit to Vodacom (hardcoded MNO provider) */
+  const handleSubmitToMno = async () => {
+    if (!selectedSub) return
+    setActionLoading(true)
+    try {
+      const res = await fetch('/api/mno-providers', {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      const data = await res.json()
+      const vodacom = (data.data?.providers || []).find(
+        (p: { code: string }) => p.code === 'VODACOM'
+      )
+      if (!vodacom) {
+        toast({ title: 'Error', description: 'Vodacom provider not found in database', variant: 'destructive' })
+        return
+      }
+      const ref = `VOD-${Date.now().toString(36).toUpperCase()}`
+      await handleUpdateSubscription(selectedSub.id, {
+        mnoProviderId: vodacom.id,
+        mnoReference: ref,
+        mnoStatus: 'PENDING_MNO',
+      })
+      toast({ title: 'Submitted to Vodacom', description: `Reference: ${ref}` })
+    } catch {
+      toast({ title: 'Error', description: 'Failed to submit to Vodacom', variant: 'destructive' })
     } finally {
       setActionLoading(false)
     }
@@ -220,8 +245,8 @@ export function AdminSubscriptions() {
                         <Badge className={payStatusColors[sub.paymentStatus]} variant="outline">{sub.paymentStatus}</Badge>
                       </div>
                       <p className="text-xs text-gray-500 mt-1">
-                        TZS {sub.amount.toLocaleString()} • {sub.user.name}
-                        {sub.mnoProvider && ` • ${sub.mnoProvider.name}`}
+                        TZS {sub.amount.toLocaleString()} &bull; {sub.user.name}
+                        &bull; Vodacom
                       </p>
                     </div>
                     <div className="flex items-center gap-1 shrink-0 ml-2">
@@ -252,14 +277,14 @@ export function AdminSubscriptions() {
                   <div><span className="text-gray-500">Package:</span> <span className="font-medium">{selectedSub.package.name}</span></div>
                   <div><span className="text-gray-500">Amount:</span> <span className="font-medium">TZS {selectedSub.amount.toLocaleString()}</span></div>
                   <div><span className="text-gray-500">Phone:</span> <span className="font-medium">{selectedSub.phoneNumber || 'N/A'}</span></div>
-                  <div><span className="text-gray-500">MNO:</span> <span className="font-medium">{selectedSub.mnoProvider?.name || 'Not submitted'}</span></div>
-                  <div><span className="text-gray-500">MNO Ref:</span> <span className="font-medium">{selectedSub.mnoReference || 'N/A'}</span></div>
+                  <div><span className="text-gray-500">Network:</span> <span className="font-medium">Vodacom Tanzania</span></div>
+                  <div><span className="text-gray-500">Vodacom Ref:</span> <span className="font-medium">{selectedSub.mnoReference || 'N/A'}</span></div>
                   <div><span className="text-gray-500">Auto Renew:</span> <span className="font-medium">{selectedSub.autoRenew ? 'Yes' : 'No'}</span></div>
                 </div>
                 <div className="flex flex-wrap gap-2">
                   <Badge className={subStatusColors[selectedSub.status]} variant="outline">Status: {selectedSub.status}</Badge>
                   <Badge className={payStatusColors[selectedSub.paymentStatus]} variant="outline">Payment: {selectedSub.paymentStatus}</Badge>
-                  <Badge className={mnoStatusColors[selectedSub.mnoStatus]} variant="outline">MNO: {selectedSub.mnoStatus}</Badge>
+                  <Badge className={mnoStatusColors[selectedSub.mnoStatus] || 'bg-gray-100 text-gray-600'} variant="outline">Vodacom: {selectedSub.mnoStatus}</Badge>
                 </div>
                 {selectedSub.payments.length > 0 && (
                   <div>
@@ -285,13 +310,13 @@ export function AdminSubscriptions() {
                   </Button>
                 )}
                 {selectedSub.mnoStatus === 'NOT_SUBMITTED' && selectedSub.paymentStatus === 'PAID' && (
-                  <Button variant="outline" size="sm" onClick={() => { setMnoForm({ mnoProviderId: '', mnoReference: '' }); setMnoDialogOpen(true); }}>
-                    <Radio className="h-4 w-4 mr-1" /> Submit to MNO
+                  <Button variant="outline" size="sm" disabled={actionLoading} onClick={handleSubmitToMno}>
+                    <Radio className="h-4 w-4 mr-1" /> Submit to Vodacom
                   </Button>
                 )}
                 {selectedSub.mnoStatus === 'PENDING_MNO' && (
                   <Button size="sm" className="bg-emerald-600" onClick={() => handleUpdateSubscription(selectedSub.id, { mnoStatus: 'ACTIVE_MNO' })}>
-                    Activate on MNO
+                    Activate on Vodacom
                   </Button>
                 )}
                 {selectedSub.status !== 'CANCELLED' && (
@@ -337,39 +362,6 @@ export function AdminSubscriptions() {
             <Button className="bg-emerald-600" disabled={actionLoading} onClick={handleRecordPayment}>
               {actionLoading && <Loader2 className="h-4 w-4 mr-1 animate-spin" />}
               Record Payment
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
-      {/* MNO Submit Dialog */}
-      <Dialog open={mnoDialogOpen} onOpenChange={setMnoDialogOpen}>
-        <DialogContent>
-          <DialogHeader><DialogTitle>Submit to MNO</DialogTitle></DialogHeader>
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <Label>MNO Provider</Label>
-              <Select value={mnoForm.mnoProviderId} onValueChange={(v) => setMnoForm(p => ({ ...p, mnoProviderId: v }))}>
-                <SelectTrigger><SelectValue placeholder="Select provider" /></SelectTrigger>
-                <SelectContent>
-                  {mnoProviders.map(p => (
-                    <SelectItem key={p.id} value={p.id}>{p.name} ({p.code})</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="space-y-2">
-              <Label>MNO Reference (Optional)</Label>
-              <Input value={mnoForm.mnoReference} onChange={(e) => setMnoForm(p => ({ ...p, mnoReference: e.target.value }))} placeholder="Reference from MNO" />
-            </div>
-          </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setMnoDialogOpen(false)}>Cancel</Button>
-            <Button className="bg-emerald-600" disabled={actionLoading || !mnoForm.mnoProviderId} onClick={() => {
-              if (selectedSub) handleUpdateSubscription(selectedSub.id, { mnoProviderId: mnoForm.mnoProviderId, mnoReference: mnoForm.mnoReference, mnoStatus: 'PENDING_MNO' })
-            }}>
-              {actionLoading && <Loader2 className="h-4 w-4 mr-1 animate-spin" />}
-              Submit
             </Button>
           </DialogFooter>
         </DialogContent>

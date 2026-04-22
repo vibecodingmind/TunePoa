@@ -13,7 +13,6 @@ import { AdminRequests } from '@/components/tunepoa/admin-requests'
 import { AdminSubscriptions } from '@/components/tunepoa/admin-subscriptions'
 import { AdminUsers } from '@/components/tunepoa/admin-users'
 import { AdminPackages } from '@/components/tunepoa/admin-packages'
-import { AdminMno } from '@/components/tunepoa/admin-mno'
 import { AdminPricing } from '@/components/tunepoa/admin-pricing'
 import { SettingsPage } from '@/components/tunepoa/settings-page'
 import { MyRequests } from '@/components/tunepoa/my-requests'
@@ -53,7 +52,7 @@ function LoadingScreen() {
 // Admin-only views that business owners cannot access
 const ADMIN_VIEWS = new Set([
   'admin-dashboard', 'admin-requests', 'admin-subscriptions',
-  'admin-users', 'admin-packages', 'admin-pricing', 'admin-mno',
+  'admin-users', 'admin-packages', 'admin-pricing',
 ])
 // User-only views that admins should not land on
 const USER_VIEWS = new Set([
@@ -99,8 +98,6 @@ function ViewRouter() {
       return <AdminUsers />
     case 'admin-packages':
       return <AdminPackages />
-    case 'admin-mno':
-      return <AdminMno />
     case 'admin-pricing':
       return <AdminPricing />
     case 'settings':
