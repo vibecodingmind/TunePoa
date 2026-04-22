@@ -52,7 +52,7 @@ interface ServiceRequest {
 interface Subscription {
   id: string
   status: string
-  mnoStatus: string
+  vodacomStatus: string
   paymentStatus: string
   phoneNumber: string | null
   startDate: string | null

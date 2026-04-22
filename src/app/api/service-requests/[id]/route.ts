@@ -27,7 +27,6 @@ export async function GET(
           include: {
             package: true,
             payments: true,
-            mnoProvider: true,
           },
         },
       },
@@ -134,7 +133,7 @@ export async function PATCH(
             durationMonths: 1,
             currency: 'TZS',
             paymentStatus: 'UNPAID',
-            mnoStatus: 'NOT_SUBMITTED',
+            vodacomStatus: 'NOT_SUBMITTED',
             autoRenew: false,
           },
           include: {
