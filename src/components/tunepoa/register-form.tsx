@@ -166,7 +166,7 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
   return (
     <div className="p-6 sm:p-8">
       <div className="text-center mb-6">
-        <Image src="/logo-square.png" alt="TunePoa" width={48} height={48} className="rounded-xl mb-3" />
+        <Image src="/logo-mark-48.png" alt="TunePoa" width={48} height={48} className="rounded-xl mb-3" />
         <h1 className="text-xl font-bold text-slate-900">Create Your Account</h1>
         <p className="text-sm text-slate-500 mt-1">
           Start turning calls into marketing opportunities

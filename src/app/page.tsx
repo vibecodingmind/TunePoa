@@ -27,7 +27,7 @@ function LoadingScreen() {
         {/* Logo */}
         <div className="relative">
           <div className="animate-logo-pulse">
-            <Image src="/logo-square.png" alt="TunePoa" width={64} height={64} className="rounded-2xl" />
+            <Image src="/logo-mark-64.png" alt="TunePoa" width={64} height={64} className="rounded-xl" />
           </div>
           {/* Orbiting ring */}
           <div className="absolute -inset-3 rounded-3xl border-2 border-tp-200/50 animate-spin-slow" />

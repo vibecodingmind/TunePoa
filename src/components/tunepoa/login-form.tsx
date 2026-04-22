@@ -76,7 +76,7 @@ export function LoginForm({ onSwitchToRegister }: LoginFormProps) {
     <div className="p-6 sm:p-8">
       {/* Logo and header */}
       <div className="text-center mb-6">
-        <Image src="/logo-square.png" alt="TunePoa" width={48} height={48} className="rounded-xl mb-3" />
+        <Image src="/logo-mark-48.png" alt="TunePoa" width={48} height={48} className="rounded-xl mb-3" />
         <h1 className="text-xl font-bold text-slate-900">Welcome Back</h1>
         <p className="text-sm text-slate-500 mt-1">Sign in to your TunePoa account</p>
       </div>

@@ -81,7 +81,7 @@ function SidebarContent({ onClose }: { onClose?: () => void }) {
       {/* Logo area */}
       <div className="flex items-center justify-between px-5 h-16 shrink-0">
         <div className="flex items-center gap-3">
-          <Image src="/logo-square.png" alt="TunePoa" width={36} height={36} className="rounded-xl shadow-lg" />
+          <Image src="/logo-mark-36.png" alt="TunePoa" width={36} height={36} className="rounded-lg shadow-md" />
           <div>
             <span className="font-bold text-base text-slate-900 dark:text-white tracking-tight">TunePoa</span>
             <p className="text-[10px] text-slate-400 dark:text-slate-500 leading-none -mt-0.5">Ringback Platform</p>

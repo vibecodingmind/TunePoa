@@ -389,7 +389,7 @@ export function LandingPage() {
           <div className="flex items-center justify-between h-[72px]">
             {/* Logo */}
             <div className="flex items-center gap-3">
-              <Image src="/logo-square.png" alt="TunePoa" width={40} height={40} className="rounded-2xl shadow-lg" />
+              <Image src="/logo-mark-40.png" alt="TunePoa" width={40} height={40} className="rounded-xl shadow-md" />
               <span className={`font-extrabold text-xl tracking-tight transition-colors duration-500 ${scrolled ? 'text-slate-900 dark:text-white' : 'text-white'}`}>
                 TunePoa
               </span>
@@ -1005,7 +1005,7 @@ export function LandingPage() {
         <div className="relative max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           {/* Decorative icon */}
           <div className="inline-flex mb-8">
-            <Image src="/logo-square.png" alt="TunePoa" width={64} height={64} className="rounded-2xl shadow-2xl" />
+            <Image src="/logo-mark-64.png" alt="TunePoa" width={64} height={64} className="rounded-xl shadow-xl" />
           </div>
 
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white mb-6 tracking-tight leading-tight">
@@ -1067,7 +1067,7 @@ export function LandingPage() {
             {/* Brand column */}
             <div className="sm:col-span-2 lg:col-span-1">
               <div className="flex items-center gap-3 mb-5">
-                <Image src="/logo-square.png" alt="TunePoa" width={40} height={40} className="rounded-2xl shadow-lg" />
+                <Image src="/logo-mark-40.png" alt="TunePoa" width={40} height={40} className="rounded-xl shadow-md" />
                 <span className="font-extrabold text-lg text-white tracking-tight">TunePoa</span>
               </div>
               <p className="text-sm leading-relaxed mb-6">
