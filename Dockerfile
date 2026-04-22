@@ -38,15 +38,18 @@ COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
 # Copy public assets
 COPY --from=builder /app/public ./public
-# Copy prisma for migrations
+# Copy prisma for schema sync at runtime
 COPY --from=builder /app/prisma ./prisma
 # Copy package.json for prisma CLI
 COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
 COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
+# Copy prisma CLI binary and its dependencies
+COPY --from=builder /app/node_modules/prisma ./node_modules/prisma
 
 EXPOSE 3000
 
 ENV PORT=3000
 ENV HOSTNAME="0.0.0.0"
 
-CMD ["node", "server.js"]
+# Startup script: sync schema then start the server
+CMD sh -c "npx prisma db push --skip-generate --accept-data-loss 2>&1 && node server.js"
