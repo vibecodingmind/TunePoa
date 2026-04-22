@@ -38,18 +38,23 @@ COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
 # Copy public assets
 COPY --from=builder /app/public ./public
-# Copy prisma for schema sync at runtime
+# Copy prisma schema for runtime
 COPY --from=builder /app/prisma ./prisma
-# Copy package.json for prisma CLI
+# Copy generated Prisma client
 COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
 COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
-# Copy prisma CLI binary and its dependencies
-COPY --from=builder /app/node_modules/prisma ./node_modules/prisma
+
+# Copy only the package files needed for prisma CLI
+COPY --from=builder /app/package.json ./package.json
+COPY --from=builder /app/package-lock.json* ./package-lock.json*
+
+# Install just prisma CLI for runtime schema push (much smaller than full node_modules)
+RUN npm install prisma --no-save --ignore-scripts 2>/dev/null || true
 
 EXPOSE 3000
 
 ENV PORT=3000
 ENV HOSTNAME="0.0.0.0"
 
-# Startup script: sync schema then start the server
-CMD sh -c "npx prisma db push --skip-generate --accept-data-loss 2>&1 && node server.js"
+# Startup: sync schema then start server
+CMD sh -c "npx prisma db push --skip-generate --accept-data-loss 2>&1 && exec node server.js"
