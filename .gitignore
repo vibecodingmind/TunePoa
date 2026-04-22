@@ -8,3 +8,4 @@ db/*.db-journal
 *.log
 download/
  bun.lock
+tsconfig.tsbuildinfo

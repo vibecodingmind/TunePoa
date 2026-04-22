@@ -6,8 +6,8 @@ FROM base AS deps
 RUN apk add --no-cache libc6-compat openssl
 WORKDIR /app
 
-COPY package.json bun.lock* package-lock.json* ./
-RUN npm install --legacy-peer-deps 2>/dev/null || yarn install --frozen-lockfile 2>/dev/null || npm install
+COPY package.json package-lock.json* ./
+RUN npm install --legacy-peer-deps
 
 # Generate Prisma client
 COPY prisma ./prisma/
@@ -20,7 +20,8 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
 ENV NEXT_TELEMETRY_DISABLED=1
-RUN npm run build
+# Run next build directly (standalone output)
+RUN npx next build
 
 # Production stage
 FROM base AS runner
@@ -31,13 +32,17 @@ ENV NEXT_TELEMETRY_DISABLED=1
 
 RUN apk add --no-cache openssl
 
-# Copy full node_modules for prisma CLI access
-COPY --from=deps /app/node_modules ./node_modules
-COPY --from=builder /app/public ./public
+# Copy standalone output
 COPY --from=builder /app/.next/standalone ./
+# Copy static files
 COPY --from=builder /app/.next/static ./.next/static
+# Copy public assets
+COPY --from=builder /app/public ./public
+# Copy prisma for migrations
 COPY --from=builder /app/prisma ./prisma
-COPY --from=builder /app/package.json ./
+# Copy package.json for prisma CLI
+COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
+COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
 
 EXPOSE 3000
 
