@@ -7,6 +7,46 @@ const globalForPrisma = globalThis as unknown as {
 
 let schemaEnsured = false
 let seedAttempted = false
+let _db: PrismaClient | null = null
+
+function isValidDatabaseUrl(url?: string): boolean {
+  if (!url) return false
+  return url.startsWith('postgresql://') || url.startsWith('postgres://')
+}
+
+/**
+ * Create PrismaClient lazily — only when first accessed.
+ * Avoids crashing at import time if DATABASE_URL is missing/invalid.
+ */
+function createPrismaClient(): PrismaClient {
+  if (!_db) {
+    _db = new PrismaClient({
+      log: process.env.NODE_ENV === 'production' ? ['error'] : ['query'],
+    })
+  }
+  return _db
+}
+
+/**
+ * Proxy-based lazy db export.
+ * Any route calling `db.model.method()` will trigger PrismaClient creation on first use,
+ * not at module import time.
+ */
+export const db = new Proxy({} as PrismaClient, {
+  get(_target, prop, receiver) {
+    const client = createPrismaClient()
+    const value = Reflect.get(client, prop, receiver)
+    // Bind methods so `this` context is correct
+    if (typeof value === 'function') {
+      return value.bind(client)
+    }
+    return value
+  },
+})
+
+if (process.env.NODE_ENV !== 'production') {
+  globalForPrisma.prisma = createPrismaClient()
+}
 
 /**
  * In production (Railway), automatically push schema and seed the database
@@ -14,13 +54,19 @@ let seedAttempted = false
  */
 async function ensureSchemaAndSeed() {
   if (schemaEnsured || process.env.NODE_ENV !== 'production') return
-
-  const client = new PrismaClient({
-    log: ['error'],
-  })
+  // Guard: skip if DATABASE_URL is missing or invalid
+  if (!isValidDatabaseUrl(process.env.DATABASE_URL)) {
+    console.warn(
+      '[db] Skipping auto-schema: DATABASE_URL is missing or invalid. ' +
+      'Set DATABASE_URL to a postgresql:// URL to enable auto-setup.'
+    )
+    schemaEnsured = true
+    return
+  }
 
   try {
     // Check if the PricingTier table exists (our core table)
+    const client = createPrismaClient()
     await client.pricingTier.count({ take: 0 })
     // Check if data exists — if not, seed
     const tierCount = await client.pricingTier.count()
@@ -47,21 +93,11 @@ async function ensureSchemaAndSeed() {
       // Don't crash — let individual API routes handle DB errors gracefully
       schemaEnsured = true // Don't retry on every request
     }
-  } finally {
-    await client.$disconnect()
   }
 }
 
 // Run on startup (non-blocking)
 ensureSchemaAndSeed().catch(() => {})
-
-export const db =
-  globalForPrisma.prisma ??
-  new PrismaClient({
-    log: process.env.NODE_ENV === 'production' ? ['error'] : ['query'],
-  })
-
-if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = db
 
 // Extend globalThis type
 declare global {
