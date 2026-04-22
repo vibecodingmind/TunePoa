@@ -450,16 +450,16 @@ export function LandingPage() {
             {/* Badge */}
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-teal-500/10 border border-teal-500/20 backdrop-blur-md text-teal-400 text-xs font-bold uppercase tracking-[0.15em] mb-8 animate-fade-in-down">
               <Volume2 className="h-3.5 w-3.5" />
-              <span>Make It Ring</span>
+              <span>Ringback Tones</span>
             </div>
 
             {/* Heading */}
             <h1 className="text-4xl sm:text-5xl lg:text-7xl font-extrabold text-white mb-7 leading-[1.08] tracking-tight animate-fade-in-up">
-              Revolutionize the{' '}
+              Turn Every Call into an{' '}
               <br className="hidden sm:block" />
               <span className="relative">
                 <span className="bg-gradient-to-r from-[#00c9b7] via-[#4ab2cf] to-[#00c9b7] bg-clip-text text-transparent">
-                  call-waiting experience!
+                  Opportunity
                 </span>
                 <svg className="absolute -bottom-2 left-0 w-full" viewBox="0 0 300 12" fill="none">
                   <path d="M2 10C50 3 100 3 150 6C200 9 250 4 298 8" stroke="url(#underline-grad)" strokeWidth="3" strokeLinecap="round"/>
@@ -474,8 +474,8 @@ export function LandingPage() {
             </h1>
 
             {/* Subtitle */}
-            <p className="text-base sm:text-lg lg:text-xl text-slate-300 mb-12 max-w-2xl mx-auto leading-relaxed animate-fade-in-up animation-delay-200">
-              TunePoa&apos;s RBT replaces boring beeps with delightful melodies, transforming call experiences while driving revenue and enhancing satisfaction.
+            <p className="text-base sm:text-lg lg:text-xl text-slate-300 mb-12 max-w-3xl mx-auto leading-relaxed animate-fade-in-up animation-delay-200">
+              Our Platform allows businesses to replace the traditional ringing sound with personalized music or messages while customers wait on the line. This service enhances customer experience, boosts brand visibility, and engages callers with professional, branded content. We help reduce perceived wait times and leave a lasting impression on clients.
             </p>
 
             {/* CTA Button */}
@@ -502,31 +502,21 @@ export function LandingPage() {
       </section>
 
       {/* ════════════════════════════════════════════════════════════════
-          ABOUT SECTION
+          MORE THAN JUST MUSIC
           ════════════════════════════════════════════════════════════════ */}
       <section id="about" className="py-24 sm:py-32 bg-[#0a1628] relative">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(0,201,183,0.06),transparent_70%)]" />
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Header */}
-          <div className="text-center mb-16">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-teal-500/10 border border-teal-500/20 text-teal-400 text-[11px] font-bold uppercase tracking-[0.15em] mb-5">
+          {/* Glass card */}
+          <div className="max-w-3xl mx-auto text-center glass-card p-8 sm:p-10">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-teal-500/10 border border-teal-500/20 text-teal-400 text-[11px] font-bold uppercase tracking-[0.15em] mb-6">
               <Megaphone className="h-3.5 w-3.5" />
               About TunePoa
             </div>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white mb-5 tracking-tight">
-              Turn Every Call into an Opportunity
-            </h2>
-            <p className="text-slate-400 max-w-3xl mx-auto text-base sm:text-lg leading-relaxed">
-              Our Platform allows businesses to replace the traditional ringing sound with personalized music or messages while customers wait on the line. This service enhances customer experience, boosts brand visibility, and engages callers with professional, branded content. We help reduce perceived wait times and leaves a lasting impression on clients.
-            </p>
-          </div>
-
-          {/* Sub-section */}
-          <div className="max-w-3xl mx-auto text-center glass-card p-8 sm:p-10">
-            <h3 className="text-xl sm:text-2xl font-bold text-white mb-4">
+            <h2 className="text-2xl sm:text-3xl font-bold text-white mb-4">
               More Than Just Music
-            </h3>
+            </h2>
             <p className="text-slate-400 leading-relaxed mb-8">
               With TunePoa, your ringback tone is not just music—it&apos;s a powerful tool for branding, advertising, and customer engagement.
             </p>
@@ -559,10 +549,10 @@ export function LandingPage() {
               Key Benefits
             </div>
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white mb-5 tracking-tight">
-              Express Through Tones
+              Why Choose TunePoa?
             </h2>
             <p className="text-slate-400 max-w-3xl mx-auto text-base sm:text-lg leading-relaxed">
-              TunePoa.com enables businesses to enhance their brand identity with custom ringback tones. Personalizing call experiences ensures every interaction is memorable and strengthens brand recognition. With RBT, businesses can share promotions, updates, or special offers, creating an engaging way to connect with customers and keep them informed while reinforcing their brand message.
+              Discover how custom ringback tones can transform your business communications and create meaningful connections with every call.
             </p>
           </div>
 
@@ -591,6 +581,40 @@ export function LandingPage() {
               </div>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* ════════════════════════════════════════════════════════════════
+          EXPRESS THROUGH TONES
+          ════════════════════════════════════════════════════════════════ */}
+      <section className="py-24 sm:py-32 bg-[#0a1628] relative">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(0,201,183,0.06),transparent_70%)]" />
+
+        <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-teal-500/10 border border-teal-500/20 text-teal-400 text-[11px] font-bold uppercase tracking-[0.15em] mb-5">
+            <Volume2 className="h-3.5 w-3.5" />
+            Express Through Tones
+          </div>
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white mb-8 tracking-tight">
+            Express Through Tones
+          </h2>
+          <p className="text-slate-400 text-base sm:text-lg leading-relaxed mb-6">
+            TunePoa.com enables businesses to enhance their brand identity with custom ringback tones. Personalizing call experiences ensures every interaction is memorable and strengthens brand recognition.
+          </p>
+          <p className="text-slate-400 text-base sm:text-lg leading-relaxed mb-10">
+            With RBT, businesses can share promotions, updates, or special offers, creating an engaging way to connect with customers and keep them informed while reinforcing their brand message.
+          </p>
+          <Button
+            size="lg"
+            className="bg-gradient-to-r from-teal-500 to-cyan-500 hover:from-teal-500/90 hover:to-cyan-500/90 text-white font-bold text-base px-10 h-12 rounded-2xl shadow-2xl shadow-teal-500/25 group transition-all duration-300 hover:-translate-y-1"
+            onClick={() => {
+              setAuthMode('register')
+              setAuthDialogOpen(true)
+            }}
+          >
+            Get Started
+            <ArrowRight className="ml-2.5 h-5 w-5 transition-transform group-hover:translate-x-1" />
+          </Button>
         </div>
       </section>
 
