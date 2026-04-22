@@ -45,7 +45,7 @@ const roleLabels: Record<string, string> = {
 }
 
 const statusColors: Record<string, string> = {
-  ACTIVE: 'bg-emerald-100 text-emerald-700',
+  ACTIVE: 'bg-tp-100 text-tp-700',
   SUSPENDED: 'bg-red-100 text-red-700',
   INACTIVE: 'bg-gray-100 text-gray-600',
 }
@@ -75,7 +75,6 @@ export function AdminUsers() {
   const [form, setForm] = useState(defaultForm)
 
   const isSuperAdmin = currentUser?.role === 'SUPER_ADMIN'
-  const canCreateAdmin = currentUser?.role === 'SUPER_ADMIN' || currentUser?.role === 'ADMIN'
 
   const fetchUsers = useCallback(async () => {
     try {
@@ -136,8 +135,8 @@ export function AdminUsers() {
       toast({ title: 'Error', description: 'Password must be at least 6 characters', variant: 'destructive' })
       return
     }
-    if (form.role !== 'BUSINESS_OWNER' && !isSuperAdmin && form.role !== 'ADMIN') {
-      toast({ title: 'Error', description: 'You do not have permission to create this role', variant: 'destructive' })
+    if (form.role !== 'BUSINESS_OWNER' && !isSuperAdmin) {
+      toast({ title: 'Error', description: 'Only Super Admin can create admin users', variant: 'destructive' })
       return
     }
 
@@ -182,7 +181,7 @@ export function AdminUsers() {
           <Button variant="outline" size="sm" onClick={fetchUsers}>
             <RefreshCw className="h-4 w-4 mr-2" /> Refresh
           </Button>
-          <Button size="sm" className="bg-emerald-600 hover:bg-emerald-700" onClick={() => setCreateOpen(true)}>
+          <Button size="sm" className="bg-tp-600 hover:bg-tp-700" onClick={() => setCreateOpen(true)}>
             <UserPlus className="h-4 w-4 mr-2" /> Add User
           </Button>
         </div>
@@ -223,7 +222,7 @@ export function AdminUsers() {
                 {users.map(user => (
                   <div key={user.id} className="flex items-center justify-between p-4 hover:bg-gray-50 transition-colors">
                     <div className="flex items-center gap-3 flex-1 min-w-0">
-                      <div className="h-10 w-10 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-700 font-semibold text-sm shrink-0">
+                      <div className="h-10 w-10 rounded-full bg-tp-100 flex items-center justify-center text-tp-700 font-semibold text-sm shrink-0">
                         {user.name.charAt(0)}
                       </div>
                       <div className="min-w-0">
@@ -244,7 +243,7 @@ export function AdminUsers() {
                           <Ban className="h-3.5 w-3.5 mr-1" /> Suspend
                         </Button>
                       ) : (
-                        <Button variant="ghost" size="sm" className="text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50 h-8" onClick={() => handleToggleStatus(user.id, user.status)}>
+                        <Button variant="ghost" size="sm" className="text-tp-600 hover:text-tp-700 hover:bg-tp-50 h-8" onClick={() => handleToggleStatus(user.id, user.status)}>
                           <CheckCircle2 className="h-3.5 w-3.5 mr-1" /> Activate
                         </Button>
                       )}
@@ -351,7 +350,7 @@ export function AdminUsers() {
                 <SelectTrigger><SelectValue placeholder="Select role" /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="BUSINESS_OWNER">Business Owner (Customer)</SelectItem>
-                  {canCreateAdmin && (
+                  {isSuperAdmin && (
                     <SelectItem value="ADMIN">Admin</SelectItem>
                   )}
                   {isSuperAdmin && (
@@ -360,9 +359,9 @@ export function AdminUsers() {
                 </SelectContent>
               </Select>
               {form.role === 'ADMIN' && (
-                <p className="text-xs text-amber-600 flex items-center gap-1">
+                <p className="text-xs text-red-600 flex items-center gap-1">
                   <Shield className="h-3 w-3" />
-                  Admin users can manage platform data and create other admin users.
+                  Admin users can manage platform data but cannot create other admin users.
                 </p>
               )}
               {form.role === 'SUPER_ADMIN' && (
@@ -376,7 +375,7 @@ export function AdminUsers() {
           <DialogFooter>
             <Button variant="outline" onClick={() => { setCreateOpen(false); setForm(defaultForm) }}>Cancel</Button>
             <Button
-              className="bg-emerald-600 hover:bg-emerald-700"
+              className="bg-tp-600 hover:bg-tp-700"
               disabled={actionLoading || !form.name || !form.email || !form.phone || !form.businessName || !form.password}
               onClick={handleCreateUser}
             >

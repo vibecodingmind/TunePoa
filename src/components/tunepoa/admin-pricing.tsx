@@ -52,10 +52,10 @@ interface PricingSetting {
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
 const DURATION_COLUMNS = [
-  { key: '1', label: '1 Month', field: 'price1Month' as const, color: 'from-emerald-500/10 to-teal-500/10 dark:from-emerald-500/20 dark:to-teal-500/20' },
-  { key: '3', label: '3 Months', field: 'price3Month' as const, color: 'from-emerald-500/10 to-cyan-500/10 dark:from-emerald-500/20 dark:to-cyan-500/20' },
-  { key: '6', label: '6 Months', field: 'price6Month' as const, color: 'from-emerald-500/10 to-sky-500/10 dark:from-emerald-500/20 dark:to-sky-500/20' },
-  { key: '12', label: '12 Months', field: 'price12Month' as const, color: 'from-emerald-500/10 to-violet-500/10 dark:from-emerald-500/20 dark:to-violet-500/20' },
+  { key: '1', label: '1 Month', field: 'price1Month' as const, color: 'from-tp-500/10 to-ts-500/10 dark:from-tp-500/20 dark:to-ts-500/20' },
+  { key: '3', label: '3 Months', field: 'price3Month' as const, color: 'from-tp-500/10 to-cyan-500/10 dark:from-tp-500/20 dark:to-cyan-500/20' },
+  { key: '6', label: '6 Months', field: 'price6Month' as const, color: 'from-tp-500/10 to-sky-500/10 dark:from-tp-500/20 dark:to-sky-500/20' },
+  { key: '12', label: '12 Months', field: 'price12Month' as const, color: 'from-tp-500/10 to-violet-500/10 dark:from-tp-500/20 dark:to-violet-500/20' },
 ] as const
 
 const formatTZS = (amount: number) => {
@@ -138,7 +138,7 @@ function EditablePriceCell({
           className={cn(
             'w-full pl-10 pr-8 py-2 text-sm font-mono font-semibold text-right',
             'bg-white dark:bg-slate-800',
-            'border-2 border-emerald-500 dark:border-emerald-400',
+            'border-2 border-tp-500 dark:border-tp-400',
             'rounded-lg',
             'outline-none',
             'shadow-[0_0_0_3px_rgba(16,185,129,0.15)] dark:shadow-[0_0_0_3px_rgba(52,211,153,0.2)]',
@@ -149,7 +149,7 @@ function EditablePriceCell({
         <div className="absolute right-1.5 top-1/2 -translate-y-1/2 flex gap-0.5">
           <button
             onMouseDown={(e) => { e.preventDefault(); commit() }}
-            className="p-0.5 rounded hover:bg-emerald-100 dark:hover:bg-emerald-900/50 text-emerald-600 dark:text-emerald-400"
+            className="p-0.5 rounded hover:bg-tp-100 dark:hover:bg-tp-900/50 text-tp-600 dark:text-tp-400"
             aria-label="Confirm"
           >
             <Check className="h-3 w-3" />
@@ -171,8 +171,8 @@ function EditablePriceCell({
       onClick={startEdit}
       className={cn(
         'group w-full px-3 py-2 rounded-lg text-right transition-all duration-150',
-        'hover:bg-emerald-50 dark:hover:bg-emerald-950/30',
-        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-1',
+        'hover:bg-tp-50 dark:hover:bg-tp-950/30',
+        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-tp-500 focus-visible:ring-offset-1',
         'cursor-pointer',
       )}
       aria-label={`Click to edit ${label} price`}
@@ -259,7 +259,7 @@ function EditableTextCell({
           className={cn(
             'w-full px-3 py-1.5 text-sm',
             'bg-white dark:bg-slate-800',
-            'border-2 border-emerald-500 dark:border-emerald-400',
+            'border-2 border-tp-500 dark:border-tp-400',
             'rounded-lg',
             'outline-none',
             'shadow-[0_0_0_3px_rgba(16,185,129,0.15)] dark:shadow-[0_0_0_3px_rgba(52,211,153,0.2)]',
@@ -279,13 +279,13 @@ function EditableTextCell({
       className={cn(
         'group text-left transition-all duration-150 rounded px-1 -mx-1',
         'hover:bg-slate-100 dark:hover:bg-slate-800',
-        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-1',
+        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-tp-500 focus-visible:ring-offset-1',
         'cursor-pointer',
         className,
       )}
       aria-label={`Click to edit ${label}`}
     >
-      <span className="inline-block group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
+      <span className="inline-block group-hover:text-tp-600 dark:group-hover:text-tp-400 transition-colors">
         {value || placeholder || '—'}
       </span>
     </button>
@@ -352,7 +352,7 @@ function EditableMiniNumber({
         className={cn(
           'w-16 px-2 py-0.5 text-sm font-mono text-center',
           'bg-white dark:bg-slate-800',
-          'border-2 border-emerald-500 dark:border-emerald-400 rounded-md',
+          'border-2 border-tp-500 dark:border-tp-400 rounded-md',
           'outline-none shadow-[0_0_0_3px_rgba(16,185,129,0.15)]',
           className,
         )}
@@ -366,9 +366,9 @@ function EditableMiniNumber({
       onClick={startEdit}
       className={cn(
         'font-mono text-sm font-semibold text-slate-700 dark:text-slate-300',
-        'hover:text-emerald-600 dark:hover:text-emerald-400 rounded px-1.5 py-0.5',
-        'hover:bg-emerald-50 dark:hover:bg-emerald-950/30',
-        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500',
+        'hover:text-tp-600 dark:hover:text-tp-400 rounded px-1.5 py-0.5',
+        'hover:bg-tp-50 dark:hover:bg-tp-950/30',
+        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-tp-500',
         'cursor-pointer transition-colors',
         className,
       )}
@@ -676,8 +676,8 @@ export function AdminPricing() {
       <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <div className="flex items-center justify-center w-9 h-9 rounded-xl bg-emerald-100 dark:bg-emerald-900/40">
-              <DollarSign className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
+            <div className="flex items-center justify-center w-9 h-9 rounded-xl bg-tp-100 dark:bg-tp-900/40">
+              <DollarSign className="h-5 w-5 text-tp-600 dark:text-tp-400" />
             </div>
             <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
               Service Pricing
@@ -726,7 +726,7 @@ export function AdminPricing() {
             ? 'opacity-100 translate-y-0'
             : 'opacity-0 -translate-y-2 pointer-events-none',
           toast?.type === 'success'
-            ? 'bg-emerald-600 text-white dark:bg-emerald-500'
+            ? 'bg-tp-600 text-white dark:bg-tp-500'
             : 'bg-red-600 text-white dark:bg-red-500',
         )}
         role="alert"
@@ -743,8 +743,8 @@ export function AdminPricing() {
       <Card className="overflow-hidden border-slate-200 dark:border-slate-700/60 shadow-sm">
         <CardHeader className="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-700/60 pb-4">
           <div className="flex items-center gap-2.5">
-            <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-emerald-100 dark:bg-emerald-900/40">
-              <Sparkles className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
+            <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-tp-100 dark:bg-tp-900/40">
+              <Sparkles className="h-4 w-4 text-tp-600 dark:text-tp-400" />
             </div>
             <div>
               <CardTitle className="text-base font-semibold text-slate-900 dark:text-white">
@@ -823,7 +823,7 @@ export function AdminPricing() {
                     <div
                       className={cn(
                         'flex flex-col justify-center gap-1.5 px-4 py-3.5 border-r border-slate-100 dark:border-slate-800',
-                        tier.isActive && 'border-l-[3px] border-l-emerald-500',
+                        tier.isActive && 'border-l-[3px] border-l-tp-500',
                         !tier.isActive && 'border-l-[3px] border-l-transparent',
                       )}
                     >
@@ -877,14 +877,14 @@ export function AdminPricing() {
                           checked={tier.isActive}
                           onCheckedChange={() => toggleTierActive(tier)}
                           className={cn(
-                            'data-[state=checked]:bg-emerald-500 data-[state=unchecked]:bg-slate-200 dark:data-[state=unchecked]:bg-slate-700',
+                            'data-[state=checked]:bg-tp-500 data-[state=unchecked]:bg-slate-200 dark:data-[state=unchecked]:bg-slate-700',
                           )}
                           aria-label={`Toggle ${tier.name} active status`}
                         />
                         <span className={cn(
                           'text-[10px] font-medium',
                           tier.isActive
-                            ? 'text-emerald-600 dark:text-emerald-400'
+                            ? 'text-tp-600 dark:text-tp-400'
                             : 'text-slate-400 dark:text-slate-500',
                         )}>
                           {tier.isActive ? 'On' : 'Off'}
@@ -904,7 +904,7 @@ export function AdminPricing() {
                             className={cn(
                               'h-8 px-3 gap-1.5 text-xs',
                               isDirty
-                                ? 'text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50 dark:text-emerald-400 dark:hover:bg-emerald-950/30'
+                                ? 'text-tp-600 hover:text-tp-700 hover:bg-tp-50 dark:text-tp-400 dark:hover:bg-tp-950/30'
                                 : 'text-slate-400 dark:text-slate-500',
                             )}
                           >
@@ -954,7 +954,7 @@ export function AdminPricing() {
             <Button
               variant="ghost"
               onClick={addTier}
-              className="w-full border-2 border-dashed border-slate-200 dark:border-slate-700 hover:border-emerald-400 dark:hover:border-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-950/20 text-slate-500 dark:text-slate-400 hover:text-emerald-600 dark:hover:text-emerald-400 rounded-xl py-6 h-auto"
+              className="w-full border-2 border-dashed border-slate-200 dark:border-slate-700 hover:border-tp-400 dark:hover:border-tp-500 hover:bg-tp-50 dark:hover:bg-tp-950/20 text-slate-500 dark:text-slate-400 hover:text-tp-600 dark:hover:text-tp-400 rounded-xl py-6 h-auto"
             >
               <Plus className="h-5 w-5 mr-2" />
               <span className="text-sm font-medium">Add New Tier</span>
@@ -985,8 +985,8 @@ export function AdminPricing() {
             {/* Audio Recording Price */}
             <div className="group">
               <div className="flex items-center gap-2 mb-3">
-                <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-emerald-100 dark:bg-emerald-900/40">
-                  <Music className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
+                <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-tp-100 dark:bg-tp-900/40">
+                  <Music className="h-4 w-4 text-tp-600 dark:text-tp-400" />
                 </div>
                 <Label className="text-sm font-semibold text-slate-700 dark:text-slate-300">
                   Audio Recording
@@ -1014,7 +1014,7 @@ export function AdminPricing() {
                     'outline-none',
                     'transition-all duration-150',
                     'hover:border-slate-300 dark:hover:border-slate-600',
-                    'focus:border-emerald-500 dark:focus:border-emerald-400',
+                    'focus:border-tp-500 dark:focus:border-tp-400',
                     'focus:shadow-[0_0_0_3px_rgba(16,185,129,0.12)] dark:focus:shadow-[0_0_0_3px_rgba(52,211,153,0.15)]',
                   )}
                   placeholder="0"
@@ -1058,7 +1058,7 @@ export function AdminPricing() {
                     'outline-none',
                     'transition-all duration-150',
                     'hover:border-slate-300 dark:hover:border-slate-600',
-                    'focus:border-emerald-500 dark:focus:border-emerald-400',
+                    'focus:border-tp-500 dark:focus:border-tp-400',
                     'focus:shadow-[0_0_0_3px_rgba(16,185,129,0.12)] dark:focus:shadow-[0_0_0_3px_rgba(52,211,153,0.15)]',
                   )}
                   placeholder="0"
@@ -1076,7 +1076,7 @@ export function AdminPricing() {
               onClick={saveGlobalSettings}
               disabled={savingSettings || !settingsDirty}
               className={cn(
-                'bg-emerald-600 hover:bg-emerald-700 text-white',
+                'bg-tp-600 hover:bg-tp-700 text-white',
                 'disabled:opacity-50 disabled:cursor-not-allowed',
                 'transition-all duration-150',
               )}

@@ -90,13 +90,13 @@ function getPasswordStrength(password: string): {
     case score === 3:
       return { score: 60, label: 'Good', color: 'bg-amber-500', textColor: 'text-amber-600' }
     case score === 4:
-      return { score: 80, label: 'Strong', color: 'bg-emerald-500', textColor: 'text-emerald-600' }
+      return { score: 80, label: 'Strong', color: 'bg-tp-500', textColor: 'text-tp-600' }
     default:
       return {
         score: 100,
         label: 'Very Strong',
-        color: 'bg-emerald-600',
-        textColor: 'text-emerald-700',
+        color: 'bg-tp-600',
+        textColor: 'text-tp-700',
       }
   }
 }
@@ -136,7 +136,7 @@ function PasswordInput({
           errorBorder
             ? 'border-red-400 focus:ring-red-200'
             : successBorder
-              ? 'border-emerald-400 focus:ring-emerald-200'
+              ? 'border-tp-400 focus:ring-tp-200'
               : ''
         }`}
       />
@@ -183,8 +183,8 @@ export function SettingsPage() {
   const [businessForm, setBusinessForm] = useState({
     businessName: user?.businessName || '',
     businessCategory: user?.businessCategory || '',
-    businessDescription: user?.businessDescription || '',
-    businessAddress: user?.businessAddress || '',
+    businessDescription: '',
+    businessAddress: '',
   })
 
   /* ---- Computed ---- */
@@ -400,8 +400,8 @@ export function SettingsPage() {
           <Card className="border-0 shadow-sm">
             <CardHeader>
               <div className="flex items-center gap-3">
-                <div className="h-10 w-10 rounded-lg bg-emerald-100 flex items-center justify-center">
-                  <User className="h-5 w-5 text-emerald-600" />
+                <div className="h-10 w-10 rounded-lg bg-tp-100 flex items-center justify-center">
+                  <User className="h-5 w-5 text-tp-600" />
                 </div>
                 <div>
                   <CardTitle className="text-lg text-slate-900">Profile Information</CardTitle>
@@ -412,7 +412,7 @@ export function SettingsPage() {
             <CardContent className="space-y-6">
               {/* Avatar Section */}
               <div className="flex items-center gap-4">
-                <div className="h-20 w-20 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center border-4 border-emerald-200 shadow-sm">
+                <div className="h-20 w-20 rounded-full bg-gradient-to-br from-tp-400 to-tp-600 flex items-center justify-center border-4 border-tp-200 shadow-sm">
                   <span className="text-2xl font-bold text-white">{initials}</span>
                 </div>
                 <div>
@@ -493,7 +493,7 @@ export function SettingsPage() {
                 <div className="flex justify-end pt-2">
                   <Button
                     type="submit"
-                    className="bg-emerald-600 hover:bg-emerald-700 text-white h-10 px-6"
+                    className="bg-tp-600 hover:bg-tp-700 text-white h-10 px-6"
                     disabled={profileLoading}
                   >
                     {profileLoading ? (
@@ -523,8 +523,8 @@ export function SettingsPage() {
             <Card className="border-0 shadow-sm">
               <CardHeader>
                 <div className="flex items-center gap-3">
-                  <div className="h-10 w-10 rounded-lg bg-emerald-100 flex items-center justify-center">
-                    <Lock className="h-5 w-5 text-emerald-600" />
+                  <div className="h-10 w-10 rounded-lg bg-tp-100 flex items-center justify-center">
+                    <Lock className="h-5 w-5 text-tp-600" />
                   </div>
                   <div>
                     <CardTitle className="text-lg text-slate-900">Change Password</CardTitle>
@@ -563,9 +563,9 @@ export function SettingsPage() {
                       placeholder="Enter new password"
                       show={showNewPassword}
                       onToggle={() => setShowNewPassword(!showNewPassword)}
-                      errorBorder={
+                      errorBorder={!!(
                         securityForm.confirmPassword && !passwordsMatch && securityForm.confirmPassword
-                      }
+                      )}
                     />
                     {/* Strength indicator */}
                     {securityForm.newPassword && (
@@ -597,12 +597,12 @@ export function SettingsPage() {
                       placeholder="Re-enter new password"
                       show={showConfirmPassword}
                       onToggle={() => setShowConfirmPassword(!showConfirmPassword)}
-                      errorBorder={
+                      errorBorder={!!(
                         securityForm.confirmPassword && !passwordsMatch
-                      }
-                      successBorder={
+                      )}
+                      successBorder={!!(
                         passwordsMatch && securityForm.confirmPassword.length > 0
-                      }
+                      )}
                     />
                     {securityForm.confirmPassword && !passwordsMatch && (
                       <p className="text-xs text-red-500 flex items-center gap-1">
@@ -610,7 +610,7 @@ export function SettingsPage() {
                       </p>
                     )}
                     {securityForm.confirmPassword && passwordsMatch && (
-                      <p className="text-xs text-emerald-600 flex items-center gap-1">
+                      <p className="text-xs text-tp-600 flex items-center gap-1">
                         <CheckCircle2 className="h-3 w-3" />
                         Passwords match
                       </p>
@@ -634,7 +634,7 @@ export function SettingsPage() {
                   <div className="flex justify-end pt-2">
                     <Button
                       type="submit"
-                      className="bg-emerald-600 hover:bg-emerald-700 text-white h-10 px-6"
+                      className="bg-tp-600 hover:bg-tp-700 text-white h-10 px-6"
                       disabled={securityLoading}
                     >
                       {securityLoading ? (
@@ -697,8 +697,8 @@ export function SettingsPage() {
           <Card className="border-0 shadow-sm">
             <CardHeader>
               <div className="flex items-center gap-3">
-                <div className="h-10 w-10 rounded-lg bg-emerald-100 flex items-center justify-center">
-                  <Briefcase className="h-5 w-5 text-emerald-600" />
+                <div className="h-10 w-10 rounded-lg bg-tp-100 flex items-center justify-center">
+                  <Briefcase className="h-5 w-5 text-tp-600" />
                 </div>
                 <div>
                   <CardTitle className="text-lg text-slate-900">Business Information</CardTitle>
@@ -783,7 +783,7 @@ export function SettingsPage() {
                 <div className="flex justify-end pt-2">
                   <Button
                     type="submit"
-                    className="bg-emerald-600 hover:bg-emerald-700 text-white h-10 px-6"
+                    className="bg-tp-600 hover:bg-tp-700 text-white h-10 px-6"
                     disabled={businessLoading}
                   >
                     {businessLoading ? (

@@ -2,18 +2,30 @@ import { NextRequest } from 'next/server'
 import { db } from '@/lib/db'
 import { getGatewayConfig } from '@/lib/payment-gateways'
 
+/**
+ * PayPal webhook endpoint.
+ * NOTE: In production, verify webhook signatures using the PayPal SDK
+ * or manual verification to prevent spoofed webhook calls.
+ * Requires PAYPAL_CLIENT_ID and PAYPAL_CLIENT_SECRET in environment.
+ */
 export async function POST(request: NextRequest) {
   try {
+    const config = getGatewayConfig().paypal
+    if (!config.isEnabled) {
+      return new Response(JSON.stringify({ error: 'PayPal not configured' }), {
+        status: 503,
+        headers: { 'Content-Type': 'application/json' },
+      })
+    }
+
     const body = await request.json()
 
-    // PayPal webhook: capture order on COMPLETED event
+    // PayPal webhook: capture order on APPROVED event
     if (body.event_type === 'CHECKOUT.ORDER.APPROVED') {
       const orderId = body.resource?.id
       const subscriptionId = body.resource?.purchase_units?.[0]?.reference_id
 
       if (orderId && subscriptionId) {
-        const config = getGatewayConfig().paypal
-
         // Get access token
         const authRes = await fetch(`${config.baseUrl}/v1/oauth2/token`, {
           method: 'POST',
@@ -24,6 +36,13 @@ export async function POST(request: NextRequest) {
           body: 'grant_type=client_credentials',
         })
         const authData = await authRes.json()
+
+        if (!authData.access_token) {
+          return new Response(JSON.stringify({ error: 'PayPal auth failed' }), {
+            status: 502,
+            headers: { 'Content-Type': 'application/json' },
+          })
+        }
 
         // Capture the order
         const captureRes = await fetch(`${config.baseUrl}/v2/checkout/orders/${orderId}/capture`, {
@@ -60,9 +79,14 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    return new Response(JSON.stringify({ received: true }), { status: 200 })
-  } catch (err) {
-    console.error('PayPal webhook error:', err)
-    return new Response('Error', { status: 500 })
+    return new Response(JSON.stringify({ received: true }), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' },
+    })
+  } catch {
+    return new Response(JSON.stringify({ error: 'Webhook handler failed' }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' },
+    })
   }
 }

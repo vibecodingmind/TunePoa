@@ -8,6 +8,29 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  /* TunePoa Brand Colors */
+  --color-tp-50: #fef2f1;
+  --color-tp-100: #fee2e1;
+  --color-tp-200: #fec9c6;
+  --color-tp-300: #fda2a0;
+  --color-tp-400: #f47272;
+  --color-tp-500: #ee5952;
+  --color-tp-600: #dc3832;
+  --color-tp-700: #bb2b26;
+  --color-tp-800: #9b2a25;
+  --color-tp-900: #802923;
+  --color-tp-950: #451210;
+  --color-ts-50: #edf9fc;
+  --color-ts-100: #d4eef6;
+  --color-ts-200: #abdfed;
+  --color-ts-300: #78cbdf;
+  --color-ts-400: #4ab2cf;
+  --color-ts-500: #006f85;
+  --color-ts-600: #005c6f;
+  --color-ts-700: #004b5b;
+  --color-ts-800: #00404d;
+  --color-ts-900: #003742;
+  --color-ts-950: #00222c;
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -175,11 +198,11 @@
   border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-.glass-emerald {
-  background: rgba(5, 150, 105, 0.08);
+.glass-brand {
+  background: rgba(238, 89, 82, 0.08);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(5, 150, 105, 0.15);
+  border: 1px solid rgba(238, 89, 82, 0.15);
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
@@ -187,7 +210,7 @@
    ═══════════════════════════════════════════════════════════════════════════ */
 
 .gradient-text {
-  background: linear-gradient(135deg, #059669, #14b8a6);
+  background: linear-gradient(135deg, #ee5952, #006f85);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -404,11 +427,11 @@
     0 4px 6px rgba(0, 0, 0, 0.04),
     0 10px 30px rgba(0, 0, 0, 0.06);
   transform: translateY(-2px);
-  border-color: rgba(5, 150, 105, 0.2);
+  border-color: rgba(238, 89, 82, 0.2);
 }
 
 .dark .card-premium:hover {
-  border-color: rgba(5, 150, 105, 0.3);
+  border-color: rgba(238, 89, 82, 0.3);
 }
 
 .card-premium-static {
@@ -431,17 +454,17 @@
    GRADIENT BORDERS
    ═══════════════════════════════════════════════════════════════════════════ */
 
-.border-gradient-emerald {
+.border-gradient-brand {
   position: relative;
 }
 
-.border-gradient-emerald::before {
+.border-gradient-brand::before {
   content: '';
   position: absolute;
   inset: 0;
   border-radius: inherit;
   padding: 1px;
-  background: linear-gradient(135deg, #059669, #14b8a6);
+  background: linear-gradient(135deg, #ee5952, #006f85);
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
@@ -509,10 +532,10 @@
 
 @keyframes logo-pulse {
   0%, 100% {
-    box-shadow: 0 0 0 0 rgba(5, 150, 105, 0.3);
+    box-shadow: 0 0 0 0 rgba(238, 89, 82, 0.3);
   }
   50% {
-    box-shadow: 0 0 0 12px rgba(5, 150, 105, 0);
+    box-shadow: 0 0 0 12px rgba(238, 89, 82, 0);
   }
 }
 

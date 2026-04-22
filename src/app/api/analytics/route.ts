@@ -121,8 +121,7 @@ export async function GET(request: NextRequest) {
       packageRevenue: Object.entries(packageRevenueMap).map(([name, amount]) => ({ name, amount })),
       paymentsByMethod,
     })
-  } catch (err) {
-    console.error('Get analytics error:', err)
+  } catch {
     return error('Internal server error', 500)
   }
 }

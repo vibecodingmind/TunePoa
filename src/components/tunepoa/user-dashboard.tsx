@@ -119,7 +119,7 @@ function StatCard({ label, value, icon: Icon, gradient, iconBg, iconColor, trend
             <p className="text-[12px] font-medium text-slate-400 uppercase tracking-wider">{label}</p>
             <p className="text-2xl font-bold text-slate-900 tracking-tight">{value}</p>
             {trend && (
-              <p className="text-xs text-emerald-600 font-medium flex items-center gap-1">
+              <p className="text-xs text-tp-600 font-medium flex items-center gap-1">
                 <TrendingUp className="h-3 w-3" />
                 {trend}
               </p>
@@ -260,7 +260,7 @@ export function UserDashboard() {
       {/* ================================================================= */}
       {/* Welcome Banner                                                     */}
       {/* ================================================================= */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-emerald-600 via-emerald-500 to-teal-400 p-6 sm:p-8 text-white">
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-tp-600 via-tp-500 to-ts-400 p-6 sm:p-8 text-white">
         {/* Decorative background elements */}
         <div className="absolute top-0 right-0 w-80 h-80 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/3" />
         <div className="absolute bottom-0 left-1/3 w-56 h-56 bg-white/5 rounded-full translate-y-1/2" />
@@ -270,12 +270,12 @@ export function UserDashboard() {
         <div className="absolute top-1/4 left-1/4 w-4 h-4 bg-white/10 rounded-full" />
 
         <div className="relative">
-          <div className="flex items-center gap-2 text-emerald-100 text-sm font-medium mb-2">
+          <div className="flex items-center gap-2 text-tp-100 text-sm font-medium mb-2">
             <Sparkles className="h-4 w-4" />
             <span>Dashboard</span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-bold mb-1 tracking-tight">Welcome back, {firstName}</h1>
-          <p className="text-emerald-100/90 text-sm sm:text-base max-w-lg">
+          <p className="text-tp-100/90 text-sm sm:text-base max-w-lg">
             {user?.businessName
               ? `Manage your ads and subscriptions for ${user.businessName}`
               : 'Your business dashboard is ready'}
@@ -284,7 +284,7 @@ export function UserDashboard() {
           <div className="flex flex-wrap gap-3 mt-6">
             <Button
               size="sm"
-              className="bg-white text-emerald-700 hover:bg-emerald-50 shadow-md shadow-emerald-900/10 font-medium rounded-xl"
+              className="bg-white text-tp-700 hover:bg-tp-50 shadow-md shadow-tp-900/10 font-medium rounded-xl"
               onClick={() => navigate('new-request')}
             >
               <PlusCircle className="h-4 w-4 mr-2" />
@@ -311,9 +311,9 @@ export function UserDashboard() {
           label="Active Subscriptions"
           value={activeSubs}
           icon={CreditCard}
-          gradient="from-emerald-400 to-emerald-600"
-          iconBg="bg-emerald-50"
-          iconColor="text-emerald-600"
+          gradient="from-tp-400 to-tp-600"
+          iconBg="bg-tp-50"
+          iconColor="text-tp-600"
           trend={activeSubs > 0 ? `${activeSubs} running` : undefined}
         />
         <StatCard
@@ -356,7 +356,7 @@ export function UserDashboard() {
               <Button
                 variant="ghost"
                 size="sm"
-                className="text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50 text-[13px] rounded-lg"
+                className="text-tp-600 hover:text-tp-700 hover:bg-tp-50 text-[13px] rounded-lg"
                 onClick={() => navigate('my-requests')}
               >
                 View All
@@ -375,7 +375,7 @@ export function UserDashboard() {
               <p className="text-slate-400 text-sm mt-1">Create your first ringback tone ad request</p>
               <Button
                 variant="link"
-                className="text-emerald-600 mt-1 text-sm"
+                className="text-tp-600 mt-1 text-sm"
                 onClick={() => navigate('new-request')}
               >
                 Get started
@@ -431,7 +431,7 @@ export function UserDashboard() {
                 {recentRequests.map((req) => (
                   <div
                     key={req.id}
-                    className="flex items-center justify-between p-3.5 rounded-xl border border-slate-100 hover:border-emerald-200 hover:bg-emerald-50/30 transition-all duration-200 cursor-pointer"
+                    className="flex items-center justify-between p-3.5 rounded-xl border border-slate-100 hover:border-tp-200 hover:bg-tp-50/30 transition-all duration-200 cursor-pointer"
                     onClick={() => navigate('my-requests')}
                   >
                     <div className="flex-1 min-w-0">
@@ -474,7 +474,7 @@ export function UserDashboard() {
               <Button
                 variant="ghost"
                 size="sm"
-                className="text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50 text-[13px] rounded-lg"
+                className="text-tp-600 hover:text-tp-700 hover:bg-tp-50 text-[13px] rounded-lg"
                 onClick={() => navigate('subscriptions')}
               >
                 View All
@@ -493,7 +493,7 @@ export function UserDashboard() {
               <p className="text-slate-400 text-sm mt-1">Subscribe to a package to activate your ad</p>
               <Button
                 variant="link"
-                className="text-emerald-600 mt-1 text-sm"
+                className="text-tp-600 mt-1 text-sm"
                 onClick={() => navigate('packages')}
               >
                 Browse packages
@@ -504,7 +504,7 @@ export function UserDashboard() {
               {activeSubscriptions.map((sub) => (
                 <div
                   key={sub.id}
-                  className="p-5 rounded-xl border border-slate-100 hover:border-emerald-200 hover:shadow-sm transition-all duration-300 group bg-white"
+                  className="p-5 rounded-xl border border-slate-100 hover:border-tp-200 hover:shadow-sm transition-all duration-300 group bg-white"
                 >
                   <div className="flex items-center justify-between mb-4">
                     <h3 className="font-semibold text-slate-900 text-sm">{sub.package.name}</h3>
@@ -530,7 +530,7 @@ export function UserDashboard() {
                       </div>
                     )}
                     <div className="flex items-center gap-2">
-                      <Badge variant="outline" className="text-xs text-emerald-600 border-emerald-200 rounded-md">
+                      <Badge variant="outline" className="text-xs text-tp-600 border-tp-200 rounded-md">
                         Vodacom
                       </Badge>
                     </div>
@@ -554,7 +554,7 @@ export function UserDashboard() {
       {/* ================================================================= */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <Button
-          className="bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-700 hover:to-emerald-600 text-white h-12 font-medium rounded-xl shadow-md shadow-emerald-500/10 group"
+          className="bg-gradient-to-r from-tp-600 to-tp-500 hover:from-tp-700 hover:to-tp-600 text-white h-12 font-medium rounded-xl shadow-md shadow-tp-500/10 group"
           onClick={() => navigate('new-request')}
         >
           <PlusCircle className="h-4 w-4 mr-2" />

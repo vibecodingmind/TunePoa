@@ -18,7 +18,8 @@ export const metadata: Metadata = {
   description: "Tanzania's #1 ringback tone management platform. Turn every call into an opportunity for your business.",
   keywords: ["TunePoa", "ringback tone", "Tanzania", "advertising", "MNO", "business"],
   icons: {
-    icon: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎵</text></svg>",
+    icon: '/favicon.ico',
+    apple: '/apple-touch-icon.png',
   },
 };
 

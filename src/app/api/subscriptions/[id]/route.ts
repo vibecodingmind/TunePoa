@@ -41,8 +41,7 @@ export async function GET(
     }
 
     return success({ subscription })
-  } catch (err) {
-    console.error('Get subscription error:', err)
+  } catch {
     return error('Internal server error', 500)
   }
 }
@@ -161,8 +160,7 @@ export async function PATCH(
     })
 
     return success({ subscription })
-  } catch (err) {
-    console.error('Update subscription error:', err)
+  } catch {
     return error('Internal server error', 500)
   }
 }
@@ -203,8 +201,7 @@ export async function DELETE(
     })
 
     return success({ message: 'Subscription cancelled' })
-  } catch (err) {
-    console.error('Cancel subscription error:', err)
+  } catch {
     return error('Internal server error', 500)
   }
 }

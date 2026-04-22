@@ -85,13 +85,20 @@ const TOKEN_EXPIRY_MS = 24 * 60 * 60 * 1000 // 24 hours
 
 /**
  * Decode a TunePoa token on the client.
- * Format: "tp_" + base64(JSON { userId, email, role, name, exp })
+ * Format: "tp_<base64url_payload>.<hex_hmac>"
+ * The client does NOT verify the HMAC (that happens server-side).
+ * It only decodes the payload for role-based routing and expiry checks.
  * Returns null if the token is missing, malformed, or expired (24 h).
  */
 function decodeClientToken(token: string): TokenPayload | null {
   try {
     if (!token.startsWith('tp_')) return null
-    const base64 = token.slice(3)
+    const rest = token.slice(3)
+    const dotIndex = rest.lastIndexOf('.')
+    if (dotIndex === -1) return null
+    const encoded = rest.slice(0, dotIndex)
+    // base64url may use - and _ instead of + and /; replace for atob
+    const base64 = encoded.replace(/-/g, '+').replace(/_/g, '/')
     const json = atob(base64)
     const payload: TokenPayload = JSON.parse(json)
     if (!payload.userId || !payload.email || !payload.role) return null
@@ -109,7 +116,11 @@ function decodeClientToken(token: string): TokenPayload | null {
 export function isTokenFresh(token: string, bufferMs = 60 * 60 * 1000): boolean {
   try {
     if (!token.startsWith('tp_')) return false
-    const base64 = token.slice(3)
+    const rest = token.slice(3)
+    const dotIndex = rest.lastIndexOf('.')
+    if (dotIndex === -1) return false
+    const encoded = rest.slice(0, dotIndex)
+    const base64 = encoded.replace(/-/g, '+').replace(/_/g, '/')
     const json = atob(base64)
     const payload: TokenPayload = JSON.parse(json)
     if (!payload.exp) return false

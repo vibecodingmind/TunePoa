@@ -17,7 +17,7 @@ import { AdminPricing } from '@/components/tunepoa/admin-pricing'
 import { SettingsPage } from '@/components/tunepoa/settings-page'
 import { MyRequests } from '@/components/tunepoa/my-requests'
 import { MySubscriptions } from '@/components/tunepoa/my-subscriptions'
-import { Music2 } from 'lucide-react'
+import Image from 'next/image'
 
 /* ─── Branded Loading Screen ─── */
 function LoadingScreen() {
@@ -26,11 +26,11 @@ function LoadingScreen() {
       <div className="flex flex-col items-center gap-5 animate-fade-in-scale">
         {/* Logo */}
         <div className="relative">
-          <div className="h-16 w-16 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-400 flex items-center justify-center animate-logo-pulse">
-            <Music2 className="h-8 w-8 text-white" />
+          <div className="animate-logo-pulse">
+            <Image src="/logo-square.png" alt="TunePoa" width={64} height={64} className="rounded-2xl" />
           </div>
           {/* Orbiting ring */}
-          <div className="absolute -inset-3 rounded-3xl border-2 border-emerald-200/50 animate-spin-slow" />
+          <div className="absolute -inset-3 rounded-3xl border-2 border-tp-200/50 animate-spin-slow" />
         </div>
         {/* Brand name */}
         <div className="text-center">
@@ -39,9 +39,9 @@ function LoadingScreen() {
         </div>
         {/* Progress dots */}
         <div className="flex gap-1.5">
-          <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-bounce" style={{ animationDelay: '0ms' }} />
-          <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-bounce" style={{ animationDelay: '150ms' }} />
-          <span className="h-1.5 w-1.5 rounded-full bg-teal-400 animate-bounce" style={{ animationDelay: '300ms' }} />
+          <span className="h-1.5 w-1.5 rounded-full bg-tp-500 animate-bounce" style={{ animationDelay: '0ms' }} />
+          <span className="h-1.5 w-1.5 rounded-full bg-tp-400 animate-bounce" style={{ animationDelay: '150ms' }} />
+          <span className="h-1.5 w-1.5 rounded-full bg-ts-500 animate-bounce" style={{ animationDelay: '300ms' }} />
         </div>
       </div>
     </div>

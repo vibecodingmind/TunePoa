@@ -85,8 +85,7 @@ export async function POST(request: NextRequest) {
       payment,
       redirectUrl: result.redirectUrl || result.checkoutUrl,
     }, 201)
-  } catch (err) {
-    console.error('Initiate payment error:', err)
+  } catch {
     return error('Failed to initiate payment', 500)
   }
 }

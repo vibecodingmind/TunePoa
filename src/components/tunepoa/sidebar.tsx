@@ -1,6 +1,7 @@
 'use client'
 
-import { useStore, useAppStore } from '@/lib/store'
+import { useStore, useAppStore, type ViewId } from '@/lib/store'
+import Image from 'next/image'
 import { Button } from '@/components/ui/button'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet'
@@ -17,7 +18,6 @@ import {
   LogOut,
   X,
   Shield,
-  Music2,
   ChevronRight,
   DollarSign,
 } from 'lucide-react'
@@ -65,11 +65,11 @@ function SidebarContent({ onClose }: { onClose?: () => void }) {
   const { theme } = useStore()
 
   const handleNav = (viewId: string) => {
-    navigate(viewId)
+    navigate(viewId as ViewId)
     onClose?.()
   }
 
-  const showAdminSection = isAdmin
+  const showAdminSection = isAdmin()
 
   // Show user nav items for business owners, admin nav items for admins
   const visibleNavSections: NavSection[] = showAdminSection
@@ -81,9 +81,7 @@ function SidebarContent({ onClose }: { onClose?: () => void }) {
       {/* Logo area */}
       <div className="flex items-center justify-between px-5 h-16 shrink-0">
         <div className="flex items-center gap-3">
-          <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center shadow-lg shadow-emerald-500/25">
-            <Music2 className="h-5 w-5 text-white" />
-          </div>
+          <Image src="/logo-square.png" alt="TunePoa" width={36} height={36} className="rounded-xl shadow-lg" />
           <div>
             <span className="font-bold text-base text-slate-900 dark:text-white tracking-tight">TunePoa</span>
             <p className="text-[10px] text-slate-400 dark:text-slate-500 leading-none -mt-0.5">Ringback Platform</p>
@@ -108,10 +106,10 @@ function SidebarContent({ onClose }: { onClose?: () => void }) {
       <div className="px-4 py-4 shrink-0">
         <div className="flex items-center gap-3 p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700/60">
           <div className="relative shrink-0">
-            <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-emerald-500 to-teal-400 text-white flex items-center justify-center font-semibold text-sm shadow-md shadow-emerald-500/15">
+            <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-tp-500 to-ts-400 text-white flex items-center justify-center font-semibold text-sm shadow-md shadow-tp-500/15">
               {currentUser?.name?.charAt(0)?.toUpperCase() || 'U'}
             </div>
-            <div className="absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full bg-emerald-500 border-2 border-white dark:border-slate-800" />
+            <div className="absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full bg-tp-500 border-2 border-white dark:border-slate-800" />
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-sm font-semibold text-slate-800 dark:text-slate-100 truncate">
@@ -150,21 +148,21 @@ function SidebarContent({ onClose }: { onClose?: () => void }) {
                         className={cn(
                           'w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] transition-all duration-200 text-left group',
                           isActive
-                            ? 'bg-emerald-500/10 dark:bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 font-medium border border-emerald-500/20 shadow-sm shadow-emerald-500/5'
-                            : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-emerald-50 dark:hover:bg-emerald-900/30 border border-transparent'
+                            ? 'bg-tp-500/10 dark:bg-tp-500/15 text-tp-600 dark:text-tp-400 font-medium border border-tp-500/20 shadow-sm shadow-tp-500/5'
+                            : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-tp-50 dark:hover:bg-tp-900/30 border border-transparent'
                         )}
                       >
                         <span className={cn(
                           'shrink-0 transition-colors duration-200',
                           isActive
-                            ? 'text-emerald-600 dark:text-emerald-400'
+                            ? 'text-tp-600 dark:text-tp-400'
                             : 'text-slate-400 dark:text-slate-500 group-hover:text-slate-600 dark:group-hover:text-slate-300'
                         )}>
                           {item.icon}
                         </span>
                         <span className="flex-1">{item.label}</span>
                         {isActive && (
-                          <ChevronRight className="h-3.5 w-3.5 text-emerald-500/60" />
+                          <ChevronRight className="h-3.5 w-3.5 text-tp-500/60" />
                         )}
                         {item.adminOnly && !isActive && (
                           <span className="text-[9px] px-1.5 py-0.5 rounded-md bg-amber-50 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400 font-semibold border border-amber-200/60 dark:border-amber-500/20">
@@ -196,8 +194,8 @@ function SidebarContent({ onClose }: { onClose?: () => void }) {
         </Button>
       </div>
 
-      {/* Bottom emerald accent bar */}
-      <div className="h-1 bg-gradient-to-r from-emerald-500 via-teal-400 to-emerald-500 opacity-70 dark:opacity-50" />
+      {/* Bottom brand accent bar */}
+      <div className="h-1 bg-gradient-to-r from-tp-500 via-ts-400 to-tp-500 opacity-70 dark:opacity-50" />
     </div>
   )
 }

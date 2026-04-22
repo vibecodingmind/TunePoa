@@ -22,14 +22,14 @@ export const STATUS_LABELS: Record<string, string> = {
 
 export const STATUS_COLORS: Record<string, string> = {
   PENDING: 'bg-yellow-100 text-yellow-800 border-yellow-200',
-  APPROVED: 'bg-emerald-100 text-emerald-800 border-emerald-200',
+  APPROVED: 'bg-tp-100 text-tp-800 border-tp-200',
   REJECTED: 'bg-red-100 text-red-800 border-red-200',
-  ACTIVE: 'bg-emerald-100 text-emerald-800 border-emerald-200',
+  ACTIVE: 'bg-tp-100 text-tp-800 border-tp-200',
   EXPIRED: 'bg-gray-100 text-gray-800 border-gray-200',
   CANCELLED: 'bg-red-100 text-red-800 border-red-200',
   SUSPENDED: 'bg-orange-100 text-orange-800 border-orange-200',
   UNPAID: 'bg-yellow-100 text-yellow-800 border-yellow-200',
-  PAID: 'bg-emerald-100 text-emerald-800 border-emerald-200',
+  PAID: 'bg-tp-100 text-tp-800 border-tp-200',
   OVERDUE: 'bg-red-100 text-red-800 border-red-200',
 
 }

@@ -39,14 +39,14 @@ interface Subscription {
 
 const subStatusColors: Record<string, string> = {
   PENDING: 'bg-yellow-100 text-yellow-700',
-  ACTIVE: 'bg-emerald-100 text-emerald-700',
+  ACTIVE: 'bg-tp-100 text-tp-700',
   EXPIRED: 'bg-gray-100 text-gray-600',
   CANCELLED: 'bg-red-100 text-red-700',
   SUSPENDED: 'bg-orange-100 text-orange-700',
 }
 
 const payStatusColors: Record<string, string> = {
-  PAID: 'bg-emerald-100 text-emerald-700',
+  PAID: 'bg-tp-100 text-tp-700',
   UNPAID: 'bg-yellow-100 text-yellow-700',
   OVERDUE: 'bg-red-100 text-red-700',
   REFUNDED: 'bg-gray-100 text-gray-600',
@@ -55,7 +55,7 @@ const payStatusColors: Record<string, string> = {
 const vodacomStatusColors: Record<string, string> = {
   NOT_SUBMITTED: 'bg-gray-100 text-gray-600',
   PENDING_ACTIVATION: 'bg-yellow-100 text-yellow-700',
-  ACTIVE: 'bg-emerald-100 text-emerald-700',
+  ACTIVE: 'bg-tp-100 text-tp-700',
   FAILED: 'bg-red-100 text-red-700',
   REMOVED: 'bg-gray-100 text-gray-600',
 }
@@ -282,7 +282,7 @@ export function AdminSubscriptions() {
                         <div key={p.id} className="flex items-center justify-between text-sm p-2 bg-gray-50 rounded">
                           <span>TZS {p.amount.toLocaleString()} ({p.method})</span>
                           <div className="flex items-center gap-2">
-                            <Badge variant="outline" className={`text-xs ${p.status === 'COMPLETED' ? 'bg-emerald-100 text-emerald-700' : 'bg-yellow-100 text-yellow-700'}`}>{p.status}</Badge>
+                            <Badge variant="outline" className={`text-xs ${p.status === 'COMPLETED' ? 'bg-tp-100 text-tp-700' : 'bg-yellow-100 text-yellow-700'}`}>{p.status}</Badge>
                             {p.paidAt && <span className="text-xs text-gray-400">{new Date(p.paidAt).toLocaleDateString()}</span>}
                           </div>
                         </div>
@@ -303,7 +303,7 @@ export function AdminSubscriptions() {
                   </Button>
                 )}
                 {selectedSub.vodacomStatus === 'PENDING_ACTIVATION' && (
-                  <Button size="sm" className="bg-emerald-600" onClick={() => handleUpdateSubscription(selectedSub.id, { vodacomStatus: 'ACTIVE' })}>
+                  <Button size="sm" className="bg-tp-600" onClick={() => handleUpdateSubscription(selectedSub.id, { vodacomStatus: 'ACTIVE' })}>
                     Activate on Vodacom
                   </Button>
                 )}
@@ -347,7 +347,7 @@ export function AdminSubscriptions() {
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setPaymentOpen(false)}>Cancel</Button>
-            <Button className="bg-emerald-600" disabled={actionLoading} onClick={handleRecordPayment}>
+            <Button className="bg-tp-600" disabled={actionLoading} onClick={handleRecordPayment}>
               {actionLoading && <Loader2 className="h-4 w-4 mr-1 animate-spin" />}
               Record Payment
             </Button>

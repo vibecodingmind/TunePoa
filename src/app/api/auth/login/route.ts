@@ -2,8 +2,13 @@ import { NextRequest } from 'next/server'
 import { db } from '@/lib/db'
 import { success, error, forbidden } from '@/lib/api-response'
 import { verifyPassword, createToken, excludePassword } from '@/lib/auth'
+import { checkRateLimit } from '@/lib/rate-limit'
 
 export async function POST(request: NextRequest) {
+  // Rate limit: 10 login attempts per minute per IP
+  const rateLimit = checkRateLimit(request, { maxRequests: 10, windowMs: 60_000 })
+  if (rateLimit.limited) return rateLimit.response!
+
   try {
     const body = await request.json()
     const { email, password } = body
@@ -49,9 +54,7 @@ export async function POST(request: NextRequest) {
     const safeUser = excludePassword(user)
 
     return success({ token, user: safeUser })
-  } catch (err: unknown) {
-    const message = err instanceof Error ? err.message : String(err)
-    console.error('Login error:', err)
-    return error(`Internal server error: ${message}`, 500)
+  } catch {
+    return error('Internal server error', 500)
   }
 }

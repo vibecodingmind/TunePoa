@@ -2,8 +2,13 @@ import { NextRequest } from 'next/server'
 import { db } from '@/lib/db'
 import { success, error } from '@/lib/api-response'
 import { hashPassword, createToken, excludePassword } from '@/lib/auth'
+import { checkRateLimit } from '@/lib/rate-limit'
 
 export async function POST(request: NextRequest) {
+  // Rate limit: 5 registrations per minute per IP
+  const rateLimit = checkRateLimit(request, { maxRequests: 5, windowMs: 60_000 })
+  if (rateLimit.limited) return rateLimit.response!
+
   try {
     const body = await request.json()
     const { name, email, phone, businessName, password } = body
@@ -29,7 +34,7 @@ export async function POST(request: NextRequest) {
       return error('Phone number already registered', 409)
     }
 
-    // Hash password (demo-only - see auth.ts for details)
+    // Hash password using scrypt
     const hashedPassword = hashPassword(password)
 
     // Create user with BUSINESS_OWNER role and ACTIVE status
@@ -63,8 +68,7 @@ export async function POST(request: NextRequest) {
     const safeUser = excludePassword(user)
 
     return success({ user: safeUser, token }, 201)
-  } catch (err) {
-    console.error('Registration error:', err)
+  } catch {
     return error('Internal server error', 500)
   }
 }

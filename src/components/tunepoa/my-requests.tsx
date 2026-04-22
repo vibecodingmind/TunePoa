@@ -104,13 +104,13 @@ function StatusMessage({ req }: { req: ServiceRequest }) {
 
   if (req.status === 'APPROVED') {
     return (
-      <div className="flex items-start gap-2.5 mt-3 p-3 rounded-xl bg-emerald-50 border border-emerald-100">
-        <div className="h-7 w-7 rounded-full bg-emerald-100 flex items-center justify-center shrink-0 mt-0.5">
-          <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600" />
+      <div className="flex items-start gap-2.5 mt-3 p-3 rounded-xl bg-tp-50 border border-tp-100">
+        <div className="h-7 w-7 rounded-full bg-tp-100 flex items-center justify-center shrink-0 mt-0.5">
+          <CheckCircle2 className="h-3.5 w-3.5 text-tp-600" />
         </div>
         <div>
-          <p className="text-sm font-semibold text-emerald-700">Request Approved</p>
-          <p className="text-xs text-emerald-600 mt-1">
+          <p className="text-sm font-semibold text-tp-700">Request Approved</p>
+          <p className="text-xs text-tp-600 mt-1">
             Your ad has been approved! A subscription has been created automatically.
           </p>
         </div>
@@ -275,7 +275,7 @@ export function MyRequests() {
           </Button>
           <Button
             size="sm"
-            className="bg-emerald-600 hover:bg-emerald-700 text-white"
+            className="bg-tp-600 hover:bg-tp-700 text-white"
             onClick={() => navigate('new-request')}
           >
             <PlusCircle className="h-4 w-4 mr-1.5" />
@@ -328,7 +328,7 @@ export function MyRequests() {
             </p>
             {!searchQuery && statusFilter === 'ALL' && (
               <Button
-                className="mt-5 bg-emerald-600 hover:bg-emerald-700 text-white"
+                className="mt-5 bg-tp-600 hover:bg-tp-700 text-white"
                 onClick={() => navigate('new-request')}
               >
                 <PlusCircle className="h-4 w-4 mr-2" />
@@ -391,7 +391,7 @@ export function MyRequests() {
                           <button
                             type="button"
                             onClick={() => setExpandedId(isExpanded ? null : req.id)}
-                            className="text-emerald-600 hover:text-emerald-700 text-xs font-semibold ml-1 inline-flex items-center gap-0.5"
+                            className="text-tp-600 hover:text-tp-700 text-xs font-semibold ml-1 inline-flex items-center gap-0.5"
                           >
                             {isExpanded ? (
                               <>
@@ -470,7 +470,7 @@ export function MyRequests() {
                     onClick={() => setPage(pageNum)}
                     className={`h-9 w-9 rounded-lg text-sm font-medium transition-colors ${
                       isCurrentPage
-                        ? 'bg-emerald-600 text-white'
+                        ? 'bg-tp-600 text-white'
                         : 'text-slate-600 hover:bg-slate-100'
                     }`}
                   >

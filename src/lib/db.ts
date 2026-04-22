@@ -22,33 +22,28 @@ async function ensureSchemaAndSeed() {
   try {
     // Check if the PricingTier table exists (our core table)
     await client.pricingTier.count({ take: 0 })
-    console.log('✅ Database tables exist, schema check passed')
-
     // Check if data exists — if not, seed
     const tierCount = await client.pricingTier.count()
     if (tierCount === 0 && !seedAttempted) {
       seedAttempted = true
-      console.log('📝 No data found, triggering auto-seed...')
       // The seed will be triggered via the /api/seed endpoint on first request
       // We set a flag so the landing page knows to call it
       globalThis.__TUNEPOA_NEEDS_SEED = true
     }
 
     schemaEnsured = true
-  } catch (err) {
-    console.log('⚠️ Database tables missing, running prisma db push...')
+  } catch {
+    // Tables missing, running prisma db push
     try {
       execSync('npx prisma db push --skip-generate --accept-data-loss', {
-        stdio: 'inherit',
+        stdio: 'pipe',
         timeout: 60000,
       })
-      console.log('✅ Schema push completed')
 
       // After schema push, seed data is needed
       globalThis.__TUNEPOA_NEEDS_SEED = true
       schemaEnsured = true
-    } catch (pushErr) {
-      console.error('❌ Failed to push schema:', pushErr)
+    } catch {
       // Don't crash — let individual API routes handle DB errors gracefully
       schemaEnsured = true // Don't retry on every request
     }
@@ -58,7 +53,7 @@ async function ensureSchemaAndSeed() {
 }
 
 // Run on startup (non-blocking)
-ensureSchemaAndSeed().catch(console.error)
+ensureSchemaAndSeed().catch(() => {})
 
 export const db =
   globalForPrisma.prisma ??

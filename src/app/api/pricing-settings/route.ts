@@ -13,13 +13,7 @@ export async function GET() {
       map[s.key] = { value: s.value, label: s.label }
     }
     return success({ settings: map })
-  } catch (err) {
-    console.error('Get pricing settings error:', err)
-    const msg = err instanceof Error ? err.message : String(err)
-    // If table doesn't exist, return empty settings gracefully
-    if (msg.includes('_prisma') || msg.includes('relation') || msg.includes('table') || msg.includes('does not exist')) {
-      return success({ settings: {}, needsSetup: true })
-    }
+  } catch {
     return error('Internal server error', 500)
   }
 }
@@ -46,8 +40,7 @@ export async function POST(request: NextRequest) {
     })
 
     return success({ setting })
-  } catch (err) {
-    console.error('Set pricing setting error:', err)
+  } catch {
     return error('Internal server error', 500)
   }
 }

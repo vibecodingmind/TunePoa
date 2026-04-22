@@ -42,8 +42,7 @@ export async function GET(
     }
 
     return success({ request: serviceRequest })
-  } catch (err) {
-    console.error('Get service request error:', err)
+  } catch {
     return error('Internal server error', 500)
   }
 }
@@ -174,8 +173,7 @@ export async function PATCH(
     })
 
     return success({ request: serviceRequest })
-  } catch (err) {
-    console.error('Update service request error:', err)
+  } catch {
     return error('Internal server error', 500)
   }
 }
@@ -222,8 +220,7 @@ export async function DELETE(
     })
 
     return success({ message: 'Service request deleted' })
-  } catch (err) {
-    console.error('Delete service request error:', err)
+  } catch {
     return error('Internal server error', 500)
   }
 }

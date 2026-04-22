@@ -56,8 +56,7 @@ export async function GET(request: NextRequest) {
     })
 
     return success({ payments })
-  } catch (err) {
-    console.error('Get payments error:', err)
+  } catch {
     return error('Internal server error', 500)
   }
 }
@@ -137,8 +136,7 @@ export async function POST(request: NextRequest) {
     })
 
     return success({ payment }, 201)
-  } catch (err) {
-    console.error('Create payment error:', err)
+  } catch {
     return error('Internal server error', 500)
   }
 }

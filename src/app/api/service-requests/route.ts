@@ -51,8 +51,7 @@ export async function GET(request: NextRequest) {
     })
 
     return success({ requests })
-  } catch (err) {
-    console.error('Get service requests error:', err)
+  } catch {
     return error('Internal server error', 500)
   }
 }
@@ -104,8 +103,7 @@ export async function POST(request: NextRequest) {
     })
 
     return success({ request: serviceRequest }, 201)
-  } catch (err) {
-    console.error('Create service request error:', err)
+  } catch {
     return error('Internal server error', 500)
   }
 }

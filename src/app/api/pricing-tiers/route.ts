@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server'
 import { db } from '@/lib/db'
-import { success, error, unauthorized, forbidden } from '@/lib/api-response'
+import { success, error, forbidden } from '@/lib/api-response'
 import { authenticate, isAdmin } from '@/lib/auth'
 
 // GET /api/pricing-tiers — List all pricing tiers (public)
@@ -11,13 +11,7 @@ export async function GET() {
       orderBy: { displayOrder: 'asc' },
     })
     return success({ tiers })
-  } catch (err) {
-    console.error('Get pricing tiers error:', err)
-    const msg = err instanceof Error ? err.message : String(err)
-    // If table doesn't exist, return a helpful message
-    if (msg.includes('_prisma') || msg.includes('relation') || msg.includes('table') || msg.includes('does not exist')) {
-      return success({ tiers: [], needsSetup: true })
-    }
+  } catch {
     return error('Internal server error', 500)
   }
 }
@@ -52,8 +46,7 @@ export async function POST(request: NextRequest) {
     })
 
     return success({ tier }, 201)
-  } catch (err) {
-    console.error('Create pricing tier error:', err)
+  } catch {
     return error('Internal server error', 500)
   }
 }

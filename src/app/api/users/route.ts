@@ -54,8 +54,7 @@ export async function GET(request: NextRequest) {
     })
 
     return success({ users })
-  } catch (err) {
-    console.error('Get users error:', err)
+  } catch {
     return error('Internal server error', 500)
   }
 }
@@ -95,9 +94,10 @@ export async function POST(request: NextRequest) {
         }
         assignedRole = 'SUPER_ADMIN'
       } else if (role === 'ADMIN') {
-        // Both SUPER_ADMIN and ADMIN can create ADMIN
-        if (!['SUPER_ADMIN', 'ADMIN'].includes(auth.user.role)) {
-          return forbidden('Only Admin or Super Admin can create Admin users')
+        // Only SUPER_ADMIN can create ADMIN users
+        // ADMIN role can only create BUSINESS_OWNER users
+        if (auth.user.role !== 'SUPER_ADMIN') {
+          return forbidden('Only Super Admin can create Admin users')
         }
         assignedRole = 'ADMIN'
       } else if (role === 'BUSINESS_OWNER') {
@@ -156,8 +156,7 @@ export async function POST(request: NextRequest) {
     const safeUser = excludePassword(user)
 
     return success({ user: safeUser }, 201)
-  } catch (err) {
-    console.error('Create user error:', err)
+  } catch {
     return error('Internal server error', 500)
   }
 }

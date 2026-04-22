@@ -85,15 +85,15 @@ function getPriceForDuration(tier: PricingTier, months: number): number {
 // Unique gradient + icon combos per tier index
 const TIER_STYLES = [
   {
-    gradient: 'from-emerald-500 to-teal-400',
-    shadow: 'shadow-emerald-500/20',
-    ring: 'ring-emerald-500/30',
-    bgLight: 'bg-emerald-50',
-    bgDark: 'dark:bg-emerald-950/40',
-    borderLight: 'border-emerald-200',
-    borderDark: 'dark:border-emerald-800/50',
+    gradient: 'from-tp-500 to-ts-400',
+    shadow: 'shadow-tp-500/20',
+    ring: 'ring-tp-500/30',
+    bgLight: 'bg-tp-50',
+    bgDark: 'dark:bg-tp-950/40',
+    borderLight: 'border-tp-200',
+    borderDark: 'dark:border-tp-800/50',
     icon: Crown,
-    iconBg: 'bg-emerald-500',
+    iconBg: 'bg-tp-500',
     label: 'Starter',
   },
   {
@@ -209,9 +209,9 @@ function TierCard({
       {/* Status indicator */}
       <div className="absolute top-4 left-4 z-10">
         {tier.isActive ? (
-          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 dark:bg-emerald-900/40 border border-emerald-200 dark:border-emerald-700/50">
-            <div className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
-            <span className="text-[10px] font-bold text-emerald-700 dark:text-emerald-300 uppercase tracking-wider">
+          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-tp-50 dark:bg-tp-900/40 border border-tp-200 dark:border-tp-700/50">
+            <div className="h-1.5 w-1.5 rounded-full bg-tp-500 animate-pulse" />
+            <span className="text-[10px] font-bold text-tp-700 dark:text-tp-300 uppercase tracking-wider">
               Active
             </span>
           </div>
@@ -324,7 +324,7 @@ function TierCard({
             </p>
             {features.map((feature) => (
               <div key={feature} className="flex items-center gap-2.5">
-                <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0" />
+                <CheckCircle2 className="h-4 w-4 text-tp-500 shrink-0" />
                 <span className="text-sm text-slate-600 dark:text-slate-300 font-medium">
                   {feature}
                 </span>
@@ -340,7 +340,7 @@ function TierCard({
                 hover:-translate-y-0.5 hover:shadow-lg group/btn
                 ${
                   isPopular
-                    ? `bg-gradient-to-r ${style.gradient} text-white shadow-lg ${style.shadow} hover:shadow-xl hover:shadow-emerald-500/30`
+                    ? `bg-gradient-to-r ${style.gradient} text-white shadow-lg ${style.shadow} hover:shadow-xl hover:shadow-tp-500/30`
                     : 'bg-slate-900 dark:bg-white text-white dark:text-slate-900 hover:bg-slate-800 dark:hover:bg-slate-100 shadow-md hover:shadow-lg'
                 }
               `}
@@ -545,9 +545,9 @@ export function PackagesPage() {
     <div className="space-y-10">
       {/* ── Page Header ─────────────────────────────────────────────── */}
       <div className="text-center max-w-2xl mx-auto space-y-3">
-        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-50 dark:bg-emerald-900/30 border border-emerald-200 dark:border-emerald-700/40">
-          <Sparkles className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
-          <span className="text-xs font-bold text-emerald-700 dark:text-emerald-300 uppercase tracking-wider">
+        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-tp-50 dark:bg-tp-900/30 border border-tp-200 dark:border-tp-700/40">
+          <Sparkles className="h-4 w-4 text-tp-600 dark:text-tp-400" />
+          <span className="text-xs font-bold text-tp-700 dark:text-tp-300 uppercase tracking-wider">
             Flexible Plans
           </span>
         </div>
@@ -563,7 +563,7 @@ export function PackagesPage() {
       {/* ── Trust badges row ───────────────────────────────────────── */}
       <div className="grid grid-cols-3 gap-3 max-w-md mx-auto">
         {[
-          { icon: Shield, label: 'Secure Payment', color: 'text-emerald-500' },
+          { icon: Shield, label: 'Secure Payment', color: 'text-tp-500' },
           { icon: Headphones, label: '24/7 Support', color: 'text-violet-500' },
           { icon: Clock, label: 'Instant Setup', color: 'text-amber-500' },
         ].map(({ icon: TrustIcon, label, color }) => (
@@ -663,7 +663,7 @@ export function PackagesPage() {
       {subscribing && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
           <Card className="p-8 flex flex-col items-center gap-4 shadow-2xl border-0 bg-white dark:bg-slate-900">
-            <Loader2 className="h-8 w-8 text-emerald-600 dark:text-emerald-400 animate-spin" />
+            <Loader2 className="h-8 w-8 text-tp-600 dark:text-tp-400 animate-spin" />
             <p className="text-sm font-bold text-slate-700 dark:text-slate-200">
               Processing subscription...
             </p>

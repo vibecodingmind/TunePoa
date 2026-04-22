@@ -329,7 +329,7 @@ export function MySubscriptions() {
           </Button>
           <Button
             size="sm"
-            className="bg-emerald-600 hover:bg-emerald-700 text-white"
+            className="bg-tp-600 hover:bg-tp-700 text-white"
             onClick={() => navigate('packages')}
           >
             <CreditCard className="h-4 w-4 mr-1.5" />
@@ -350,7 +350,7 @@ export function MySubscriptions() {
               Subscribe to a package to activate your ringback tone ad on Vodacom.
             </p>
             <Button
-              className="mt-5 bg-emerald-600 hover:bg-emerald-700 text-white"
+              className="mt-5 bg-tp-600 hover:bg-tp-700 text-white"
               onClick={() => navigate('packages')}
             >
               <CreditCard className="h-4 w-4 mr-2" />

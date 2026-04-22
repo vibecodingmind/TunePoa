@@ -69,8 +69,7 @@ export async function GET(request: NextRequest) {
       audioCost,
       total,
     })
-  } catch (err) {
-    console.error('Pricing calculate error:', err)
+  } catch {
     return error('Internal server error', 500)
   }
 }

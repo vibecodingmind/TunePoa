@@ -31,8 +31,7 @@ export async function GET(
     }
 
     return success({ package: pkg })
-  } catch (err) {
-    console.error('Get package error:', err)
+  } catch {
     return error('Internal server error', 500)
   }
 }
@@ -89,8 +88,7 @@ export async function PATCH(
     })
 
     return success({ package: pkg })
-  } catch (err) {
-    console.error('Update package error:', err)
+  } catch {
     return error('Internal server error', 500)
   }
 }
@@ -140,8 +138,7 @@ export async function DELETE(
     })
 
     return success({ message: 'Package deactivated' })
-  } catch (err) {
-    console.error('Delete package error:', err)
+  } catch {
     return error('Internal server error', 500)
   }
 }

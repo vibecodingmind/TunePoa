@@ -1,8 +1,23 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { execSync } from 'child_process'
+import { authenticate } from '@/lib/auth'
+import { db } from '@/lib/db'
 
 export async function POST(request: NextRequest) {
   try {
+    // Auth check: if any users exist, require SUPER_ADMIN authentication.
+    // Allows unauthenticated setup on a completely fresh database.
+    const userCount = await db.user.count()
+    if (userCount > 0) {
+      const auth = await authenticate(request)
+      if (!auth.authenticated || !auth.user || auth.user.role !== 'SUPER_ADMIN') {
+        return NextResponse.json(
+          { success: false, error: 'Only Super Admin can run setup' },
+          { status: 403 }
+        )
+      }
+    }
+
     // Step 1: Run prisma db push to create/update tables
     const pushResult = execSync('npx prisma db push --skip-generate --accept-data-loss', {
       timeout: 60000,
@@ -17,7 +32,6 @@ export async function POST(request: NextRequest) {
     try {
       const tierCount = await client.pricingTier.count()
       if (tierCount === 0) {
-        console.log('📝 No data found after schema push, running seed...')
         // Call the seed endpoint internally
         const baseUrl = process.env.VERCEL_URL
           ? `https://${process.env.VERCEL_URL}`
@@ -25,12 +39,13 @@ export async function POST(request: NextRequest) {
             ? `https://${process.env.RAILWAY_STATIC_URL}`
             : 'http://localhost:3000'
 
+        const headers: Record<string, string> = { 'Content-Type': 'application/json' }
+
         const seedRes = await fetch(`${baseUrl}/api/seed`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers,
         })
         const seedData = await seedRes.json()
-        console.log('Seed result:', seedData.success ? 'SUCCESS' : 'FAILED')
 
         return NextResponse.json({
           success: true,
@@ -51,7 +66,8 @@ export async function POST(request: NextRequest) {
   } catch (err: unknown) {
     let message = ''
     if (err && typeof err === 'object' && 'stdout' in err) {
-      message = 'STDOUT: ' + String((err as { stdout: unknown }).stdout) + '\nSTDERR: ' + String((err as { stderr: unknown }).stderr)
+      const errObj = err as Record<string, unknown>
+      message = 'STDOUT: ' + String(errObj['stdout'] ?? '') + '\nSTDERR: ' + String(errObj['stderr'] ?? '')
     } else {
       message = err instanceof Error ? err.message : String(err)
     }

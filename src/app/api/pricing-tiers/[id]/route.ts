@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server'
 import { db } from '@/lib/db'
-import { success, error, unauthorized, forbidden } from '@/lib/api-response'
+import { success, error, forbidden } from '@/lib/api-response'
 import { authenticate, isAdmin } from '@/lib/auth'
 
 // GET /api/pricing-tiers/[id] — Get single tier (public)
@@ -10,8 +10,7 @@ export async function GET(_request: NextRequest, { params }: { params: Promise<{
     const tier = await db.pricingTier.findUnique({ where: { id } })
     if (!tier) return error('Pricing tier not found', 404)
     return success({ tier })
-  } catch (err) {
-    console.error('Get pricing tier error:', err)
+  } catch {
     return error('Internal server error', 500)
   }
 }
@@ -47,8 +46,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
     })
 
     return success({ tier: updated })
-  } catch (err) {
-    console.error('Update pricing tier error:', err)
+  } catch {
     return error('Internal server error', 500)
   }
 }
@@ -71,8 +69,7 @@ export async function DELETE(request: NextRequest, { params }: { params: Promise
     })
 
     return success({ message: 'Pricing tier deactivated' })
-  } catch (err) {
-    console.error('Delete pricing tier error:', err)
+  } catch {
     return error('Internal server error', 500)
   }
 }

@@ -53,7 +53,7 @@ interface AdminStatCardProps {
   iconColor: string
 }
 
-function AdminStatCard({ label, value, sub, subColor = 'text-emerald-600', icon: Icon, gradient, iconBg, iconColor }: AdminStatCardProps) {
+function AdminStatCard({ label, value, sub, subColor = 'text-tp-600', icon: Icon, gradient, iconBg, iconColor }: AdminStatCardProps) {
   return (
     <div className="card-premium border-0 bg-white group overflow-hidden relative">
       <div className={`absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r ${gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-300`} />
@@ -130,7 +130,7 @@ export function AdminDashboard() {
     <div className="space-y-6 animate-fade-in">
       {/* Header */}
       <div className="flex items-center gap-3">
-        <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-400 flex items-center justify-center shadow-md shadow-emerald-500/20">
+        <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-tp-500 to-ts-400 flex items-center justify-center shadow-md shadow-tp-500/20">
           <Sparkles className="h-5 w-5 text-white" />
         </div>
         <div>
@@ -146,18 +146,18 @@ export function AdminDashboard() {
           value={safe.totalUsers}
           sub={`${usersByRole.filter(r => r.role === 'BUSINESS_OWNER').reduce((s, r) => s + r._count, 0)} businesses`}
           icon={Users}
-          gradient="from-emerald-400 to-teal-500"
-          iconBg="bg-emerald-50"
-          iconColor="text-emerald-600"
+          gradient="from-tp-400 to-ts-500"
+          iconBg="bg-tp-50"
+          iconColor="text-tp-600"
         />
         <AdminStatCard
           label="Active Subscriptions"
           value={safe.activeSubscriptions}
           sub={`${subsByStatus.find(s => s.status === 'PENDING')?._count || 0} pending`}
           icon={CreditCard}
-          gradient="from-teal-400 to-cyan-500"
-          iconBg="bg-teal-50"
-          iconColor="text-teal-600"
+          gradient="from-ts-400 to-cyan-500"
+          iconBg="bg-ts-50"
+          iconColor="text-ts-600"
         />
         <AdminStatCard
           label="Total Revenue"
@@ -185,8 +185,8 @@ export function AdminDashboard() {
         <Card className="card-premium-static border-0 bg-white rounded-2xl overflow-hidden">
           <CardHeader className="pb-2 px-6 pt-6">
             <CardTitle className="text-[15px] font-semibold text-slate-900 flex items-center gap-2">
-              <div className="h-7 w-7 rounded-lg bg-emerald-50 flex items-center justify-center">
-                <BarChart3 className="h-4 w-4 text-emerald-600" />
+              <div className="h-7 w-7 rounded-lg bg-tp-50 flex items-center justify-center">
+                <BarChart3 className="h-4 w-4 text-tp-600" />
               </div>
               Revenue by Package
             </CardTitle>
@@ -208,7 +208,7 @@ export function AdminDashboard() {
                       </div>
                       <div className="h-2.5 bg-slate-100 rounded-full overflow-hidden">
                         <div
-                          className="h-full bg-gradient-to-r from-emerald-500 to-teal-400 rounded-full transition-all duration-700 ease-out"
+                          className="h-full bg-gradient-to-r from-tp-500 to-ts-400 rounded-full transition-all duration-700 ease-out"
                           style={{ width: `${pct}%` }}
                         />
                       </div>
@@ -224,8 +224,8 @@ export function AdminDashboard() {
         <Card className="card-premium-static border-0 bg-white rounded-2xl overflow-hidden">
           <CardHeader className="pb-2 px-6 pt-6">
             <CardTitle className="text-[15px] font-semibold text-slate-900 flex items-center gap-2">
-              <div className="h-7 w-7 rounded-lg bg-emerald-50 flex items-center justify-center">
-                <Activity className="h-4 w-4 text-emerald-600" />
+              <div className="h-7 w-7 rounded-lg bg-tp-50 flex items-center justify-center">
+                <Activity className="h-4 w-4 text-tp-600" />
               </div>
               Request Status
             </CardTitle>
@@ -239,7 +239,7 @@ export function AdminDashboard() {
               <div className="space-y-3">
                 {reqsByStatus.map((rs) => {
                   const statusColor = rs.status === 'COMPLETED' || rs.status === 'APPROVED'
-                    ? 'bg-emerald-100 text-emerald-700 border-emerald-200/80'
+                    ? 'bg-tp-100 text-tp-700 border-tp-200/80'
                     : rs.status === 'PENDING'
                       ? 'bg-amber-100 text-amber-700 border-amber-200/80'
                       : rs.status === 'REJECTED'
@@ -267,8 +267,8 @@ export function AdminDashboard() {
       <Card className="card-premium-static border-0 bg-white rounded-2xl overflow-hidden">
         <CardHeader className="pb-2 px-6 pt-6">
           <CardTitle className="text-[15px] font-semibold text-slate-900 flex items-center gap-2">
-            <div className="h-7 w-7 rounded-lg bg-emerald-50 flex items-center justify-center">
-              <TrendingUp className="h-4 w-4 text-emerald-600" />
+            <div className="h-7 w-7 rounded-lg bg-tp-50 flex items-center justify-center">
+              <TrendingUp className="h-4 w-4 text-tp-600" />
             </div>
             Recent Activity
           </CardTitle>
@@ -282,7 +282,7 @@ export function AdminDashboard() {
             ) : (
               recentActivity.map((a) => (
                 <div key={a.id} className="flex items-start gap-3 p-3 rounded-xl hover:bg-slate-50 transition-colors group">
-                  <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-emerald-50 to-teal-50 text-emerald-700 flex items-center justify-center shrink-0 mt-0.5 border border-emerald-100/80">
+                  <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-tp-50 to-ts-50 text-tp-700 flex items-center justify-center shrink-0 mt-0.5 border border-tp-100/80">
                     <span className="text-[11px] font-semibold">
                       {(a.user?.name || 'S').charAt(0)}
                     </span>

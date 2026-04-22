@@ -17,6 +17,7 @@ import {
   DialogFooter,
 } from '@/components/ui/dialog'
 import { PlusCircle, Edit, RefreshCw, Loader2, Shield, Star, Crown, Zap } from 'lucide-react'
+import { useAppStore } from '@/lib/store'
 import { useToast } from '@/hooks/use-toast'
 
 interface Package {
@@ -158,7 +159,7 @@ export function AdminPackages() {
     Bronze: <Shield className="h-5 w-5 text-orange-500" />,
     Silver: <Star className="h-5 w-5 text-gray-400" />,
     Gold: <Crown className="h-5 w-5 text-yellow-500" />,
-    Platinum: <Zap className="h-5 w-5 text-emerald-500" />,
+    Platinum: <Zap className="h-5 w-5 text-tp-500" />,
   }
 
   if (loading) {
@@ -174,7 +175,7 @@ export function AdminPackages() {
         </div>
         <div className="flex gap-2">
           <Button variant="outline" size="sm" onClick={fetchPackages}><RefreshCw className="h-4 w-4 mr-2" /> Refresh</Button>
-          <Button size="sm" className="bg-emerald-600 hover:bg-emerald-700" onClick={openCreate}><PlusCircle className="h-4 w-4 mr-2" /> Add Package</Button>
+          <Button size="sm" className="bg-tp-600 hover:bg-tp-700" onClick={openCreate}><PlusCircle className="h-4 w-4 mr-2" /> Add Package</Button>
         </div>
       </div>
 
@@ -187,7 +188,7 @@ export function AdminPackages() {
                   {pkgIcons[pkg.name]}
                   <div>
                     <h3 className="font-semibold text-gray-900">{pkg.name}</h3>
-                    <p className="text-xl font-bold text-emerald-600">TZS {pkg.price.toLocaleString()}</p>
+                    <p className="text-xl font-bold text-tp-600">TZS {pkg.price.toLocaleString()}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-1">
@@ -261,7 +262,7 @@ export function AdminPackages() {
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setDialogOpen(false)}>Cancel</Button>
-            <Button className="bg-emerald-600" disabled={actionLoading || !form.name || !form.price} onClick={handleSave}>
+            <Button className="bg-tp-600" disabled={actionLoading || !form.name || !form.price} onClick={handleSave}>
               {actionLoading && <Loader2 className="h-4 w-4 mr-1 animate-spin" />}
               {editingPkg ? 'Update' : 'Create'}
             </Button>

@@ -45,8 +45,7 @@ export async function GET(request: NextRequest) {
     })
 
     return success({ subscriptions })
-  } catch (err) {
-    console.error('Get subscriptions error:', err)
+  } catch {
     return error('Internal server error', 500)
   }
 }
@@ -172,8 +171,7 @@ export async function POST(request: NextRequest) {
     })
 
     return success({ subscription }, 201)
-  } catch (err) {
-    console.error('Create subscription error:', err)
+  } catch {
     return error('Internal server error', 500)
   }
 }

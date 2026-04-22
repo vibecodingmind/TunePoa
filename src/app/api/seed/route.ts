@@ -1,15 +1,21 @@
 import { NextRequest } from 'next/server'
 import { db } from '@/lib/db'
 import { success, error, forbidden } from '@/lib/api-response'
-import { authenticate, isAdmin, hashPassword, createToken } from '@/lib/auth'
+import { authenticate, hashPassword, createToken } from '@/lib/auth'
 import { PACKAGE_FEATURES } from '@/lib/constants'
 
 export async function POST(request: NextRequest) {
   try {
-    // Auth required - admin only (or allow unauthenticated for initial setup)
-    const auth = await authenticate(request)
-    if (auth.authenticated && auth.user && !isAdmin(auth.user.role)) {
-      return forbidden()
+    // Auth check: if any users exist, require SUPER_ADMIN authentication.
+    // This allows unauthenticated seeding on a completely fresh database
+    // (the initial deploy scenario), while protecting against re-seeding
+    // on a live system where data already exists.
+    const userCount = await db.user.count()
+    if (userCount > 0) {
+      const auth = await authenticate(request)
+      if (!auth.authenticated || !auth.user || auth.user.role !== 'SUPER_ADMIN') {
+        return forbidden('Only Super Admin can re-seed the database')
+      }
     }
 
     // Clear existing data in correct order (respecting foreign keys)
@@ -38,14 +44,14 @@ export async function POST(request: NextRequest) {
 
     const admin = await db.user.create({
       data: {
-        name: 'TunePoa Operations',
-        email: 'ops@tunepoa.co.tz',
+        name: 'TunePoa Operations Manager',
+        email: 'manager@tunepoa.co.tz',
         phone: '+255700000002',
         businessName: 'TunePoa Ltd',
         businessCategory: 'technology',
         role: 'ADMIN',
         status: 'ACTIVE',
-        password: hashPassword('TunePoa@Ops2025!'),
+        password: hashPassword('TunePoa@Manager2025!'),
       },
     })
 
@@ -326,11 +332,11 @@ export async function POST(request: NextRequest) {
       message: 'Database seeded successfully! Platform is ready for production use.',
       data: {
         users: {
-          superAdmin: { email: superAdmin.email, password: 'TunePoa@Admin2025!', role: superAdmin.role },
-          admin: { email: admin.email, password: 'TunePoa@Ops2025!', role: admin.role },
+          superAdmin: { email: superAdmin.email, role: superAdmin.role },
+          admin: { email: admin.email, role: admin.role },
           customers: [
-            { email: customer1.email, password: 'Customer@2025', role: customer1.role, status: customer1.status },
-            { email: customer2.email, password: 'Customer@2025', role: customer2.role, status: customer2.status },
+            { email: customer1.email, role: customer1.role, status: customer1.status },
+            { email: customer2.email, role: customer2.role, status: customer2.status },
           ],
         },
         packages: [bronzePkg.name, silverPkg.name, goldPkg.name, platinumPkg.name],
@@ -341,9 +347,7 @@ export async function POST(request: NextRequest) {
         tokens,
       },
     })
-  } catch (err: unknown) {
-    const message = err instanceof Error ? err.message : String(err)
-    console.error('Seed error:', err)
-    return error(`Failed to seed database: ${message}`, 500)
+  } catch {
+    return error('Failed to seed database', 500)
   }
 }

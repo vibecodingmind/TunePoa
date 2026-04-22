@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useMemo } from 'react'
+import Image from 'next/image'
 import { useStore } from '@/lib/store'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -8,7 +9,6 @@ import { Label } from '@/components/ui/label'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Progress } from '@/components/ui/progress'
 import {
-  Music2,
   User,
   Mail,
   Phone,
@@ -54,8 +54,8 @@ function getPasswordStrength(password: string): { score: number; label: string; 
   if (score <= 1) return { score: 20, label: 'Weak', color: 'bg-red-500' }
   if (score <= 2) return { score: 40, label: 'Fair', color: 'bg-orange-500' }
   if (score <= 3) return { score: 60, label: 'Good', color: 'bg-amber-500' }
-  if (score <= 4) return { score: 80, label: 'Strong', color: 'bg-emerald-500' }
-  return { score: 100, label: 'Very Strong', color: 'bg-emerald-600' }
+  if (score <= 4) return { score: 80, label: 'Strong', color: 'bg-tp-500' }
+  return { score: 100, label: 'Very Strong', color: 'bg-tp-600' }
 }
 
 export function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
@@ -166,9 +166,7 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
   return (
     <div className="p-6 sm:p-8">
       <div className="text-center mb-6">
-        <div className="inline-flex items-center justify-center h-12 w-12 rounded-xl bg-emerald-600 mb-3">
-          <Music2 className="h-7 w-7 text-white" />
-        </div>
+        <Image src="/logo-square.png" alt="TunePoa" width={48} height={48} className="rounded-xl mb-3" />
         <h1 className="text-xl font-bold text-slate-900">Create Your Account</h1>
         <p className="text-sm text-slate-500 mt-1">
           Start turning calls into marketing opportunities
@@ -307,7 +305,7 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
           {form.password.length > 0 && (
             <div className="space-y-1">
               <Progress value={passwordStrength.score} className="h-1.5" />
-              <p className={`text-xs ${passwordStrength.score >= 60 ? 'text-emerald-600' : passwordStrength.score >= 40 ? 'text-amber-600' : 'text-red-600'}`}>
+              <p className={`text-xs ${passwordStrength.score >= 60 ? 'text-tp-600' : passwordStrength.score >= 40 ? 'text-amber-600' : 'text-red-600'}`}>
                 {passwordStrength.label}
               </p>
             </div>
@@ -333,7 +331,7 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
                 form.confirmPassword && form.password !== form.confirmPassword
                   ? 'border-red-300 focus-visible:ring-red-300'
                   : form.confirmPassword && form.password === form.confirmPassword
-                    ? 'border-emerald-300 focus-visible:ring-emerald-300'
+                    ? 'border-tp-300 focus-visible:ring-tp-300'
                     : ''
               }`}
             />
@@ -354,15 +352,15 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
             id="accept-terms"
             checked={acceptTerms}
             onCheckedChange={(checked) => setAcceptTerms(checked === true)}
-            className="mt-0.5 data-[state=checked]:bg-emerald-600 data-[state=checked]:border-emerald-600"
+            className="mt-0.5 data-[state=checked]:bg-tp-600 data-[state=checked]:border-tp-600"
           />
           <Label htmlFor="accept-terms" className="text-sm text-slate-600 leading-relaxed cursor-pointer">
             I agree to the{' '}
-            <span className="text-emerald-600 font-medium hover:underline cursor-pointer">
+            <span className="text-tp-600 font-medium hover:underline cursor-pointer">
               Terms of Service
             </span>{' '}
             and{' '}
-            <span className="text-emerald-600 font-medium hover:underline cursor-pointer">
+            <span className="text-tp-600 font-medium hover:underline cursor-pointer">
               Privacy Policy
             </span>
           </Label>
@@ -378,7 +376,7 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
         {/* Submit */}
         <Button
           type="submit"
-          className="w-full h-11 bg-emerald-600 hover:bg-emerald-700 text-white font-medium"
+          className="w-full h-11 bg-tp-600 hover:bg-tp-700 text-white font-medium"
           disabled={loading}
         >
           {loading ? (
@@ -399,7 +397,7 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
           Already have an account?{' '}
           <button
             type="button"
-            className="text-emerald-600 font-medium hover:text-emerald-700 transition-colors"
+            className="text-tp-600 font-medium hover:text-tp-700 transition-colors"
             onClick={onSwitchToLogin}
           >
             Sign in

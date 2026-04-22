@@ -173,7 +173,7 @@ export function PricingCalculator({ mode = 'landing', onSubscribe, isAuthenticat
             {/* User Count Card */}
             <div className="relative rounded-2xl bg-white border border-slate-200/80 p-6 sm:p-7 shadow-lg shadow-slate-200/30 hover:shadow-xl transition-shadow duration-500">
               <div className="flex items-center gap-3 mb-5">
-                <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-400 text-white flex items-center justify-center shadow-md shadow-emerald-500/20">
+                <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-tp-500 to-ts-400 text-white flex items-center justify-center shadow-md shadow-tp-500/20">
                   <Users className="h-5 w-5" />
                 </div>
                 <div>
@@ -186,7 +186,7 @@ export function PricingCalculator({ mode = 'landing', onSubscribe, isAuthenticat
                 <div className="flex items-center gap-0 rounded-xl border-2 border-slate-200 bg-slate-50 overflow-hidden">
                   <button
                     onClick={() => setUserCount(Math.max(1, userCount - 1))}
-                    className="h-12 w-12 flex items-center justify-center text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 transition-colors duration-200 active:scale-95"
+                    className="h-12 w-12 flex items-center justify-center text-slate-400 hover:text-tp-600 hover:bg-tp-50 transition-colors duration-200 active:scale-95"
                   >
                     <Minus className="h-4 w-4" />
                   </button>
@@ -199,7 +199,7 @@ export function PricingCalculator({ mode = 'landing', onSubscribe, isAuthenticat
                   />
                   <button
                     onClick={() => setUserCount(userCount + 1)}
-                    className="h-12 w-12 flex items-center justify-center text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 transition-colors duration-200 active:scale-95"
+                    className="h-12 w-12 flex items-center justify-center text-slate-400 hover:text-tp-600 hover:bg-tp-50 transition-colors duration-200 active:scale-95"
                   >
                     <Plus className="h-4 w-4" />
                   </button>
@@ -207,12 +207,12 @@ export function PricingCalculator({ mode = 'landing', onSubscribe, isAuthenticat
 
                 <div className="flex-1">
                   {result && (
-                    <div className="inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-emerald-50 border border-emerald-100 animate-fade-in">
-                      <div className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-                      <span className="text-xs font-bold text-emerald-700 uppercase tracking-wider">
+                    <div className="inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-tp-50 border border-tp-100 animate-fade-in">
+                      <div className="h-2 w-2 rounded-full bg-tp-500 animate-pulse" />
+                      <span className="text-xs font-bold text-tp-700 uppercase tracking-wider">
                         Tier: {result.tier.name}
                       </span>
-                      <span className="text-[10px] text-emerald-500 font-medium">
+                      <span className="text-[10px] text-tp-500 font-medium">
                         ({result.tier.minUsers}–{result.tier.maxUsers === 999 ? '50+' : result.tier.maxUsers} users)
                       </span>
                     </div>
@@ -228,8 +228,8 @@ export function PricingCalculator({ mode = 'landing', onSubscribe, isAuthenticat
                     onClick={() => setUserCount(num)}
                     className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all duration-200 ${
                       userCount === num
-                        ? 'bg-emerald-500 text-white shadow-md shadow-emerald-500/30'
-                        : 'bg-slate-100 text-slate-500 hover:bg-emerald-50 hover:text-emerald-600'
+                        ? 'bg-tp-500 text-white shadow-md shadow-tp-500/30'
+                        : 'bg-slate-100 text-slate-500 hover:bg-tp-50 hover:text-tp-600'
                     }`}
                   >
                     {num}
@@ -257,8 +257,8 @@ export function PricingCalculator({ mode = 'landing', onSubscribe, isAuthenticat
                     onClick={() => setDuration(d.value)}
                     className={`relative py-4 px-2 rounded-xl text-center transition-all duration-300 group ${
                       duration === d.value
-                        ? 'bg-gradient-to-br from-emerald-500 to-teal-500 text-white shadow-lg shadow-emerald-500/30 scale-[1.02]'
-                        : 'bg-slate-50 border-2 border-slate-200 text-slate-600 hover:border-emerald-300 hover:bg-emerald-50/50'
+                        ? 'bg-gradient-to-br from-tp-500 to-ts-500 text-white shadow-lg shadow-tp-500/30 scale-[1.02]'
+                        : 'bg-slate-50 border-2 border-slate-200 text-slate-600 hover:border-tp-300 hover:bg-tp-50/50'
                     }`}
                   >
                     {d.popular && (
@@ -269,11 +269,11 @@ export function PricingCalculator({ mode = 'landing', onSubscribe, isAuthenticat
                     <div className={`text-xl sm:text-2xl font-extrabold ${duration === d.value ? 'text-white' : 'text-slate-900'}`}>
                       {d.label}
                     </div>
-                    <div className={`text-[10px] font-medium mt-0.5 ${duration === d.value ? 'text-emerald-100' : 'text-slate-400'}`}>
+                    <div className={`text-[10px] font-medium mt-0.5 ${duration === d.value ? 'text-tp-100' : 'text-slate-400'}`}>
                       {d.unit}
                     </div>
                     {d.badge && duration !== d.value && (
-                      <div className="text-[9px] font-bold text-emerald-600 mt-1">{d.badge}</div>
+                      <div className="text-[9px] font-bold text-tp-600 mt-1">{d.badge}</div>
                     )}
                   </button>
                 ))}
@@ -320,21 +320,21 @@ export function PricingCalculator({ mode = 'landing', onSubscribe, isAuthenticat
               {/* Main price card */}
               <div className="relative rounded-2xl overflow-hidden">
                 {/* Animated gradient border */}
-                <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-emerald-500 via-teal-500 to-cyan-500 animate-gradient p-[2px]">
-                  <div className="w-full h-full rounded-2xl bg-gradient-to-br from-slate-900 via-emerald-950 to-slate-900" />
+                <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-tp-500 via-ts-500 to-cyan-500 animate-gradient p-[2px]">
+                  <div className="w-full h-full rounded-2xl bg-gradient-to-br from-slate-900 via-tp-950 to-slate-900" />
                 </div>
 
                 <div className="relative p-6 sm:p-8">
                   {/* Header */}
                   <div className="flex items-center justify-between mb-6">
                     <div className="flex items-center gap-2">
-                      <Zap className="h-5 w-5 text-emerald-400" />
-                      <span className="text-xs font-bold uppercase tracking-[0.15em] text-emerald-400">
+                      <Zap className="h-5 w-5 text-tp-400" />
+                      <span className="text-xs font-bold uppercase tracking-[0.15em] text-tp-400">
                         Your Price
                       </span>
                     </div>
                     {result && (
-                      <Badge className="bg-emerald-500/20 text-emerald-300 border-emerald-500/30 text-[10px] font-bold uppercase tracking-wider">
+                      <Badge className="bg-tp-500/20 text-tp-300 border-tp-500/30 text-[10px] font-bold uppercase tracking-wider">
                         {result.tier.name} Tier
                       </Badge>
                     )}
@@ -404,7 +404,7 @@ export function PricingCalculator({ mode = 'landing', onSubscribe, isAuthenticat
                           <span className="text-base font-medium text-slate-500 ml-2">TZS</span>
                         </div>
                         {result.durationMonths > 1 && (
-                          <p className="text-xs text-emerald-400 mt-2 font-medium">
+                          <p className="text-xs text-tp-400 mt-2 font-medium">
                             That&apos;s {formatTZS(Math.round(result.total / result.durationMonths))} TZS per month
                           </p>
                         )}
@@ -436,7 +436,7 @@ export function PricingCalculator({ mode = 'landing', onSubscribe, isAuthenticat
               {!isAuthenticated && (
                 <Button
                   size="lg"
-                  className="w-full bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white font-bold text-base h-14 rounded-2xl shadow-xl shadow-emerald-500/25 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-2xl hover:shadow-emerald-500/30 group"
+                  className="w-full bg-gradient-to-r from-tp-500 to-ts-500 hover:from-tp-600 hover:to-ts-600 text-white font-bold text-base h-14 rounded-2xl shadow-xl shadow-tp-500/25 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-2xl hover:shadow-tp-500/30 group"
                   onClick={() => window.dispatchEvent(new CustomEvent('open-auth', { detail: 'register' }))}
                 >
                   <Sparkles className="h-5 w-5 mr-2" />
@@ -448,7 +448,7 @@ export function PricingCalculator({ mode = 'landing', onSubscribe, isAuthenticat
               {/* Trust badges */}
               <div className="grid grid-cols-3 gap-3">
                 <div className="flex flex-col items-center gap-2 p-3 rounded-xl bg-white border border-slate-200/80 text-center">
-                  <Shield className="h-5 w-5 text-emerald-500" />
+                  <Shield className="h-5 w-5 text-tp-500" />
                   <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider leading-tight">Secure<br/>Payment</span>
                 </div>
                 <div className="flex flex-col items-center gap-2 p-3 rounded-xl bg-white border border-slate-200/80 text-center">
@@ -470,7 +470,7 @@ export function PricingCalculator({ mode = 'landing', onSubscribe, isAuthenticat
         <Card className="border-0 shadow-2xl shadow-slate-200/50 overflow-hidden rounded-2xl">
           <CardContent className="p-0">
             {/* Header */}
-            <div className="bg-gradient-to-r from-emerald-600 to-teal-500 px-6 sm:px-8 py-5 relative overflow-hidden">
+            <div className="bg-gradient-to-r from-tp-600 to-ts-500 px-6 sm:px-8 py-5 relative overflow-hidden">
               <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.05)_1px,transparent_1px)] bg-[size:20px_20px]" />
               <div className="relative flex items-center gap-3">
                 <div className="h-11 w-11 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center">
@@ -478,7 +478,7 @@ export function PricingCalculator({ mode = 'landing', onSubscribe, isAuthenticat
                 </div>
                 <div>
                   <h3 className="text-white font-bold text-lg">Calculate & Subscribe</h3>
-                  <p className="text-emerald-100 text-sm">Configure your subscription details</p>
+                  <p className="text-tp-100 text-sm">Configure your subscription details</p>
                 </div>
               </div>
             </div>
@@ -487,14 +487,14 @@ export function PricingCalculator({ mode = 'landing', onSubscribe, isAuthenticat
               {/* Step 1: User Count */}
               <div className="space-y-3">
                 <div className="flex items-center gap-3">
-                  <div className="h-8 w-8 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center text-xs font-extrabold">1</div>
+                  <div className="h-8 w-8 rounded-lg bg-tp-100 text-tp-700 flex items-center justify-center text-xs font-extrabold">1</div>
                   <Label className="text-sm font-bold text-slate-900">Number of Users</Label>
                 </div>
                 <div className="flex items-center gap-4">
                   <div className="flex items-center gap-0 rounded-xl border-2 border-slate-200 bg-slate-50 overflow-hidden">
                     <button
                       onClick={() => setUserCount(Math.max(1, userCount - 1))}
-                      className="h-11 w-11 flex items-center justify-center text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 transition-colors active:scale-95"
+                      className="h-11 w-11 flex items-center justify-center text-slate-400 hover:text-tp-600 hover:bg-tp-50 transition-colors active:scale-95"
                     >
                       <Minus className="h-4 w-4" />
                     </button>
@@ -507,13 +507,13 @@ export function PricingCalculator({ mode = 'landing', onSubscribe, isAuthenticat
                     />
                     <button
                       onClick={() => setUserCount(userCount + 1)}
-                      className="h-11 w-11 flex items-center justify-center text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 transition-colors active:scale-95"
+                      className="h-11 w-11 flex items-center justify-center text-slate-400 hover:text-tp-600 hover:bg-tp-50 transition-colors active:scale-95"
                     >
                       <Plus className="h-4 w-4" />
                     </button>
                   </div>
                   {result && (
-                    <Badge className="bg-emerald-100 text-emerald-700 border-emerald-200 hover:bg-emerald-100">
+                    <Badge className="bg-tp-100 text-tp-700 border-tp-200 hover:bg-tp-100">
                       <Crown className="h-3 w-3 mr-1" />
                       {result.tier.name}
                     </Badge>
@@ -524,7 +524,7 @@ export function PricingCalculator({ mode = 'landing', onSubscribe, isAuthenticat
               {/* Step 2: Duration */}
               <div className="space-y-3">
                 <div className="flex items-center gap-3">
-                  <div className="h-8 w-8 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center text-xs font-extrabold">2</div>
+                  <div className="h-8 w-8 rounded-lg bg-tp-100 text-tp-700 flex items-center justify-center text-xs font-extrabold">2</div>
                   <Label className="text-sm font-bold text-slate-900">Duration</Label>
                 </div>
                 <div className="grid grid-cols-4 gap-2">
@@ -534,8 +534,8 @@ export function PricingCalculator({ mode = 'landing', onSubscribe, isAuthenticat
                       onClick={() => setDuration(d.value)}
                       className={`relative py-3 px-2 rounded-xl text-center transition-all duration-300 ${
                         duration === d.value
-                          ? 'bg-gradient-to-br from-emerald-500 to-teal-500 text-white shadow-lg shadow-emerald-500/25'
-                          : 'bg-slate-50 border-2 border-slate-200 text-slate-600 hover:border-emerald-300'
+                          ? 'bg-gradient-to-br from-tp-500 to-ts-500 text-white shadow-lg shadow-tp-500/25'
+                          : 'bg-slate-50 border-2 border-slate-200 text-slate-600 hover:border-tp-300'
                       }`}
                     >
                       {d.popular && (
@@ -553,7 +553,7 @@ export function PricingCalculator({ mode = 'landing', onSubscribe, isAuthenticat
               {/* Step 3: Audio */}
               <div className="space-y-3">
                 <div className="flex items-center gap-3">
-                  <div className="h-8 w-8 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center text-xs font-extrabold">3</div>
+                  <div className="h-8 w-8 rounded-lg bg-tp-100 text-tp-700 flex items-center justify-center text-xs font-extrabold">3</div>
                   <Label className="text-sm font-bold text-slate-900">Audio Recording</Label>
                 </div>
                 <div className="flex items-center justify-between p-4 rounded-xl bg-slate-50 border border-slate-200 hover:border-slate-300 transition-colors">
@@ -574,10 +574,10 @@ export function PricingCalculator({ mode = 'landing', onSubscribe, isAuthenticat
 
               {/* Price Summary */}
               {result && (
-                <div className="rounded-2xl bg-gradient-to-br from-emerald-50 to-teal-50 border-2 border-emerald-200 p-6 space-y-4">
+                <div className="rounded-2xl bg-gradient-to-br from-tp-50 to-ts-50 border-2 border-tp-200 p-6 space-y-4">
                   <div className="flex items-center gap-2">
-                    <CheckCircle2 className="h-5 w-5 text-emerald-600" />
-                    <span className="text-sm font-bold text-emerald-800">Your Plan Summary</span>
+                    <CheckCircle2 className="h-5 w-5 text-tp-600" />
+                    <span className="text-sm font-bold text-tp-800">Your Plan Summary</span>
                   </div>
 
                   <div className="space-y-2.5 text-sm">
@@ -599,7 +599,7 @@ export function PricingCalculator({ mode = 'landing', onSubscribe, isAuthenticat
                     </div>
                   </div>
 
-                  <div className="h-px bg-emerald-200/60" />
+                  <div className="h-px bg-tp-200/60" />
 
                   <div className="space-y-2.5 text-sm">
                     <div className="flex justify-between">
@@ -616,11 +616,11 @@ export function PricingCalculator({ mode = 'landing', onSubscribe, isAuthenticat
                     )}
                   </div>
 
-                  <div className="h-px bg-emerald-300/60" />
+                  <div className="h-px bg-tp-300/60" />
 
                   <div className="flex items-center justify-between pt-1">
                     <span className="text-base font-bold text-slate-900">TOTAL:</span>
-                    <span className="text-3xl font-extrabold text-emerald-700">
+                    <span className="text-3xl font-extrabold text-tp-700">
                       {formatTZS(result.total)} <span className="text-base font-medium">TZS</span>
                     </span>
                   </div>
@@ -630,7 +630,7 @@ export function PricingCalculator({ mode = 'landing', onSubscribe, isAuthenticat
               {/* Service Request Selection */}
               <div className="space-y-3">
                 <div className="flex items-center gap-3">
-                  <div className="h-8 w-8 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center text-xs font-extrabold">4</div>
+                  <div className="h-8 w-8 rounded-lg bg-tp-100 text-tp-700 flex items-center justify-center text-xs font-extrabold">4</div>
                   <Label className="text-sm font-bold text-slate-900">Select Service Request</Label>
                 </div>
                 {requests.length > 0 ? (
@@ -641,7 +641,7 @@ export function PricingCalculator({ mode = 'landing', onSubscribe, isAuthenticat
                         onClick={() => setSelectedRequest(r.id)}
                         className={`w-full p-3.5 rounded-xl border-2 text-left transition-all flex items-center justify-between ${
                           selectedRequest === r.id
-                            ? 'border-emerald-500 bg-emerald-50 shadow-sm shadow-emerald-100'
+                            ? 'border-tp-500 bg-tp-50 shadow-sm shadow-tp-100'
                             : 'border-slate-200 bg-white hover:border-slate-300'
                         }`}
                       >
@@ -650,7 +650,7 @@ export function PricingCalculator({ mode = 'landing', onSubscribe, isAuthenticat
                           <p className="text-xs text-slate-400">{r.adType} — {r.status}</p>
                         </div>
                         {selectedRequest === r.id && (
-                          <CheckCircle2 className="h-5 w-5 text-emerald-500" />
+                          <CheckCircle2 className="h-5 w-5 text-tp-500" />
                         )}
                       </button>
                     ))}
@@ -666,7 +666,7 @@ export function PricingCalculator({ mode = 'landing', onSubscribe, isAuthenticat
               {/* Phone Number */}
               <div className="space-y-3">
                 <div className="flex items-center gap-3">
-                  <div className="h-8 w-8 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center text-xs font-extrabold">5</div>
+                  <div className="h-8 w-8 rounded-lg bg-tp-100 text-tp-700 flex items-center justify-center text-xs font-extrabold">5</div>
                   <Label className="text-sm font-bold text-slate-900">Phone Number</Label>
                 </div>
                 <div className="relative">
@@ -683,7 +683,7 @@ export function PricingCalculator({ mode = 'landing', onSubscribe, isAuthenticat
               {/* Subscribe Button */}
               <Button
                 size="lg"
-                className="w-full bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-700 hover:to-teal-600 text-white font-bold text-base h-14 rounded-2xl shadow-xl shadow-emerald-500/25 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-2xl group"
+                className="w-full bg-gradient-to-r from-tp-600 to-ts-500 hover:from-tp-700 hover:to-ts-600 text-white font-bold text-base h-14 rounded-2xl shadow-xl shadow-tp-500/25 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-2xl group"
                 disabled={!result || !selectedRequest || requests.length === 0 || loading}
                 onClick={handleSubscribe}
               >

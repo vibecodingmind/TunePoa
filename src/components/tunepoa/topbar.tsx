@@ -95,11 +95,11 @@ export function Topbar() {
       {/* Search placeholder */}
       <div className="hidden md:flex items-center">
         <div className="relative group">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 dark:text-slate-500 group-focus-within:text-emerald-500 transition-colors" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 dark:text-slate-500 group-focus-within:text-tp-500 transition-colors" />
           <Input
             type="search"
             placeholder="Search anything..."
-            className="w-64 h-9 pl-9 pr-4 text-sm bg-slate-100/60 dark:bg-slate-800/60 border-slate-200/80 dark:border-slate-700/60 focus:bg-white dark:focus:bg-slate-800 focus:border-emerald-300 dark:focus:border-emerald-600 text-slate-900 dark:text-white transition-all duration-200 placeholder:text-slate-400 dark:placeholder:text-slate-500"
+            className="w-64 h-9 pl-9 pr-4 text-sm bg-slate-100/60 dark:bg-slate-800/60 border-slate-200/80 dark:border-slate-700/60 focus:bg-white dark:focus:bg-slate-800 focus:border-tp-300 dark:focus:border-tp-600 text-slate-900 dark:text-white transition-all duration-200 placeholder:text-slate-400 dark:placeholder:text-slate-500"
             readOnly
           />
         </div>
@@ -124,7 +124,7 @@ export function Topbar() {
         aria-label="Notifications"
       >
         <Bell className="h-[18px] w-[18px]" />
-        <span className="absolute top-2 right-2 h-2 w-2 rounded-full bg-emerald-500 ring-2 ring-white dark:ring-slate-900" />
+        <span className="absolute top-2 right-2 h-2 w-2 rounded-full bg-tp-500 ring-2 ring-white dark:ring-slate-900" />
       </Button>
 
       {/* Separator */}
@@ -137,7 +137,7 @@ export function Topbar() {
             variant="ghost"
             className="flex items-center gap-2.5 px-2 hover:bg-slate-100/60 dark:hover:bg-slate-800/60 rounded-xl transition-colors duration-200"
           >
-            <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-emerald-500 to-teal-400 text-white flex items-center justify-center text-xs font-semibold shadow-sm shadow-emerald-500/20">
+            <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-tp-500 to-ts-400 text-white flex items-center justify-center text-xs font-semibold shadow-sm shadow-tp-500/20">
               {userInitials}
             </div>
             <div className="hidden sm:block text-left">

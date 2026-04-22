@@ -38,7 +38,7 @@ interface ServiceRequest {
 
 const statusColors: Record<string, string> = {
   PENDING: 'bg-yellow-100 text-yellow-700 border-yellow-200',
-  APPROVED: 'bg-emerald-100 text-emerald-700 border-emerald-200',
+  APPROVED: 'bg-tp-100 text-tp-700 border-tp-200',
   REJECTED: 'bg-red-100 text-red-700 border-red-200',
 }
 
@@ -264,7 +264,7 @@ export function AdminRequests() {
                   <>
                     <Button
                       size="sm"
-                      className="bg-emerald-600 hover:bg-emerald-700"
+                      className="bg-tp-600 hover:bg-tp-700"
                       disabled={actionLoading}
                       onClick={() => handleApprove(selectedReq.id)}
                     >

@@ -75,8 +75,8 @@ const AD_TYPES = [
     description: 'Highlight special offers and promotions',
     icon: Megaphone,
     color: 'bg-amber-100 text-amber-600',
-    activeColor: 'bg-emerald-100 text-emerald-600',
-    border: 'border-emerald-400 bg-emerald-50/50',
+    activeColor: 'bg-tp-100 text-tp-600',
+    border: 'border-tp-400 bg-tp-50/50',
   },
   {
     value: 'BRANDING',
@@ -84,8 +84,8 @@ const AD_TYPES = [
     description: 'Build your brand identity and recognition',
     icon: Award,
     color: 'bg-violet-100 text-violet-600',
-    activeColor: 'bg-emerald-100 text-emerald-600',
-    border: 'border-emerald-400 bg-emerald-50/50',
+    activeColor: 'bg-tp-100 text-tp-600',
+    border: 'border-tp-400 bg-tp-50/50',
   },
   {
     value: 'OFFER',
@@ -93,8 +93,8 @@ const AD_TYPES = [
     description: 'Limited time deals and discounts',
     icon: Tag,
     color: 'bg-rose-100 text-rose-600',
-    activeColor: 'bg-emerald-100 text-emerald-600',
-    border: 'border-emerald-400 bg-emerald-50/50',
+    activeColor: 'bg-tp-100 text-tp-600',
+    border: 'border-tp-400 bg-tp-50/50',
   },
   {
     value: 'ANNOUNCEMENT',
@@ -102,8 +102,8 @@ const AD_TYPES = [
     description: 'Important business announcements',
     icon: Speaker,
     color: 'bg-sky-100 text-sky-600',
-    activeColor: 'bg-emerald-100 text-emerald-600',
-    border: 'border-emerald-400 bg-emerald-50/50',
+    activeColor: 'bg-tp-100 text-tp-600',
+    border: 'border-tp-400 bg-tp-50/50',
   },
 ]
 
@@ -243,7 +243,7 @@ export function NewServiceRequest() {
       ? 'bg-slate-200'
       : form.adScript.length < MIN_SCRIPT_LENGTH
         ? 'bg-amber-400'
-        : 'bg-emerald-500'
+        : 'bg-tp-500'
 
   const completedSteps = [
     { label: 'Business', done: form.businessName.trim() !== '' && form.businessCategory !== '' },
@@ -274,7 +274,7 @@ export function NewServiceRequest() {
               <div
                 className={`h-8 w-8 rounded-full flex items-center justify-center text-xs font-bold shrink-0 transition-colors ${
                   step.done
-                    ? 'bg-emerald-600 text-white'
+                    ? 'bg-tp-600 text-white'
                     : 'bg-slate-100 text-slate-400'
                 }`}
               >
@@ -282,14 +282,14 @@ export function NewServiceRequest() {
               </div>
               <span
                 className={`text-xs font-medium hidden sm:inline ${
-                  step.done ? 'text-emerald-700' : 'text-slate-400'
+                  step.done ? 'text-tp-700' : 'text-slate-400'
                 }`}
               >
                 {step.label}
               </span>
             </div>
             {i < completedSteps.length - 1 && (
-              <div className={`h-px flex-1 ${step.done ? 'bg-emerald-300' : 'bg-slate-200'}`} />
+              <div className={`h-px flex-1 ${step.done ? 'bg-tp-300' : 'bg-slate-200'}`} />
             )}
           </div>
         ))}
@@ -303,8 +303,8 @@ export function NewServiceRequest() {
           <CardHeader className="pb-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="h-10 w-10 rounded-lg bg-emerald-100 flex items-center justify-center">
-                  <FileText className="h-5 w-5 text-emerald-600" />
+                <div className="h-10 w-10 rounded-lg bg-tp-100 flex items-center justify-center">
+                  <FileText className="h-5 w-5 text-tp-600" />
                 </div>
                 <div>
                   <CardTitle className="text-lg text-slate-900">Business Details</CardTitle>
@@ -418,8 +418,8 @@ export function NewServiceRequest() {
           <CardHeader className="pb-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="h-10 w-10 rounded-lg bg-emerald-100 flex items-center justify-center">
-                  <Megaphone className="h-5 w-5 text-emerald-600" />
+                <div className="h-10 w-10 rounded-lg bg-tp-100 flex items-center justify-center">
+                  <Megaphone className="h-5 w-5 text-tp-600" />
                 </div>
                 <div>
                   <CardTitle className="text-lg text-slate-900">Ad Details</CardTitle>
@@ -471,7 +471,7 @@ export function NewServiceRequest() {
                           <div>
                             <p
                               className={`font-semibold text-sm ${
-                                isSelected ? 'text-emerald-800' : 'text-slate-900'
+                                isSelected ? 'text-tp-800' : 'text-slate-900'
                               }`}
                             >
                               {type.label}
@@ -538,7 +538,7 @@ export function NewServiceRequest() {
                           ? 'text-slate-400'
                           : form.adScript.length < MIN_SCRIPT_LENGTH
                             ? 'text-amber-600'
-                            : 'text-emerald-600'
+                            : 'text-tp-600'
                       }`}
                     >
                       {form.adScript.length}/{MAX_SCRIPT_LENGTH}
@@ -559,14 +559,14 @@ export function NewServiceRequest() {
               </div>
 
               {/* Tips */}
-              <div className="rounded-xl bg-emerald-50 border border-emerald-100 p-4">
+              <div className="rounded-xl bg-tp-50 border border-tp-100 p-4">
                 <div className="flex items-start gap-3">
-                  <div className="h-8 w-8 rounded-lg bg-emerald-100 flex items-center justify-center shrink-0 mt-0.5">
-                    <Lightbulb className="h-4 w-4 text-emerald-600" />
+                  <div className="h-8 w-8 rounded-lg bg-tp-100 flex items-center justify-center shrink-0 mt-0.5">
+                    <Lightbulb className="h-4 w-4 text-tp-600" />
                   </div>
                   <div>
-                    <p className="text-sm font-semibold text-emerald-800">Tips for a great ad script</p>
-                    <ul className="mt-1.5 space-y-1 text-xs text-emerald-700">
+                    <p className="text-sm font-semibold text-tp-800">Tips for a great ad script</p>
+                    <ul className="mt-1.5 space-y-1 text-xs text-tp-700">
                       <li>Write a clear, catchy script that represents your business</li>
                       <li>Keep it concise and memorable</li>
                       <li>Include your business name, what you offer, and a call to action</li>
@@ -585,8 +585,8 @@ export function NewServiceRequest() {
           <CardHeader className="pb-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="h-10 w-10 rounded-lg bg-emerald-100 flex items-center justify-center">
-                  <FileText className="h-5 w-5 text-emerald-600" />
+                <div className="h-10 w-10 rounded-lg bg-tp-100 flex items-center justify-center">
+                  <FileText className="h-5 w-5 text-tp-600" />
                 </div>
                 <div>
                   <CardTitle className="text-lg text-slate-900">Special Instructions</CardTitle>
@@ -624,11 +624,11 @@ export function NewServiceRequest() {
         {/* Review Card                                                      */}
         {/* ================================================================ */}
         {isFormComplete && editSection === null && (
-          <Card className="border-0 shadow-sm border-l-4 border-l-emerald-500">
+          <Card className="border-0 shadow-sm border-l-4 border-l-tp-500">
             <CardHeader className="pb-3">
               <div className="flex items-center gap-2">
-                <div className="h-8 w-8 rounded-full bg-emerald-100 flex items-center justify-center">
-                  <CheckCircle2 className="h-4 w-4 text-emerald-600" />
+                <div className="h-8 w-8 rounded-full bg-tp-100 flex items-center justify-center">
+                  <CheckCircle2 className="h-4 w-4 text-tp-600" />
                 </div>
                 <div>
                   <CardTitle className="text-lg text-slate-900">Review Your Request</CardTitle>
@@ -675,8 +675,8 @@ export function NewServiceRequest() {
 
               {/* Ad Type */}
               <div className="flex items-center gap-3">
-                <div className="h-10 w-10 rounded-lg bg-emerald-100 flex items-center justify-center">
-                  {selectedAdType && <selectedAdType.icon className="h-5 w-5 text-emerald-600" />}
+                <div className="h-10 w-10 rounded-lg bg-tp-100 flex items-center justify-center">
+                  {selectedAdType && <selectedAdType.icon className="h-5 w-5 text-tp-600" />}
                 </div>
                 <div>
                   <p className="text-xs text-slate-400 uppercase tracking-wider font-semibold">Ad Type</p>
@@ -715,7 +715,7 @@ export function NewServiceRequest() {
         {/* ================================================================ */}
         <Button
           type="submit"
-          className="w-full bg-emerald-600 hover:bg-emerald-700 text-white h-12 font-medium text-base"
+          className="w-full bg-tp-600 hover:bg-tp-700 text-white h-12 font-medium text-base"
           disabled={loading}
         >
           {loading ? (
@@ -736,29 +736,29 @@ export function NewServiceRequest() {
       {/* Sidebar Info                                                       */}
       {/* ================================================================= */}
       <div className="grid sm:grid-cols-2 gap-4">
-        <Card className="border-0 shadow-sm bg-emerald-50">
+        <Card className="border-0 shadow-sm bg-tp-50">
           <CardContent className="p-4">
             <div className="flex items-start gap-3">
-              <div className="h-8 w-8 rounded-lg bg-emerald-100 flex items-center justify-center shrink-0 mt-0.5">
-                <FileText className="h-4 w-4 text-emerald-600" />
+              <div className="h-8 w-8 rounded-lg bg-tp-100 flex items-center justify-center shrink-0 mt-0.5">
+                <FileText className="h-4 w-4 text-tp-600" />
               </div>
               <div>
-                <h3 className="font-semibold text-emerald-800 text-sm">What Happens Next?</h3>
-                <ol className="mt-2 space-y-1.5 text-xs text-emerald-700">
+                <h3 className="font-semibold text-tp-800 text-sm">What Happens Next?</h3>
+                <ol className="mt-2 space-y-1.5 text-xs text-tp-700">
                   <li className="flex items-start gap-2">
-                    <span className="font-bold text-emerald-500 shrink-0">1.</span>
+                    <span className="font-bold text-tp-500 shrink-0">1.</span>
                     Admin reviews your request
                   </li>
                   <li className="flex items-start gap-2">
-                    <span className="font-bold text-emerald-500 shrink-0">2.</span>
+                    <span className="font-bold text-tp-500 shrink-0">2.</span>
                     Once approved, subscription starts automatically
                   </li>
                   <li className="flex items-start gap-2">
-                    <span className="font-bold text-emerald-500 shrink-0">3.</span>
+                    <span className="font-bold text-tp-500 shrink-0">3.</span>
                     Make payment to activate your ringback tone
                   </li>
                   <li className="flex items-start gap-2">
-                    <span className="font-bold text-emerald-500 shrink-0">4.</span>
+                    <span className="font-bold text-tp-500 shrink-0">4.</span>
                     Your ad goes live on every incoming call!
                   </li>
                 </ol>

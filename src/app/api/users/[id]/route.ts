@@ -1,7 +1,7 @@
 import { NextRequest } from 'next/server'
 import { db } from '@/lib/db'
 import { success, error, unauthorized, forbidden } from '@/lib/api-response'
-import { authenticate, isAdmin, excludePassword } from '@/lib/auth'
+import { authenticate, isAdmin, excludePassword, verifyPassword, hashPassword } from '@/lib/auth'
 
 export async function GET(
   request: NextRequest,
@@ -49,8 +49,7 @@ export async function GET(
     }
 
     return success({ user })
-  } catch (err) {
-    console.error('Get user error:', err)
+  } catch {
     return error('Internal server error', 500)
   }
 }
@@ -69,7 +68,7 @@ export async function PATCH(
       return unauthorized()
     }
 
-    const existing = await db.user.findUnique({ where: { id } })
+    const existing = await db.user.findUnique({ where: { id }, select: { id: true, password: true, email: true, phone: true } })
     if (!existing) {
       return error('User not found', 404)
     }
@@ -109,6 +108,23 @@ export async function PATCH(
       }
     }
 
+    // Handle password change
+    if (body.currentPassword && body.newPassword) {
+      if (auth.user.id !== id) {
+        return forbidden('You can only change your own password')
+      }
+      if (!existing.password) {
+        return error('No password set for this account. Contact support.', 400)
+      }
+      if (body.newPassword.length < 6) {
+        return error('New password must be at least 6 characters')
+      }
+      if (!verifyPassword(body.currentPassword, existing.password)) {
+        return error('Current password is incorrect', 401)
+      }
+      updateData['password'] = hashPassword(body.newPassword)
+    }
+
     const user = await db.user.update({
       where: { id },
       data: updateData,
@@ -128,8 +144,7 @@ export async function PATCH(
     const safeUser = excludePassword(user)
 
     return success({ user: safeUser })
-  } catch (err) {
-    console.error('Update user error:', err)
+  } catch {
     return error('Internal server error', 500)
   }
 }
@@ -175,8 +190,7 @@ export async function DELETE(
     })
 
     return success({ message: 'User deactivated successfully' })
-  } catch (err) {
-    console.error('Delete user error:', err)
+  } catch {
     return error('Internal server error', 500)
   }
 }

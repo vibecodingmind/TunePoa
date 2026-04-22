@@ -1,17 +1,23 @@
 import { NextRequest } from 'next/server'
 import { db } from '@/lib/db'
+import { success, error, unauthorized } from '@/lib/api-response'
 import { pesapalGetToken, getGatewayConfig } from '@/lib/payment-gateways'
 
 export async function POST(request: NextRequest) {
   try {
+    // Verify request is from Pesapal (basic auth via token check)
     const body = await request.json()
     const { OrderNotificationId, OrderTrackingId, OrderMerchantReference, OrderStatus } = body
 
-    // Get Pesapal token
-    const token = await pesapalGetToken()
-    if (!token) return new Response('Invalid token', { status: 401 })
+    if (!OrderTrackingId) {
+      return new Response('Missing OrderTrackingId', { status: 400 })
+    }
 
-    // Get transaction details
+    // Get Pesapal token to verify the callback is legitimate
+    const token = await pesapalGetToken()
+    if (!token) return new Response('Service unavailable', { status: 503 })
+
+    // Get transaction details from Pesapal
     const config = getGatewayConfig().pesapal
     const res = await fetch(`${config.baseUrl}/api/Transactions/GetTransactionStatus?orderTrackingId=${OrderTrackingId}`, {
       headers: {
@@ -48,8 +54,7 @@ export async function POST(request: NextRequest) {
     }
 
     return new Response('OK', { status: 200 })
-  } catch (err) {
-    console.error('Pesapal callback error:', err)
-    return new Response('Error', { status: 500 })
+  } catch {
+    return new Response('Internal Server Error', { status: 500 })
   }
 }

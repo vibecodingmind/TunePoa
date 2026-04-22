@@ -10,6 +10,6 @@ export function unauthorized() {
   return Response.json({ success: false, error: 'Unauthorized' }, { status: 401 })
 }
 
-export function forbidden() {
-  return Response.json({ success: false, error: 'Forbidden' }, { status: 403 })
+export function forbidden(message = 'Forbidden') {
+  return Response.json({ success: false, error: message }, { status: 403 })
 }
