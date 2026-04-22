@@ -47,8 +47,10 @@ import {
  Receipt,
  Wifi,
  Banknote,
+ CircleDollarSign,
 } from 'lucide-react'
 import { useToast } from '@/hooks/use-toast'
+import { PaymentGatewayDialog } from './payment-gateway-dialog'
 
 /* ========================================================================= */
 /* Types */
@@ -128,6 +130,38 @@ function StatusBadge({ label, status, icon: Icon }: StatusBadgeProps) {
 }
 
 /* ========================================================================= */
+/* Unpaid Payment Banner */
+/* ========================================================================= */
+
+function UnpaidBanner({ onClick }: { onClick: () => void }) {
+ return (
+ <div
+ onClick={onClick}
+ className="mt-3 p-3 rounded-xl bg-gradient-to-r from-amber-500/10 to-orange-500/10 border border-amber-500/20 cursor-pointer hover:from-amber-500/15 hover:to-orange-500/15 transition-all duration-300 group"
+ >
+ <div className="flex items-center gap-3">
+ <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-amber-500 to-orange-400 flex items-center justify-center shadow-lg shadow-amber-500/20 shrink-0 group-hover:scale-110 transition-transform">
+ <CircleDollarSign className="h-4 w-4 text-white" />
+ </div>
+ <div className="flex-1 min-w-0">
+ <p className="text-sm font-bold text-amber-300">Payment Required</p>
+ <p className="text-xs text-amber-400/70">
+ Click here to select a payment method and complete your subscription.
+ </p>
+ </div>
+ <Button
+ size="sm"
+ className="h-8 bg-gradient-to-r from-amber-500 to-orange-400 text-white shadow-lg shadow-amber-500/20 hover:shadow-xl hover:shadow-amber-500/30 hover:-translate-y-0.5 transition-all duration-300 border-0 font-bold text-xs"
+ >
+ Pay Now
+ <CreditCard className="h-3 w-3 ml-1" />
+ </Button>
+ </div>
+ </div>
+ )
+}
+
+/* ========================================================================= */
 /* Main Component */
 /* ========================================================================= */
 
@@ -145,6 +179,9 @@ export function MySubscriptions() {
  // Cancel dialog
  const [cancelTarget, setCancelTarget] = useState<Subscription | null>(null)
  const [cancelling, setCancelling] = useState(false)
+
+ // Payment dialog
+ const [payTarget, setPayTarget] = useState<Subscription | null>(null)
 
  /* ---- Fetch subscriptions ---- */
 
@@ -219,6 +256,13 @@ export function MySubscriptions() {
  await fetchPayments(newExpandedId)
  }
  }
+
+ /* ---- Payment success callback ---- */
+
+ const handlePaymentSuccess = useCallback(() => {
+ setPayTarget(null)
+ fetchSubscriptions()
+ }, [fetchSubscriptions])
 
  /* ---- Cancel subscription ---- */
 
@@ -367,11 +411,12 @@ export function MySubscriptions() {
  const isExpanded = expandedId === sub.id
  const payments = paymentsMap[sub.id] || []
  const canCancel = ['ACTIVE', 'PENDING'].includes(sub.status)
+ const needsPayment = sub.paymentStatus === 'UNPAID' && sub.status !== 'CANCELLED'
 
  return (
  <Card
  key={sub.id}
- className="border-0 shadow-sm hover:shadow-md transition-all duration-200"
+ className={`border-0 shadow-sm hover:shadow-md transition-all duration-200 ${needsPayment ? 'ring-1 ring-amber-500/30' : ''}`}
  >
  <CardContent className="p-4 sm:p-5">
  {/* Header */}
@@ -386,6 +431,11 @@ export function MySubscriptions() {
  >
  {STATUS_LABELS[sub.status] || sub.status}
  </Badge>
+ {needsPayment && (
+ <Badge className="text-[10px] font-bold bg-amber-500/15 text-amber-400 border border-amber-500/25 animate-pulse">
+ AWAITING PAYMENT
+ </Badge>
+ )}
  </div>
 
  {/* Detail grid */}
@@ -428,10 +478,25 @@ export function MySubscriptions() {
  <StatusBadge label="Payment" status={sub.paymentStatus} icon={Banknote} />
  <StatusBadge label="Vodacom" status={sub.vodacomStatus} icon={Wifi} />
  </div>
+
+ {/* Unpaid payment banner */}
+ {needsPayment && (
+ <UnpaidBanner onClick={() => setPayTarget(sub)} />
+ )}
  </div>
 
  {/* Actions */}
  <div className="flex sm:flex-col gap-2 shrink-0">
+ {needsPayment && (
+ <Button
+ size="sm"
+ className="h-9 bg-gradient-to-r from-teal-500 to-cyan-400 text-white shadow-lg shadow-teal-500/20 hover:shadow-xl hover:shadow-teal-500/30 hover:-translate-y-0.5 transition-all duration-300 border-0 font-bold"
+ onClick={() => setPayTarget(sub)}
+ >
+ <CircleDollarSign className="h-4 w-4 mr-1" />
+ <span className="hidden sm:inline">Pay Now</span>
+ </Button>
+ )}
  <Button
  variant="outline"
  size="sm"
@@ -481,6 +546,16 @@ export function MySubscriptions() {
  <div className="text-center py-6">
  <Receipt className="h-8 w-8 mx-auto text-slate-300 mb-2" />
  <p className="text-sm text-slate-400">No payment records found.</p>
+ {needsPayment && (
+ <Button
+ size="sm"
+ className="mt-3 bg-gradient-to-r from-teal-500 to-cyan-400 text-white shadow-lg shadow-teal-500/20 hover:shadow-xl hover:shadow-teal-500/30 border-0 font-bold"
+ onClick={() => setPayTarget(sub)}
+ >
+ <CircleDollarSign className="h-4 w-4 mr-1.5" />
+ Pay Now
+ </Button>
+ )}
  </div>
  ) : (
  <div className="overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0">
@@ -541,6 +616,19 @@ export function MySubscriptions() {
  })}
  </div>
  )}
+
+ {/* ================================================================= */}
+ {/* Payment Gateway Dialog */}
+ {/* ================================================================= */}
+ <PaymentGatewayDialog
+ open={!!payTarget}
+ onOpenChange={(open) => !open && setPayTarget(null)}
+ subscriptionId={payTarget?.id || ''}
+ amount={payTarget?.amount || 0}
+ currency={payTarget?.currency || 'TZS'}
+ packageName={payTarget?.package?.name ? `${payTarget.package.name} Package` : undefined}
+ onSuccess={handlePaymentSuccess}
+ />
 
  {/* ================================================================= */}
  {/* Cancel Confirmation Dialog */}

@@ -18,7 +18,9 @@ import {
   Sparkles,
   XCircle,
   TrendingDown,
+  CreditCard,
 } from 'lucide-react'
+import { PaymentGatewayDialog } from './payment-gateway-dialog'
 import { useToast } from '@/hooks/use-toast'
 
 // ---------------------------------------------------------------------------
@@ -422,6 +424,11 @@ export function PackagesPage() {
   const [error, setError] = useState<string | null>(null)
   const [subscribing, setSubscribing] = useState(false)
 
+  // Payment dialog after subscription creation
+  const [newSubscriptionId, setNewSubscriptionId] = useState<string | null>(null)
+  const [newSubscriptionAmount, setNewSubscriptionAmount] = useState<number>(0)
+  const [newSubscriptionTier, setNewSubscriptionTier] = useState<string>('')
+
   // Fetch pricing tiers
   useEffect(() => {
     let cancelled = false
@@ -530,11 +537,23 @@ export function PackagesPage() {
           return
         }
 
-        toast({
-          title: 'Subscription Created!',
-          description: `You have subscribed for TZS ${data.totalAmount.toLocaleString()}. Please complete your payment.`,
-        })
-        navigate('subscriptions')
+        const subscriptionId = result.data?.subscription?.id
+        if (subscriptionId) {
+          // Store subscription info for payment dialog
+          setNewSubscriptionId(subscriptionId)
+          setNewSubscriptionAmount(data.totalAmount)
+          setNewSubscriptionTier(data.pricingTierId)
+          toast({
+            title: 'Subscription Created!',
+            description: `Choose a payment method to activate your subscription.`,
+          })
+        } else {
+          toast({
+            title: 'Subscription Created!',
+            description: `You have subscribed for TZS ${data.totalAmount.toLocaleString()}. Please complete your payment.`,
+          })
+          navigate('subscriptions')
+        }
       } catch {
         toast({
           title: 'Network Error',
@@ -664,6 +683,24 @@ export function PackagesPage() {
           />
         </section>
       )}
+
+      {/* ── Payment Gateway Dialog (after subscription creation) ──── */}
+      <PaymentGatewayDialog
+        open={!!newSubscriptionId}
+        onOpenChange={(open) => {
+          if (!open) {
+            setNewSubscriptionId(null)
+            navigate('subscriptions')
+          }
+        }}
+        subscriptionId={newSubscriptionId || ''}
+        amount={newSubscriptionAmount}
+        packageName={newSubscriptionTier || 'Subscription'}
+        onSuccess={() => {
+          setNewSubscriptionId(null)
+          navigate('subscriptions')
+        }}
+      />
 
       {/* ── Subscribe loading overlay ──────────────────────────────── */}
       {subscribing && (
