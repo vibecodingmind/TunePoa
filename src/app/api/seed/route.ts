@@ -7,8 +7,8 @@ import { PACKAGE_FEATURES } from '@/lib/constants'
 // Shared seed logic
 async function runSeed() {
   // Clear existing data in correct order (respecting foreign keys)
-  // Use raw SQL for tables that may exist in DB but not in current Prisma schema
-  await db.$executeRawUnsafe(`DELETE FROM "Recording" WHERE 1=1`)
+  // Ignore tables that may exist in DB but not in current Prisma schema
+  try { await db.$executeRawUnsafe(`DELETE FROM "Recording" WHERE 1=1`) } catch { /* table may not exist */ }
   await db.payment.deleteMany({})
   await db.subscription.deleteMany({})
   await db.serviceRequest.deleteMany({})
