@@ -199,11 +199,6 @@ const heroStats = [
   { value: '1', label: 'Network Partner', icon: <Globe className="h-5 w-5" /> },
 ]
 
-/* ─── Trusted networks ─── */
-const networks = [
-  { name: 'Vodacom', color: 'text-red-500' },
-]
-
 /* ─── Pricing Cards ─── */
 const pricingCards = [
   {
@@ -585,27 +580,6 @@ export function LandingPage() {
                 </div>
               ))}
             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ════════════════════════════════════════════════════════════════
-          TRUSTED BY NETWORKS
-          ════════════════════════════════════════════════════════════════ */}
-      <section className="py-12 bg-[#0b1929] border-b border-white/[0.06]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <p className="text-center text-xs font-bold uppercase tracking-[0.2em] text-slate-500 mb-8">
-            Powered by Vodacom Tanzania
-          </p>
-          <div className="flex flex-wrap items-center justify-center gap-8 sm:gap-14">
-            {networks.map((net) => (
-              <div
-                key={net.name}
-                className="text-lg sm:text-xl font-bold text-slate-400 hover:text-slate-300 transition-colors duration-300 tracking-tight"
-              >
-                {net.name}
-              </div>
-            ))}
           </div>
         </div>
       </section>
