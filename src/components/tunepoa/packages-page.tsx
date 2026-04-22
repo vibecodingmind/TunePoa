@@ -3,10 +3,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useAppStore } from '@/lib/store'
 import { PricingCalculator } from './pricing-calculator'
-import { Card, CardContent } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { Skeleton } from '@/components/ui/skeleton'
 import {
   Users,
   CheckCircle2,
@@ -85,15 +82,15 @@ function getPriceForDuration(tier: PricingTier, months: number): number {
 // Unique gradient + icon combos per tier index
 const TIER_STYLES = [
   {
-    gradient: 'from-tp-500 to-ts-400',
-    shadow: 'shadow-tp-500/20',
-    ring: 'ring-tp-500/30',
+    gradient: 'from-teal-500 to-cyan-400',
+    shadow: 'shadow-teal-500/20',
+    ring: 'ring-teal-500/30',
     bgLight: 'bg-teal-500/10',
-    bgDark: 'dark:bg-tp-950/40',
-    borderLight: 'border-tp-200',
-    borderDark: 'dark:border-tp-800/50',
+    bgDark: 'bg-teal-950/40',
+    borderLight: 'border-teal-200',
+    borderDark: 'border-teal-800/50',
     icon: Crown,
-    iconBg: 'bg-teal-500/100',
+    iconBg: 'bg-gradient-to-br from-teal-500 to-cyan-500',
     label: 'Starter',
   },
   {
@@ -101,11 +98,11 @@ const TIER_STYLES = [
     shadow: 'shadow-amber-500/20',
     ring: 'ring-amber-500/30',
     bgLight: 'bg-amber-50',
-    bgDark: 'dark:bg-amber-950/40',
+    bgDark: 'bg-amber-950/40',
     borderLight: 'border-amber-200',
-    borderDark: 'dark:border-amber-800/50',
+    borderDark: 'border-amber-800/50',
     icon: Star,
-    iconBg: 'bg-amber-500',
+    iconBg: 'bg-gradient-to-br from-amber-500 to-orange-400',
     label: 'Growth',
   },
   {
@@ -113,11 +110,11 @@ const TIER_STYLES = [
     shadow: 'shadow-violet-500/20',
     ring: 'ring-violet-500/30',
     bgLight: 'bg-violet-50',
-    bgDark: 'dark:bg-violet-950/40',
+    bgDark: 'bg-violet-950/40',
     borderLight: 'border-violet-500/20',
-    borderDark: 'dark:border-violet-800/50',
+    borderDark: 'border-violet-800/50',
     icon: Zap,
-    iconBg: 'bg-violet-500',
+    iconBg: 'bg-gradient-to-br from-violet-500 to-purple-400',
     label: 'Pro',
   },
   {
@@ -125,11 +122,11 @@ const TIER_STYLES = [
     shadow: 'shadow-rose-500/20',
     ring: 'ring-rose-500/30',
     bgLight: 'bg-rose-50',
-    bgDark: 'dark:bg-rose-950/40',
+    bgDark: 'bg-rose-950/40',
     borderLight: 'border-rose-500/20',
-    borderDark: 'dark:border-rose-800/50',
+    borderDark: 'border-rose-800/50',
     icon: Shield,
-    iconBg: 'bg-rose-500',
+    iconBg: 'bg-gradient-to-br from-rose-500 to-pink-400',
     label: 'Enterprise',
   },
 ]
@@ -161,7 +158,19 @@ function pickPopularTier(tiers: PricingTier[]): string | null {
 }
 
 // ---------------------------------------------------------------------------
-// TierCard — individual premium card
+// Glass Skeleton block — lightweight replacement for shadcn Skeleton
+// ---------------------------------------------------------------------------
+function GlassSkeleton({ className }: { className?: string }) {
+  return (
+    <div
+      className={`animate-shimmer rounded-lg ${className ?? ''}`}
+      style={{ background: 'rgba(45, 120, 160, 0.08)' }}
+    />
+  )
+}
+
+// ---------------------------------------------------------------------------
+// TierCard — individual premium glass card
 // ---------------------------------------------------------------------------
 
 function TierCard({
@@ -187,13 +196,12 @@ function TierCard({
   }))
 
   return (
-    <Card
+    <div
       className={`
-        relative overflow-hidden rounded-2xl transition-all duration-500 ease-out
-        hover:-translate-y-2 hover:shadow-2xl group
-        ${isPopular ? `ring-2 ${style.ring} shadow-xl ${style.shadow}` : 'shadow-lg shadow-black/30 dark:shadow-slate-900/50'}
-        ${!tier.isActive ? 'opacity-60 grayscale pointer-events-none' : ''}
-         dark:bg-slate-900 border border-white/[0.06]/80 dark:border-slate-700/60
+        glass-card relative overflow-hidden transition-all duration-500 ease-out
+        hover:-translate-y-2 group
+        ${isPopular ? `ring-1 ${style.ring}` : ''}
+        ${!tier.isActive ? 'opacity-50 grayscale pointer-events-none' : ''}
       `}
     >
       {/* Most Popular ribbon */}
@@ -209,15 +217,15 @@ function TierCard({
       {/* Status indicator */}
       <div className="absolute top-4 left-4 z-10">
         {tier.isActive ? (
-          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-teal-500/10 dark:bg-tp-900/40 border border-tp-200 dark:border-tp-700/50">
-            <div className="h-1.5 w-1.5 rounded-full bg-teal-500/100 animate-pulse" />
-            <span className="text-[10px] font-bold text-tp-700 dark:text-tp-300 uppercase tracking-wider">
+          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full glass-subtle">
+            <div className="h-1.5 w-1.5 rounded-full bg-teal-400 animate-pulse" />
+            <span className="text-[10px] font-bold text-teal-300 uppercase tracking-wider">
               Active
             </span>
           </div>
         ) : (
-          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/5 dark:bg-slate-800 border border-white/[0.06] dark:border-slate-700">
-            <XCircle className="h-3 w-3 text-slate-400" />
+          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full glass-subtle">
+            <XCircle className="h-3 w-3 text-slate-500" />
             <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">
               Inactive
             </span>
@@ -225,135 +233,134 @@ function TierCard({
         )}
       </div>
 
-      <CardContent className="p-0">
-        {/* Gradient top accent */}
-        <div className={`h-2 bg-gradient-to-r ${style.gradient}`} />
+      {/* Gradient top accent bar */}
+      <div className={`h-1.5 bg-gradient-to-r ${style.gradient}`} />
 
-        <div className="p-6 pt-5 space-y-5">
-          {/* Icon + name */}
-          <div className="flex items-start gap-3 pt-4">
-            <div
-              className={`h-12 w-12 rounded-xl ${style.iconBg} text-white flex items-center justify-center shadow-lg ${style.shadow} shrink-0`}
+      <div className="p-6 pt-5 space-y-5">
+        {/* Icon + name */}
+        <div className="flex items-start gap-3 pt-4">
+          <div
+            className={`h-12 w-12 rounded-xl ${style.iconBg} text-white flex items-center justify-center shadow-lg ${style.shadow} shrink-0`}
+          >
+            <Icon className="h-6 w-6" />
+          </div>
+          <div className="min-w-0">
+            <h3 className="text-lg font-extrabold text-white truncate">
+              {tier.name} Users
+            </h3>
+            <p className="text-sm text-slate-400 font-medium">
+              {userRange} users
+            </p>
+            <Badge
+              variant="outline"
+              className={`mt-1.5 text-[10px] font-bold uppercase tracking-wider glass-subtle border-0 text-slate-300`}
             >
-              <Icon className="h-6 w-6" />
-            </div>
-            <div className="min-w-0">
-              <h3 className="text-lg font-extrabold text-white dark:text-white truncate">
-                {tier.name} Users
-              </h3>
-              <p className="text-sm text-slate-500 dark:text-slate-400 font-medium">
-                {userRange} users
-              </p>
-              <Badge
-                variant="outline"
-                className={`mt-1.5 text-[10px] font-bold uppercase tracking-wider ${style.bgLight} ${style.borderLight} dark:border-slate-600 text-slate-600 dark:text-slate-300`}
-              >
-                {style.label}
-              </Badge>
-            </div>
+              {style.label}
+            </Badge>
           </div>
-
-          {/* Divider */}
-          <div className="h-px bg-white/5 dark:bg-slate-800" />
-
-          {/* Starting price */}
-          <div>
-            <p className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-1">
-              Starting from
-            </p>
-            <div className="flex items-baseline gap-1">
-              <span className="text-3xl font-extrabold text-white dark:text-white tracking-tight">
-                {formatTZS(tier.price1Month)}
-              </span>
-              <span className="text-sm font-medium text-slate-400 dark:text-slate-500">
-                TZS/user/mo
-              </span>
-            </div>
-          </div>
-
-          {/* Duration pricing table */}
-          <div className="space-y-2">
-            <p className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
-              Duration Pricing
-            </p>
-            <div className="grid grid-cols-2 gap-2">
-              {DURATION_CONFIG.map((d) => {
-                const price = getPriceForDuration(tier, d.months)
-                const perMonth = Math.round(price / d.months)
-                return (
-                  <div
-                    key={d.months}
-                    className={`
-                      relative p-3 rounded-xl border transition-all duration-300
-                      ${
-                        d.months === 6
-                          ? `${style.bgLight} ${style.borderLight} dark:bg-slate-800 dark:border-slate-600`
-                          : 'bg-white/[0.03] dark:bg-slate-800/50 border-white/[0.06] dark:border-slate-700/50'
-                      }
-                    `}
-                  >
-                    {d.months === 6 && (
-                      <span className="absolute -top-1.5 left-2 px-1.5 py-0.5 rounded bg-amber-500 text-white text-[8px] font-bold uppercase shadow-sm">
-                        Best
-                      </span>
-                    )}
-                    <p className={`text-xs font-bold uppercase tracking-wider ${
-                      d.months === 6 ? 'text-slate-300 dark:text-slate-200' : 'text-slate-500 dark:text-slate-400'
-                    }`}>
-                      {d.label}
-                    </p>
-                    <p className="text-lg font-extrabold text-white dark:text-white mt-0.5">
-                      {formatTZS(price)}
-                    </p>
-                    <p className="text-[10px] text-slate-400 dark:text-slate-500 font-medium">
-                      {formatTZS(perMonth)} TZS/mo
-                    </p>
-                  </div>
-                )
-              })}
-            </div>
-          </div>
-
-          {/* Divider */}
-          <div className="h-px bg-white/5 dark:bg-slate-800" />
-
-          {/* Features */}
-          <div className="space-y-2.5">
-            <p className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
-              What&apos;s included
-            </p>
-            {features.map((feature) => (
-              <div key={feature} className="flex items-center gap-2.5">
-                <CheckCircle2 className="h-4 w-4 text-tp-500 shrink-0" />
-                <span className="text-sm text-slate-600 dark:text-slate-300 font-medium">
-                  {feature}
-                </span>
-              </div>
-            ))}
-          </div>
-
-          {/* Subscribe button */}
-          {tier.isActive && (
-            <Button
-              className={`
-                w-full h-12 rounded-xl font-bold text-sm transition-all duration-300
-                hover:-translate-y-0.5 hover:shadow-lg group/btn
-                ${
-                  isPopular
-                    ? `bg-gradient-to-r ${style.gradient} text-white shadow-lg ${style.shadow} hover:shadow-xl hover:shadow-tp-500/30`
-                    : 'bg-slate-900 dark: text-white dark:text-white hover:bg-slate-800 dark:hover:bg-white/5 shadow-md hover:shadow-lg'
-                }
-              `}
-              onClick={() => onSubscribe(tier)}
-            >
-              <Crown className="h-4 w-4 mr-2" />
-              Subscribe Now
-              <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover/btn:translate-x-1" />
-            </Button>
-          )}
         </div>
-      </CardContent>
-    </Card>
+
+        {/* Divider */}
+        <div className="h-px bg-gradient-to-r from-transparent via-teal-500/20 to-transparent" />
+
+        {/* Starting price */}
+        <div>
+          <p className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">
+            Starting from
+          </p>
+          <div className="flex items-baseline gap-1">
+            <span className="text-3xl font-extrabold text-white tracking-tight">
+              {formatTZS(tier.price1Month)}
+            </span>
+            <span className="text-sm font-medium text-slate-500">
+              TZS/user/mo
+            </span>
+          </div>
+        </div>
+
+        {/* Duration pricing table */}
+        <div className="space-y-2">
+          <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+            Duration Pricing
+          </p>
+          <div className="grid grid-cols-2 gap-2">
+            {DURATION_CONFIG.map((d) => {
+              const price = getPriceForDuration(tier, d.months)
+              const perMonth = Math.round(price / d.months)
+              return (
+                <div
+                  key={d.months}
+                  className={`
+                    relative p-3 rounded-xl border transition-all duration-300
+                    ${
+                      d.months === 6
+                        ? 'glass-brand'
+                        : 'glass-subtle'
+                    }
+                  `}
+                >
+                  {d.months === 6 && (
+                    <span className="absolute -top-1.5 left-2 px-1.5 py-0.5 rounded bg-gradient-to-r from-amber-500 to-orange-500 text-white text-[8px] font-bold uppercase shadow-sm">
+                      Best
+                    </span>
+                  )}
+                  <p className={`text-xs font-bold uppercase tracking-wider ${
+                    d.months === 6 ? 'text-slate-200' : 'text-slate-500'
+                  }`}>
+                    {d.label}
+                  </p>
+                  <p className="text-lg font-extrabold text-white mt-0.5">
+                    {formatTZS(price)}
+                  </p>
+                  <p className="text-[10px] text-slate-500 font-medium">
+                    {formatTZS(perMonth)} TZS/mo
+                  </p>
+                </div>
+              )
+            })}
+          </div>
+        </div>
+
+        {/* Divider */}
+        <div className="h-px bg-gradient-to-r from-transparent via-teal-500/20 to-transparent" />
+
+        {/* Features */}
+        <div className="space-y-2.5">
+          <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+            What&apos;s included
+          </p>
+          {features.map((feature) => (
+            <div key={feature} className="flex items-center gap-2.5">
+              <CheckCircle2 className="h-4 w-4 text-teal-400 shrink-0" />
+              <span className="text-sm text-slate-300 font-medium">
+                {feature}
+              </span>
+            </div>
+          ))}
+        </div>
+
+        {/* Subscribe button */}
+        {tier.isActive && (
+          <button
+            className={`
+              w-full h-12 rounded-xl font-bold text-sm transition-all duration-300
+              hover:-translate-y-0.5 group/btn cursor-pointer
+              flex items-center justify-center gap-2
+              ${
+                isPopular
+                  ? `bg-gradient-to-r ${style.gradient} text-white shadow-lg ${style.shadow} hover:shadow-xl hover:shadow-teal-500/30`
+                  : 'glass-card text-white hover:text-teal-300'
+              }
+            `}
+            onClick={() => onSubscribe(tier)}
+          >
+            <Crown className="h-4 w-4" />
+            Subscribe Now
+            <ArrowRight className="h-4 w-4 transition-transform group-hover/btn:translate-x-1" />
+          </button>
+        )}
+      </div>
+    </div>
   )
 }
 
@@ -363,42 +370,42 @@ function TierCard({
 
 function TierCardSkeleton() {
   return (
-    <Card className="rounded-2xl overflow-hidden border border-white/[0.06]/80 dark:border-slate-700/60  dark:bg-slate-900">
-      <Skeleton className="h-2 w-full rounded-none" />
-      <CardContent className="p-6 space-y-5">
+    <div className="glass-card overflow-hidden">
+      <GlassSkeleton className="h-1.5 w-full rounded-none" />
+      <div className="p-6 space-y-5">
         <div className="flex items-start gap-3 pt-4">
-          <Skeleton className="h-12 w-12 rounded-xl shrink-0" />
+          <GlassSkeleton className="h-12 w-12 rounded-xl shrink-0" />
           <div className="space-y-2 flex-1">
-            <Skeleton className="h-5 w-28" />
-            <Skeleton className="h-4 w-20" />
-            <Skeleton className="h-5 w-16" />
+            <GlassSkeleton className="h-5 w-28" />
+            <GlassSkeleton className="h-4 w-20" />
+            <GlassSkeleton className="h-5 w-16" />
           </div>
         </div>
-        <Skeleton className="h-px w-full" />
+        <div className="h-px bg-gradient-to-r from-transparent via-teal-500/20 to-transparent" />
         <div className="space-y-1">
-          <Skeleton className="h-3 w-20" />
-          <Skeleton className="h-8 w-36" />
+          <GlassSkeleton className="h-3 w-20" />
+          <GlassSkeleton className="h-8 w-36" />
         </div>
         <div className="space-y-1">
-          <Skeleton className="h-3 w-24" />
+          <GlassSkeleton className="h-3 w-24" />
           <div className="grid grid-cols-2 gap-2">
             {Array.from({ length: 4 }).map((_, i) => (
-              <Skeleton key={i} className="h-20 rounded-xl" />
+              <GlassSkeleton key={i} className="h-20 rounded-xl" />
             ))}
           </div>
         </div>
-        <Skeleton className="h-px w-full" />
+        <div className="h-px bg-gradient-to-r from-transparent via-teal-500/20 to-transparent" />
         <div className="space-y-2.5">
           {Array.from({ length: 4 }).map((_, i) => (
             <div key={i} className="flex items-center gap-2.5">
-              <Skeleton className="h-4 w-4 rounded-full" />
-              <Skeleton className="h-4 w-32" />
+              <GlassSkeleton className="h-4 w-4 rounded-full" />
+              <GlassSkeleton className="h-4 w-32" />
             </div>
           ))}
         </div>
-        <Skeleton className="h-12 w-full rounded-xl" />
-      </CardContent>
-    </Card>
+        <GlassSkeleton className="h-12 w-full rounded-xl" />
+      </div>
+    </div>
   )
 }
 
@@ -544,35 +551,35 @@ export function PackagesPage() {
   return (
     <div className="space-y-10">
       {/* ── Page Header ─────────────────────────────────────────────── */}
-      <div className="text-center max-w-2xl mx-auto space-y-3">
-        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-teal-500/10 dark:bg-tp-900/30 border border-tp-200 dark:border-tp-700/40">
-          <Sparkles className="h-4 w-4 text-teal-400 dark:text-tp-400" />
-          <span className="text-xs font-bold text-tp-700 dark:text-tp-300 uppercase tracking-wider">
+      <div className="text-center max-w-2xl mx-auto space-y-4 animate-fade-in-down">
+        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full glass-brand">
+          <Sparkles className="h-4 w-4 text-teal-400" />
+          <span className="text-xs font-bold text-teal-300 uppercase tracking-wider">
             Flexible Plans
           </span>
         </div>
-        <h1 className="text-3xl sm:text-4xl font-extrabold text-white dark:text-white tracking-tight">
+        <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight gradient-text">
           Packages & Pricing
         </h1>
-        <p className="text-base text-slate-500 dark:text-slate-400 leading-relaxed max-w-lg mx-auto">
+        <p className="text-base text-slate-400 leading-relaxed max-w-lg mx-auto">
           Choose the right plan for your business. All plans include ringback tone
           hosting, real-time analytics, and dedicated support.
         </p>
       </div>
 
       {/* ── Trust badges row ───────────────────────────────────────── */}
-      <div className="grid grid-cols-3 gap-3 max-w-md mx-auto">
+      <div className="grid grid-cols-3 gap-3 max-w-md mx-auto animate-fade-in-up">
         {[
-          { icon: Shield, label: 'Secure Payment', color: 'text-tp-500' },
-          { icon: Headphones, label: '24/7 Support', color: 'text-violet-500' },
-          { icon: Clock, label: 'Instant Setup', color: 'text-amber-500' },
+          { icon: Shield, label: 'Secure Payment', color: 'text-teal-400' },
+          { icon: Headphones, label: '24/7 Support', color: 'text-violet-400' },
+          { icon: Clock, label: 'Instant Setup', color: 'text-amber-400' },
         ].map(({ icon: TrustIcon, label, color }) => (
           <div
             key={label}
-            className="flex flex-col items-center gap-2 p-3 rounded-xl  dark:bg-slate-800/50 border border-white/[0.06]/80 dark:border-slate-700/50 text-center"
+            className="glass-card flex flex-col items-center gap-2 p-3 text-center !rounded-xl"
           >
             <TrustIcon className={`h-5 w-5 ${color}`} />
-            <span className="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider leading-tight">
+            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider leading-tight">
               {label}
             </span>
           </div>
@@ -590,35 +597,34 @@ export function PackagesPage() {
         )}
 
         {error && !loading && (
-          <div className="max-w-md mx-auto text-center space-y-4">
-            <div className="mx-auto h-16 w-16 rounded-2xl bg-red-50 dark:bg-red-900/20 flex items-center justify-center">
-              <XCircle className="h-8 w-8 text-red-500" />
+          <div className="max-w-md mx-auto text-center space-y-4 animate-fade-in-scale">
+            <div className="mx-auto h-16 w-16 rounded-2xl glass-card flex items-center justify-center !rounded-2xl">
+              <XCircle className="h-8 w-8 text-red-400" />
             </div>
             <div>
-              <h3 className="text-lg font-bold text-white dark:text-white">
+              <h3 className="text-lg font-bold text-white">
                 Couldn&apos;t load pricing
               </h3>
-              <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">{error}</p>
+              <p className="text-sm text-slate-400 mt-1">{error}</p>
             </div>
-            <Button
-              variant="outline"
-              className="mx-auto"
+            <button
+              className="mx-auto glass-card px-6 py-2.5 rounded-xl text-sm font-medium text-slate-300 hover:text-white transition-colors cursor-pointer"
               onClick={() => window.location.reload()}
             >
               Try Again
-            </Button>
+            </button>
           </div>
         )}
 
         {!loading && !error && tiers.length === 0 && (
-          <div className="text-center py-16 space-y-4">
-            <div className="mx-auto h-16 w-16 rounded-2xl bg-white/5 dark:bg-slate-800 flex items-center justify-center">
-              <Users className="h-8 w-8 text-slate-400" />
+          <div className="text-center py-16 space-y-4 animate-fade-in-scale">
+            <div className="mx-auto h-16 w-16 rounded-2xl glass-card flex items-center justify-center !rounded-2xl">
+              <Users className="h-8 w-8 text-slate-500" />
             </div>
-            <h3 className="text-lg font-bold text-white dark:text-white">
+            <h3 className="text-lg font-bold text-white">
               No Pricing Tiers Available
             </h3>
-            <p className="text-sm text-slate-500 dark:text-slate-400">
+            <p className="text-sm text-slate-400">
               Pricing tiers are being configured. Please check back soon.
             </p>
           </div>
@@ -641,12 +647,12 @@ export function PackagesPage() {
 
       {/* ── Pricing Calculator (authenticated only) ────────────────── */}
       {isAuthenticated && (
-        <section id="pricing-calculator-section" className="scroll-mt-8">
+        <section id="pricing-calculator-section" className="scroll-mt-8 animate-fade-in-up">
           <div className="text-center mb-6 space-y-2">
-            <h2 className="text-2xl font-extrabold text-white dark:text-white">
+            <h2 className="text-2xl font-extrabold gradient-text">
               Calculate & Subscribe
             </h2>
-            <p className="text-sm text-slate-500 dark:text-slate-400 max-w-lg mx-auto">
+            <p className="text-sm text-slate-400 max-w-lg mx-auto">
               Select your exact number of users, preferred duration, and optional
               audio recording to get an instant price.
             </p>
@@ -661,16 +667,16 @@ export function PackagesPage() {
 
       {/* ── Subscribe loading overlay ──────────────────────────────── */}
       {subscribing && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
-          <Card className="p-8 flex flex-col items-center gap-4 shadow-2xl border-0  dark:bg-slate-900">
-            <Loader2 className="h-8 w-8 text-teal-400 dark:text-tp-400 animate-spin" />
-            <p className="text-sm font-bold text-slate-300 dark:text-slate-200">
+        <div className="fixed inset-0 z-50 flex items-center justify-center glass-strong">
+          <div className="glass-card p-8 flex flex-col items-center gap-4 animate-fade-in-scale">
+            <Loader2 className="h-8 w-8 text-teal-400 animate-spin" />
+            <p className="text-sm font-bold text-slate-200">
               Processing subscription...
             </p>
-            <p className="text-xs text-slate-400 dark:text-slate-500">
+            <p className="text-xs text-slate-500">
               Please wait while we create your subscription.
             </p>
-          </Card>
+          </div>
         </div>
       )}
     </div>
