@@ -186,19 +186,24 @@ async function runSeed() {
   })
 }
 
-// POST /api/seed — requires SUPER_ADMIN auth if users already exist
+// POST /api/seed — requires SUPER_ADMIN auth if database is already fully seeded
 export async function POST(request: NextRequest) {
   try {
     const userCount = await db.user.count()
-    if (userCount > 0) {
+    const tierCount = await db.pricingTier.count()
+
+    // Allow unauthenticated seed if data is incomplete (e.g. users exist but no tiers)
+    if (userCount > 0 && tierCount > 0) {
       const auth = await authenticate(request)
       if (!auth.authenticated || !auth.user || auth.user.role !== 'SUPER_ADMIN') {
         return forbidden('Only Super Admin can re-seed the database')
       }
     }
+
     return await runSeed()
-  } catch {
-    return error('Failed to seed database', 500)
+  } catch (err: any) {
+    console.error('[SEED ERROR]', err?.message || err)
+    return error(`Failed to seed database: ${err?.message || 'Unknown error'}`, 500)
   }
 }
 
@@ -218,7 +223,8 @@ export async function GET() {
 
     // Data is incomplete — run full seed
     return await runSeed()
-  } catch {
-    return error('Failed to seed database', 500)
+  } catch (err: any) {
+    console.error('[SEED ERROR]', err?.message || err)
+    return error(`Failed to seed database: ${err?.message || 'Unknown error'}`, 500)
   }
 }
