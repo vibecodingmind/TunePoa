@@ -20,6 +20,13 @@ import {
   Shield,
   ChevronRight,
   DollarSign,
+  Bell,
+  UserCircle,
+  Music,
+  TrendingUp,
+  ScrollText,
+  Headphones,
+  Receipt,
 } from 'lucide-react'
 
 /* ─── Nav Item Type ─── */
@@ -44,6 +51,10 @@ const userNavItems: NavItem[] = [
   { id: 'subscriptions', label: 'Subscriptions', icon: <CreditCard className="h-[18px] w-[18px]" /> },
   { id: 'packages', label: 'Packages', icon: <Package className="h-[18px] w-[18px]" /> },
   { id: 'new-request', label: 'New Request', icon: <PlusCircle className="h-[18px] w-[18px]" /> },
+  { id: 'notifications', label: 'Notifications', icon: <Bell className="h-[18px] w-[18px]" /> },
+  { id: 'profile', label: 'My Profile', icon: <UserCircle className="h-[18px] w-[18px]" /> },
+  { id: 'audio-library', label: 'Audio Library', icon: <Music className="h-[18px] w-[18px]" /> },
+  { id: 'my-invoices', label: 'Invoices', icon: <FileText className="h-[18px] w-[18px]" /> },
 ]
 
 const adminNavItems: NavItem[] = [
@@ -53,6 +64,10 @@ const adminNavItems: NavItem[] = [
   { id: 'admin-users', label: 'Users', icon: <Users className="h-[18px] w-[18px]" />, adminOnly: true },
   { id: 'admin-packages', label: 'Packages', icon: <Shield className="h-[18px] w-[18px]" />, adminOnly: true },
   { id: 'admin-pricing', label: 'Pricing', icon: <DollarSign className="h-[18px] w-[18px]" />, adminOnly: true },
+  { id: 'admin-analytics', label: 'Analytics', icon: <TrendingUp className="h-[18px] w-[18px]" />, adminOnly: true },
+  { id: 'admin-activity-logs', label: 'Activity Logs', icon: <ScrollText className="h-[18px] w-[18px]" />, adminOnly: true },
+  { id: 'admin-audio', label: 'Audio Library', icon: <Headphones className="h-[18px] w-[18px]" />, adminOnly: true },
+  { id: 'admin-invoices', label: 'Invoices', icon: <Receipt className="h-[18px] w-[18px]" />, adminOnly: true },
 ]
 
 const settingsNavItems: NavItem[] = [
@@ -61,7 +76,7 @@ const settingsNavItems: NavItem[] = [
 
 /* ─── Sidebar Content (shared between desktop and mobile) ─── */
 function SidebarContent({ onClose }: { onClose?: () => void }) {
-  const { currentUser, currentView, navigate, logout, isAdmin } = useAppStore()
+  const { currentUser, currentView, navigate, logout, isAdmin, unreadCount } = useAppStore()
 
   const handleNav = (viewId: string) => {
     navigate(viewId as ViewId)
@@ -160,6 +175,11 @@ function SidebarContent({ onClose }: { onClose?: () => void }) {
                           {item.icon}
                         </span>
                         <span className="flex-1">{item.label}</span>
+                        {item.id === 'notifications' && unreadCount > 0 && (
+                          <span className="ml-auto mr-1 inline-flex items-center justify-center h-5 min-w-[20px] px-1.5 rounded-full bg-red-500 text-white text-[10px] font-bold leading-none">
+                            {unreadCount > 99 ? '99+' : unreadCount}
+                          </span>
+                        )}
                         {isActive && (
                           <ChevronRight className="h-3.5 w-3.5 text-teal-500/60" />
                         )}

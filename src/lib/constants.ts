@@ -17,7 +17,14 @@ export const STATUS_LABELS: Record<string, string> = {
   PAID: 'Paid',
   OVERDUE: 'Overdue',
   REFUNDED: 'Refunded',
-
+  DRAFT: 'Draft',
+  SENT: 'Sent',
+  PROCESSING: 'Processing',
+  INACTIVE: 'Inactive',
+  INFO: 'Info',
+  WARNING: 'Warning',
+  ERROR: 'Error',
+  SUCCESS: 'Success',
 }
 
 export const STATUS_COLORS: Record<string, string> = {
@@ -31,6 +38,14 @@ export const STATUS_COLORS: Record<string, string> = {
   UNPAID: 'bg-amber-500/15 text-amber-400 border-amber-500/25',
   PAID: 'bg-teal-500/15 text-teal-400 border-teal-500/25',
   OVERDUE: 'bg-red-500/15 text-red-400 border-red-500/25',
+  DRAFT: 'bg-slate-500/15 text-slate-400 border-slate-500/25',
+  SENT: 'bg-blue-500/15 text-blue-400 border-blue-500/25',
+  PROCESSING: 'bg-yellow-500/15 text-yellow-400 border-yellow-500/25',
+  INACTIVE: 'bg-slate-500/15 text-slate-400 border-slate-500/25',
+  INFO: 'bg-sky-500/15 text-sky-400 border-sky-500/25',
+  WARNING: 'bg-amber-500/15 text-amber-400 border-amber-500/25',
+  ERROR: 'bg-red-500/15 text-red-400 border-red-500/25',
+  SUCCESS: 'bg-emerald-500/15 text-emerald-400 border-emerald-500/25',
 }
 
 // Starter subscription packages with fixed pricing

@@ -17,6 +17,14 @@ import { AdminPricing } from '@/components/tunepoa/admin-pricing'
 import { SettingsPage } from '@/components/tunepoa/settings-page'
 import { MyRequests } from '@/components/tunepoa/my-requests'
 import { MySubscriptions } from '@/components/tunepoa/my-subscriptions'
+import { NotificationsPage } from '@/components/tunepoa/notifications-page'
+import { ProfilePage } from '@/components/tunepoa/profile-page'
+import { AudioLibraryPage } from '@/components/tunepoa/audio-library-page'
+import { MyInvoicesPage } from '@/components/tunepoa/my-invoices-page'
+import { AdminAnalyticsPage } from '@/components/tunepoa/admin-analytics-page'
+import { AdminActivityLogs } from '@/components/tunepoa/admin-activity-logs'
+import { AdminAudioPage } from '@/components/tunepoa/admin-audio-page'
+import { AdminInvoicesPage } from '@/components/tunepoa/admin-invoices-page'
 import Image from 'next/image'
 
 /* ─── Branded Loading Screen ─── */
@@ -53,10 +61,12 @@ function LoadingScreen() {
 const ADMIN_VIEWS = new Set([
   'admin-dashboard', 'admin-requests', 'admin-subscriptions',
   'admin-users', 'admin-packages', 'admin-pricing',
+  'admin-analytics', 'admin-activity-logs', 'admin-audio', 'admin-invoices',
 ])
 // User-only views that admins should not land on
 const USER_VIEWS = new Set([
   'dashboard', 'new-request', 'my-requests', 'packages', 'subscriptions',
+  'notifications', 'profile', 'audio-library', 'my-invoices',
 ])
 
 /* ─── View Router ─── */
@@ -102,6 +112,22 @@ function ViewRouter() {
       return <AdminPricing />
     case 'settings':
       return <SettingsPage />
+    case 'notifications':
+      return <NotificationsPage />
+    case 'profile':
+      return <ProfilePage />
+    case 'audio-library':
+      return <AudioLibraryPage />
+    case 'my-invoices':
+      return <MyInvoicesPage />
+    case 'admin-analytics':
+      return <AdminAnalyticsPage />
+    case 'admin-activity-logs':
+      return <AdminActivityLogs />
+    case 'admin-audio':
+      return <AdminAudioPage />
+    case 'admin-invoices':
+      return <AdminInvoicesPage />
     default:
       return isAdminUser ? <AdminDashboard /> : <UserDashboard />
   }

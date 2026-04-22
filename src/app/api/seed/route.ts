@@ -13,6 +13,9 @@ async function runSeed() {
   await db.subscription.deleteMany({})
   await db.serviceRequest.deleteMany({})
   await db.activityLog.deleteMany({})
+  await db.notification.deleteMany({})
+  await db.invoice.deleteMany({})
+  await db.emailTemplate.deleteMany({})
   await db.package.deleteMany({})
   await db.pricingTier.deleteMany({})
   await db.pricingSettings.deleteMany({})
@@ -157,6 +160,117 @@ async function runSeed() {
       { userId: customer1.id, action: 'CREATED', entityType: 'SERVICE_REQUEST', entityId: sr1.id, details: JSON.stringify({ adType: 'PROMO', businessName: 'Kijani Bora Restaurant' }) },
       { userId: customer2.id, action: 'CREATED', entityType: 'SERVICE_REQUEST', entityId: sr2.id, details: JSON.stringify({ adType: 'BRANDING', businessName: 'TechHub Solutions' }) },
       { userId: admin.id, action: 'STATUS_CHANGE', entityType: 'SERVICE_REQUEST', entityId: sr2.id, details: JSON.stringify({ from: 'PENDING', to: 'APPROVED' }) },
+      { userId: admin.id, action: 'LOGIN', entityType: 'USER', entityId: admin.id, details: JSON.stringify({ message: 'Admin logged in', ipAddress: '192.168.1.100' }) },
+      { userId: customer1.id, action: 'LOGIN', entityType: 'USER', entityId: customer1.id, details: JSON.stringify({ message: 'User logged in', ipAddress: '196.43.200.50' }) },
+      { userId: admin.id, action: 'UPDATED', entityType: 'PRICING_SETTINGS', entityId: tier1_10.id, details: JSON.stringify({ field: 'price1Month', oldValue: 16000, newValue: 15000 }) },
+      { userId: superAdmin.id, action: 'CREATED', entityType: 'USER', entityId: admin.id, details: JSON.stringify({ role: 'ADMIN', name: admin.name }) },
+    ],
+  })
+
+  // ─── Create Notifications ───
+  await db.notification.createMany({
+    data: [
+      {
+        userId: superAdmin.id,
+        title: 'Welcome to TunePoa',
+        message: 'Your super admin account has been set up successfully. You have full access to all platform features.',
+        type: 'SUCCESS',
+        isRead: true,
+      },
+      {
+        userId: admin.id,
+        title: 'Welcome to TunePoa',
+        message: 'Your admin account is ready. You can manage requests, subscriptions, and users from the admin dashboard.',
+        type: 'SUCCESS',
+        isRead: true,
+      },
+      {
+        userId: customer1.id,
+        title: 'Welcome to TunePoa!',
+        message: 'Karibu! Your account has been created. Start by browsing our packages or submitting your first ringback tone request.',
+        type: 'INFO',
+        isRead: false,
+      },
+      {
+        userId: customer1.id,
+        title: 'Request Submitted',
+        message: 'Your ringback tone request for Kijani Bora Restaurant has been submitted and is pending review.',
+        type: 'INFO',
+        actionUrl: '/my-requests',
+        isRead: false,
+      },
+      {
+        userId: customer2.id,
+        title: 'Welcome to TunePoa!',
+        message: 'Your business account is ready. Explore our packages or submit a ringback tone request to get started.',
+        type: 'INFO',
+        isRead: true,
+      },
+      {
+        userId: customer2.id,
+        title: 'Request Approved',
+        message: 'Great news! Your ringback tone request for TechHub Solutions has been approved. Your subscription is now active.',
+        type: 'SUCCESS',
+        actionUrl: '/my-requests',
+        isRead: true,
+      },
+      {
+        userId: customer2.id,
+        title: 'Payment Confirmed',
+        message: 'Your payment of TZS 25,000 for the Silver package has been confirmed via Pesapal.',
+        type: 'SUCCESS',
+        actionUrl: '/subscriptions',
+        isRead: false,
+      },
+      {
+        userId: admin.id,
+        title: 'New Request Pending',
+        message: 'A new service request from Kijani Bora Restaurant is awaiting your review.',
+        type: 'WARNING',
+        actionUrl: '/admin-requests',
+        isRead: false,
+      },
+    ],
+  })
+
+  // ─── Create Email Templates ───
+  await db.emailTemplate.createMany({
+    data: [
+      {
+        key: 'welcome',
+        subject: 'Welcome to TunePoa — Your Ringback Tone Platform',
+        body: `<html><body style="font-family: Arial, sans-serif; background: #0a1628; color: #e2e8f0; padding: 40px;"><div style="max-width: 600px; margin: 0 auto; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 32px;"><h1 style="color: #14b8a6;">Karibu, {{name}}!</h1><p>Welcome to TunePoa — Tanzania\'s premier ringback tone advertising platform.</p><p>Your account is ready to go. Here\'s what you can do:</p><ul><li>Browse our packages</li><li>Submit a ringback tone request</li><li>Track your subscriptions</li></ul><p style="margin-top: 24px;">If you have any questions, reply to this email or contact support.</p><p style="color: #64748b; margin-top: 32px;">— The TunePoa Team</p></div></body></html>`,
+        description: 'Welcome email sent to new users after registration',
+        isActive: true,
+      },
+      {
+        key: 'payment_confirmation',
+        subject: 'Payment Confirmed — Invoice #{{invoiceNumber}}',
+        body: `<html><body style="font-family: Arial, sans-serif; background: #0a1628; color: #e2e8f0; padding: 40px;"><div style="max-width: 600px; margin: 0 auto; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 32px;"><h1 style="color: #14b8a6;">Payment Confirmed!</h1><p>Hi {{name}},</p><p>Your payment has been confirmed successfully.</p><table style="width: 100%; border-collapse: collapse; margin: 16px 0;"><tr style="border-bottom: 1px solid rgba(255,255,255,0.1);"><td style="padding: 8px 0;">Amount</td><td style="text-align: right; padding: 8px 0;">{{currency}} {{amount}}</td></tr><tr style="border-bottom: 1px solid rgba(255,255,255,0.1);"><td style="padding: 8px 0;">Package</td><td style="text-align: right; padding: 8px 0;">{{packageName}}</td></tr><tr style="border-bottom: 1px solid rgba(255,255,255,0.1);"><td style="padding: 8px 0;">Reference</td><td style="text-align: right; padding: 8px 0;">{{reference}}</td></tr><tr><td style="padding: 8px 0; font-weight: bold;">Duration</td><td style="text-align: right; padding: 8px 0; font-weight: bold;">{{duration}}</td></tr></table><p>Thank you for choosing TunePoa!</p><p style="color: #64748b; margin-top: 32px;">— The TunePoa Team</p></div></body></html>`,
+        description: 'Payment confirmation email after successful payment',
+        isActive: true,
+      },
+      {
+        key: 'subscription_expiry',
+        subject: 'Your TunePoa Subscription Expires Soon',
+        body: `<html><body style="font-family: Arial, sans-serif; background: #0a1628; color: #e2e8f0; padding: 40px;"><div style="max-width: 600px; margin: 0 auto; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 32px;"><h1 style="color: #f59e0b;">Subscription Expiring Soon</h1><p>Hi {{name}},</p><p>Your <strong>{{packageName}}</strong> subscription will expire on <strong>{{expiryDate}}</strong>.</p><p>To avoid any interruption in your ringback tone service, please renew your subscription before it expires.</p><p style="text-align: center; margin: 24px 0;"><a href="{{renewalUrl}}" style="background: #14b8a6; color: white; padding: 12px 32px; border-radius: 8px; text-decoration: none; font-weight: bold;">Renew Now</a></p><p>Need help? Contact our support team anytime.</p><p style="color: #64748b; margin-top: 32px;">— The TunePoa Team</p></div></body></html>`,
+        description: 'Subscription expiry reminder sent before expiration',
+        isActive: true,
+      },
+      {
+        key: 'request_approved',
+        subject: 'Your Ringback Tone Request Has Been Approved! 🎉',
+        body: `<html><body style="font-family: Arial, sans-serif; background: #0a1628; color: #e2e8f0; padding: 40px;"><div style="max-width: 600px; margin: 0 auto; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 32px;"><h1 style="color: #10b981;">Request Approved!</h1><p>Hi {{name}},</p><p>Great news! Your ringback tone request for <strong>{{businessName}}</strong> has been approved.</p><p>Our production team will now begin creating your custom ringback tone. You\'ll receive another notification once it\'s ready.</p><p style="background: rgba(20,184,166,0.1); border: 1px solid rgba(20,184,166,0.2); border-radius: 8px; padding: 16px; margin: 16px 0;">Next steps: Complete your payment to activate the subscription and get your ringback tone live.</p><p>Thank you for choosing TunePoa!</p><p style="color: #64748b; margin-top: 32px;">— The TunePoa Team</p></div></body></html>`,
+        description: 'Email sent when a service request is approved',
+        isActive: true,
+      },
+      {
+        key: 'request_rejected',
+        subject: 'Update on Your Ringback Tone Request',
+        body: `<html><body style="font-family: Arial, sans-serif; background: #0a1628; color: #e2e8f0; padding: 40px;"><div style="max-width: 600px; margin: 0 auto; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 32px;"><h1 style="color: #ef4444;">Request Update</h1><p>Hi {{name}},</p><p>After careful review, we were unable to approve your ringback tone request for <strong>{{businessName}}</strong> at this time.</p><p><strong>Reason:</strong> {{rejectionReason}}</p><p style="background: rgba(20,184,166,0.1); border: 1px solid rgba(20,184,166,0.2); border-radius: 8px; padding: 16px; margin: 16px 0;">Don\'t worry — you can update your request and resubmit it for review. We\'re here to help you get the perfect ringback tone.</p><p>If you have questions about the feedback, please contact our support team.</p><p style="color: #64748b; margin-top: 32px;">— The TunePoa Team</p></div></body></html>`,
+        description: 'Email sent when a service request is rejected with feedback',
+        isActive: true,
+      },
     ],
   })
 
@@ -182,6 +296,9 @@ async function runSeed() {
       serviceRequests: 2,
       subscriptions: 1,
       payments: 1,
+      notifications: 8,
+      activityLogs: 8,
+      emailTemplates: ['welcome', 'payment_confirmation', 'subscription_expiry', 'request_approved', 'request_rejected'],
       pricingTiers: [tier1_10, tier11_25, tier25_50, tier50plus].map(t => t.name),
       tokens,
     },

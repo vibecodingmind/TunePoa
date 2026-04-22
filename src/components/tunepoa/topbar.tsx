@@ -1,6 +1,8 @@
 'use client'
 
+import { useEffect, useState } from 'react'
 import { useAppStore } from '@/lib/store'
+import { usePolling } from '@/hooks/use-polling'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import {
@@ -37,7 +39,28 @@ const viewTitles: Record<string, string> = {
 }
 
 export function Topbar() {
-  const { currentUser, currentView, toggleSidebar, navigate, logout } = useAppStore()
+  const { currentUser, currentView, toggleSidebar, navigate, logout, unreadCount, isAdmin: isAdminUser } = useAppStore()
+
+  // Enable real-time polling for notification updates
+  usePolling(30000)
+
+  // Check for custom logo
+  const [customLogoUrl, setCustomLogoUrl] = useState<string | null>(null)
+
+  useEffect(() => {
+    // Check if a custom logo exists
+    const checkLogo = async () => {
+      try {
+        const res = await fetch('/uploads/logo.png', { method: 'HEAD' })
+        if (res.ok) {
+          setCustomLogoUrl('/uploads/logo.png')
+        }
+      } catch {
+        // Default logo will be used
+      }
+    }
+    checkLogo()
+  }, [])
 
   const pageTitle = viewTitles[currentView] || 'Dashboard'
   const userInitials = currentUser?.name
@@ -59,6 +82,17 @@ export function Topbar() {
       >
         <Menu className="h-5 w-5" />
       </Button>
+
+      {/* Custom or default logo (visible on md+) */}
+      {customLogoUrl && (
+        <div className="hidden md:flex items-center">
+          <img
+            src={customLogoUrl}
+            alt="TunePoa"
+            className="h-7 w-7 rounded-md object-contain"
+          />
+        </div>
+      )}
 
       {/* Page title */}
       <div className="hidden sm:block">
@@ -91,7 +125,13 @@ export function Topbar() {
         aria-label="Notifications"
       >
         <Bell className="h-[18px] w-[18px]" />
-        <span className="absolute top-2 right-2 h-2 w-2 rounded-full bg-tp-500 ring-2 ring-[#0a1628]" />
+        {unreadCount > 0 ? (
+          <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] flex items-center justify-center rounded-full bg-tp-500 text-[10px] font-bold text-white ring-2 ring-[#0a1628] animate-fade-in">
+            {unreadCount > 99 ? '99+' : unreadCount}
+          </span>
+        ) : (
+          <span className="absolute top-2 right-2 h-2 w-2 rounded-full bg-tp-500 ring-2 ring-[#0a1628]" />
+        )}
       </Button>
 
       {/* Separator */}

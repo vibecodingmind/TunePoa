@@ -25,12 +25,20 @@ export type ViewId =
   | 'my-requests'
   | 'packages'
   | 'subscriptions'
+  | 'notifications'
+  | 'profile'
+  | 'audio-library'
+  | 'my-invoices'
   | 'admin-dashboard'
   | 'admin-requests'
   | 'admin-subscriptions'
   | 'admin-users'
   | 'admin-packages'
   | 'admin-pricing'
+  | 'admin-activity-logs'
+  | 'admin-analytics'
+  | 'admin-audio'
+  | 'admin-invoices'
   | 'settings'
 
 export type AuthMode = 'login' | 'register'
@@ -52,6 +60,9 @@ export interface AppState {
   authMode: AuthMode
   theme: 'light' | 'dark'
 
+  // Notifications
+  unreadCount: number
+
   // Actions
   setAuth: (user: User, token: string) => void
   logout: () => void
@@ -61,6 +72,10 @@ export interface AppState {
   setGlobalLoading: (loading: boolean) => void
   setAuthMode: (mode: AuthMode) => void
   setTheme: (theme: 'light' | 'dark') => void
+
+  // Notification actions
+  setUnreadCount: (count: number | ((prev: number) => number)) => void
+  incrementUnreadCount: () => void
 
   // Role helpers
   isAdmin: () => boolean
@@ -187,6 +202,7 @@ export const useStore = create<AppState>((set, get) => ({
   isGlobalLoading: false,
   authMode: 'login',
   theme: 'dark' as const,
+  unreadCount: 0,
 
   // --- Auth actions ---
 
@@ -251,6 +267,11 @@ export const useStore = create<AppState>((set, get) => ({
     // Always dark — no-op to prevent accidental light mode
     document.documentElement.classList.add('dark')
   },
+
+  // --- Notification actions ---
+
+  setUnreadCount: (count) => set({ unreadCount: typeof count === 'function' ? count(get().unreadCount) : count }),
+  incrementUnreadCount: () => set((s) => ({ unreadCount: s.unreadCount + 1 })),
 
   // --- Role helpers ---
 
