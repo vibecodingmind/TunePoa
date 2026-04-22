@@ -39,35 +39,26 @@ interface NavSection {
 }
 
 /* ─── Navigation Definition ─── */
-const navSections: NavSection[] = [
-  {
-    title: 'Main',
-    items: [
-      { id: 'dashboard', label: 'Dashboard', icon: <LayoutDashboard className="h-[18px] w-[18px]" /> },
-      { id: 'my-requests', label: 'Requests', icon: <FileText className="h-[18px] w-[18px]" /> },
-      { id: 'subscriptions', label: 'Subscriptions', icon: <CreditCard className="h-[18px] w-[18px]" /> },
-      { id: 'packages', label: 'Packages', icon: <Package className="h-[18px] w-[18px]" /> },
-      { id: 'new-request', label: 'New Request', icon: <PlusCircle className="h-[18px] w-[18px]" /> },
-    ],
-  },
-  {
-    title: 'Admin',
-    items: [
-      { id: 'admin-dashboard', label: 'Dashboard', icon: <BarChart3 className="h-[18px] w-[18px]" />, adminOnly: true },
-      { id: 'admin-requests', label: 'Requests', icon: <FileText className="h-[18px] w-[18px]" />, adminOnly: true },
-      { id: 'admin-subscriptions', label: 'Subscriptions', icon: <CreditCard className="h-[18px] w-[18px]" />, adminOnly: true },
-      { id: 'admin-users', label: 'Users', icon: <Users className="h-[18px] w-[18px]" />, adminOnly: true },
-      { id: 'admin-packages', label: 'Packages', icon: <Shield className="h-[18px] w-[18px]" />, adminOnly: true },
-      { id: 'admin-pricing', label: 'Pricing', icon: <DollarSign className="h-[18px] w-[18px]" />, adminOnly: true },
-      { id: 'admin-mno', label: 'MNO', icon: <Radio className="h-[18px] w-[18px]" />, adminOnly: true },
-    ],
-  },
-  {
-    title: 'Settings',
-    items: [
-      { id: 'settings', label: 'Settings', icon: <Settings className="h-[18px] w-[18px]" /> },
-    ],
-  },
+const userNavItems: NavItem[] = [
+  { id: 'dashboard', label: 'Dashboard', icon: <LayoutDashboard className="h-[18px] w-[18px]" /> },
+  { id: 'my-requests', label: 'Requests', icon: <FileText className="h-[18px] w-[18px]" /> },
+  { id: 'subscriptions', label: 'Subscriptions', icon: <CreditCard className="h-[18px] w-[18px]" /> },
+  { id: 'packages', label: 'Packages', icon: <Package className="h-[18px] w-[18px]" /> },
+  { id: 'new-request', label: 'New Request', icon: <PlusCircle className="h-[18px] w-[18px]" /> },
+]
+
+const adminNavItems: NavItem[] = [
+  { id: 'admin-dashboard', label: 'Dashboard', icon: <BarChart3 className="h-[18px] w-[18px]" />, adminOnly: true },
+  { id: 'admin-requests', label: 'Requests', icon: <FileText className="h-[18px] w-[18px]" />, adminOnly: true },
+  { id: 'admin-subscriptions', label: 'Subscriptions', icon: <CreditCard className="h-[18px] w-[18px]" />, adminOnly: true },
+  { id: 'admin-users', label: 'Users', icon: <Users className="h-[18px] w-[18px]" />, adminOnly: true },
+  { id: 'admin-packages', label: 'Packages', icon: <Shield className="h-[18px] w-[18px]" />, adminOnly: true },
+  { id: 'admin-pricing', label: 'Pricing', icon: <DollarSign className="h-[18px] w-[18px]" />, adminOnly: true },
+  { id: 'admin-mno', label: 'MNO', icon: <Radio className="h-[18px] w-[18px]" />, adminOnly: true },
+]
+
+const settingsNavItems: NavItem[] = [
+  { id: 'settings', label: 'Settings', icon: <Settings className="h-[18px] w-[18px]" /> },
 ]
 
 /* ─── Sidebar Content (shared between desktop and mobile) ─── */
@@ -81,6 +72,11 @@ function SidebarContent({ onClose }: { onClose?: () => void }) {
   }
 
   const showAdminSection = isAdmin
+
+  // Show user nav items for business owners, admin nav items for admins
+  const visibleNavSections: NavSection[] = showAdminSection
+    ? [{ title: 'Administration', items: adminNavItems }, { title: 'Settings', items: settingsNavItems }]
+    : [{ title: 'Main', items: userNavItems }, { title: 'Settings', items: settingsNavItems }]
 
   return (
     <div className="flex flex-col h-full bg-white dark:bg-slate-900">
@@ -133,9 +129,7 @@ function SidebarContent({ onClose }: { onClose?: () => void }) {
       {/* Navigation */}
       <ScrollArea className="flex-1 px-3 py-1">
         <nav className="space-y-5">
-          {navSections.map((section) => {
-            if (section.title === 'Admin' && !showAdminSection) return null
-
+          {visibleNavSections.map((section) => {
             const items = section.items.filter((item) => {
               if (item.adminOnly && !isAdmin) return false
               return true

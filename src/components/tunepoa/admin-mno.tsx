@@ -40,6 +40,7 @@ const defaultForm = {
 }
 
 export function AdminMno() {
+  const { token } = useAppStore()
   const { toast } = useToast()
   const [providers, setProviders] = useState<MnoProvider[]>([])
   const [loading, setLoading] = useState(true)
@@ -100,7 +101,7 @@ export function AdminMno() {
 
       const res = await fetch('/api/mno-providers', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
         body: JSON.stringify(body),
       })
 
@@ -121,8 +122,17 @@ export function AdminMno() {
 
   const handleToggleActive = async (provider: MnoProvider) => {
     try {
-      // Since we only have POST, we show a toast
-      toast({ title: 'Info', description: `Provider ${!provider.isActive ? 'activated' : 'deactivated'}. (Update endpoint needed for MNO providers)` })
+      const res = await fetch(`/api/mno-providers/${provider.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ isActive: !provider.isActive }),
+      })
+      if (res.ok) {
+        toast({ title: 'Updated', description: `Provider ${!provider.isActive ? 'activated' : 'deactivated'}` })
+        fetchProviders()
+      } else {
+        toast({ title: 'Error', description: 'Failed to update provider', variant: 'destructive' })
+      }
     } catch {
       toast({ title: 'Error', description: 'Failed to update', variant: 'destructive' })
     }

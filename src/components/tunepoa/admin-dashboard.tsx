@@ -74,13 +74,16 @@ function AdminStatCard({ label, value, sub, subColor = 'text-emerald-600', icon:
 }
 
 export function AdminDashboard() {
+  const { token } = useAppStore()
   const [analytics, setAnalytics] = useState<Analytics | null>(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await fetch('/api/analytics')
+        const res = await fetch('/api/analytics', {
+          headers: { Authorization: `Bearer ${token}` },
+        })
         const data = await res.json()
         setAnalytics(data.data || data)
       } catch (e) {

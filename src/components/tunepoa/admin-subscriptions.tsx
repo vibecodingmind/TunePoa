@@ -61,6 +61,7 @@ const mnoStatusColors: Record<string, string> = {
 }
 
 export function AdminSubscriptions() {
+  const { token } = useAppStore()
   const { toast } = useToast()
   const [subscriptions, setSubscriptions] = useState<Subscription[]>([])
   const [loading, setLoading] = useState(true)
@@ -80,7 +81,9 @@ export function AdminSubscriptions() {
     try {
       const params = new URLSearchParams()
       if (statusFilter !== 'ALL') params.set('status', statusFilter)
-      const res = await fetch(`/api/subscriptions?${params}`)
+      const res = await fetch(`/api/subscriptions?${params}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
       const data = await res.json()
       if (data.success && data.data) {
         setSubscriptions(data.data.subscriptions || [])
@@ -113,7 +116,7 @@ export function AdminSubscriptions() {
     try {
       const res = await fetch(`/api/subscriptions/${id}`, {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
         body: JSON.stringify(data),
       })
       if (res.ok) {
@@ -138,7 +141,7 @@ export function AdminSubscriptions() {
     try {
       const res = await fetch('/api/payments', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
         body: JSON.stringify({
           subscriptionId: selectedSub.id,
           amount,

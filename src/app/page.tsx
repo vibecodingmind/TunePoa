@@ -49,9 +49,34 @@ function LoadingScreen() {
   )
 }
 
+/* ─── Role-based view guard ─── */
+// Admin-only views that business owners cannot access
+const ADMIN_VIEWS = new Set([
+  'admin-dashboard', 'admin-requests', 'admin-subscriptions',
+  'admin-users', 'admin-packages', 'admin-pricing', 'admin-mno',
+])
+// User-only views that admins should not land on
+const USER_VIEWS = new Set([
+  'dashboard', 'new-request', 'my-requests', 'packages', 'subscriptions',
+])
+
 /* ─── View Router ─── */
 function ViewRouter() {
-  const { currentView } = useAppStore()
+  const { currentView, user, navigate } = useAppStore()
+  const role = user?.role || ''
+  const isAdminUser = role === 'SUPER_ADMIN' || role === 'ADMIN'
+
+  // Business owner trying to access admin view → redirect to their dashboard
+  if (!isAdminUser && ADMIN_VIEWS.has(currentView)) {
+    navigate('dashboard')
+    return <UserDashboard />
+  }
+
+  // Admin trying to access user-only view → redirect to admin dashboard
+  if (isAdminUser && USER_VIEWS.has(currentView)) {
+    navigate('admin-dashboard')
+    return <AdminDashboard />
+  }
 
   switch (currentView) {
     case 'dashboard':
@@ -81,7 +106,7 @@ function ViewRouter() {
     case 'settings':
       return <SettingsPage />
     default:
-      return <UserDashboard />
+      return isAdminUser ? <AdminDashboard /> : <UserDashboard />
   }
 }
 

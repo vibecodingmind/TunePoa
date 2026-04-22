@@ -36,13 +36,14 @@ const statusColors: Record<string, string> = {
 }
 
 export function AdminUsers() {
+  const { token } = useAppStore()
   const { toast } = useToast()
   const [users, setUsers] = useState<UserItem[]>([])
   const [loading, setLoading] = useState(true)
   const [roleFilter, setRoleFilter] = useState('ALL')
   const [statusFilter, setStatusFilter] = useState('ALL')
   const [searchTerm, setSearchTerm] = useState('')
-  const [, setActionLoading] = useState(false)
+  const [actionLoading, setActionLoading] = useState(false)
 
   const fetchUsers = useCallback(async () => {
     try {
@@ -50,7 +51,9 @@ export function AdminUsers() {
       if (roleFilter !== 'ALL') params.set('role', roleFilter)
       if (statusFilter !== 'ALL') params.set('status', statusFilter)
       if (searchTerm) params.set('search', searchTerm)
-      const res = await fetch(`/api/users?${params}`)
+      const res = await fetch(`/api/users?${params}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
       const data = await res.json()
       if (data.success && data.data) {
         setUsers(data.data?.users || [])
@@ -71,11 +74,24 @@ export function AdminUsers() {
 
   const handleToggleStatus = async (userId: string, currentStatus: string) => {
     const newStatus = currentStatus === 'ACTIVE' ? 'SUSPENDED' : 'ACTIVE'
+    setActionLoading(true)
     try {
-      // Since we don't have a user update endpoint, we'll just show a toast
-      toast({ title: 'Info', description: `User status would be changed to ${newStatus}. (User update endpoint needed)` })
+      const res = await fetch(`/api/users/${userId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ status: newStatus }),
+      })
+      const data = await res.json()
+      if (res.ok && data.success) {
+        toast({ title: 'User Updated', description: `User status changed to ${newStatus}` })
+        fetchUsers()
+      } else {
+        toast({ title: 'Error', description: data.error || 'Failed to update user status', variant: 'destructive' })
+      }
     } catch {
-      toast({ title: 'Error', description: 'Failed to update user', variant: 'destructive' })
+      toast({ title: 'Error', description: 'Failed to update user status', variant: 'destructive' })
+    } finally {
+      setActionLoading(false)
     }
   }
 

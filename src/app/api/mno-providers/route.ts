@@ -1,6 +1,7 @@
 import { NextRequest } from 'next/server'
 import { db } from '@/lib/db'
-import { success, error } from '@/lib/api-response'
+import { success, error, forbidden } from '@/lib/api-response'
+import { authenticate, isAdmin } from '@/lib/auth'
 
 export async function GET() {
   try {
@@ -23,6 +24,12 @@ export async function GET() {
 
 export async function POST(request: NextRequest) {
   try {
+    // Auth required - admin only
+    const auth = await authenticate(request)
+    if (!auth.authenticated || !auth.user || !isAdmin(auth.user.role)) {
+      return forbidden()
+    }
+
     const body = await request.json()
     const { name, country, code, apiEndpoint, apiKey, isActive, notes } = body
 

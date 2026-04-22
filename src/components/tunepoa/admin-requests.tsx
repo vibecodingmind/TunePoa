@@ -43,7 +43,7 @@ const statusColors: Record<string, string> = {
 }
 
 export function AdminRequests() {
-  const { navigate } = useAppStore()
+  const { token } = useAppStore()
   const { toast } = useToast()
   const [requests, setRequests] = useState<ServiceRequest[]>([])
   const [loading, setLoading] = useState(true)
@@ -59,7 +59,9 @@ export function AdminRequests() {
     try {
       const params = new URLSearchParams()
       if (statusFilter !== 'ALL') params.set('status', statusFilter)
-      const res = await fetch(`/api/service-requests?${params}`)
+      const res = await fetch(`/api/service-requests?${params}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
       const data = await res.json()
       if (data.success && data.data) {
         setRequests(data.data?.requests || [])
@@ -90,7 +92,7 @@ export function AdminRequests() {
     try {
       const res = await fetch(`/api/service-requests/${id}`, {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
         body: JSON.stringify({ status: 'APPROVED' }),
       })
       if (res.ok) {
@@ -111,7 +113,7 @@ export function AdminRequests() {
     try {
       const res = await fetch(`/api/service-requests/${selectedReq.id}`, {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
         body: JSON.stringify({ status: 'REJECTED', rejectionReason }),
       })
       if (res.ok) {

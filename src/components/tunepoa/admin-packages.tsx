@@ -45,6 +45,7 @@ const defaultForm = {
 }
 
 export function AdminPackages() {
+  const { token } = useAppStore()
   const { toast } = useToast()
   const [packages, setPackages] = useState<Package[]>([])
   const [loading, setLoading] = useState(true)
@@ -111,13 +112,13 @@ export function AdminPackages() {
       if (editingPkg) {
         res = await fetch(`/api/packages/${editingPkg.id}`, {
           method: 'PATCH',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
           body: JSON.stringify(body),
         })
       } else {
         res = await fetch('/api/packages', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
           body: JSON.stringify(body),
         })
       }
@@ -141,7 +142,7 @@ export function AdminPackages() {
     try {
       const res = await fetch(`/api/packages/${pkg.id}`, {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
         body: JSON.stringify({ isActive: !pkg.isActive }),
       })
       if (res.ok) {
