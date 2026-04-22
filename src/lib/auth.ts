@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server'
 import { db } from '@/lib/db'
-import { ADMIN_ROLES, MANAGER_ROLES } from './constants'
+import { ADMIN_ROLES } from './constants'
 
 // Token payload structure
 interface TokenPayload {
@@ -140,13 +140,6 @@ export async function authenticate(request: NextRequest): Promise<AuthResult> {
  */
 export function isAdmin(role: string): boolean {
   return (ADMIN_ROLES as readonly string[]).includes(role)
-}
-
-/**
- * Check if user has manager or admin role
- */
-export function isManager(role: string): boolean {
-  return (MANAGER_ROLES as readonly string[]).includes(role)
 }
 
 /**

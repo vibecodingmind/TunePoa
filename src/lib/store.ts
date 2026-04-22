@@ -37,7 +37,6 @@ export type ViewId =
 export type AuthMode = 'login' | 'register'
 
 export const ADMIN_ROLES = ['SUPER_ADMIN', 'ADMIN'] as const
-export const MANAGER_ROLES = ['SUPER_ADMIN', 'ADMIN', 'STUDIO_MANAGER'] as const
 
 export interface AppState {
   // Auth
@@ -66,7 +65,6 @@ export interface AppState {
 
   // Role helpers
   isAdmin: () => boolean
-  isStudioManager: () => boolean
   isBusinessOwner: () => boolean
 }
 
@@ -147,8 +145,6 @@ function getInitialState(): Pick<
         let defaultView: ViewId = 'dashboard'
         if (payload.role === 'SUPER_ADMIN' || payload.role === 'ADMIN') {
           defaultView = 'admin-dashboard'
-        } else if (payload.role === 'STUDIO_MANAGER') {
-          defaultView = 'admin-requests'
         }
 
         return { user, token: savedToken, isAuthenticated: true, currentView: defaultView }
@@ -200,8 +196,6 @@ export const useStore = create<AppState>((set, get) => ({
     const role = user.role
     if (role === 'SUPER_ADMIN' || role === 'ADMIN') {
       defaultView = 'admin-dashboard'
-    } else if (role === 'STUDIO_MANAGER') {
-      defaultView = 'admin-requests'
     }
 
     set({
@@ -265,10 +259,6 @@ export const useStore = create<AppState>((set, get) => ({
   isAdmin: () => {
     const role = get().user?.role
     return (ADMIN_ROLES as readonly string[]).includes(role ?? '')
-  },
-
-  isStudioManager: () => {
-    return get().user?.role === 'STUDIO_MANAGER'
   },
 
   isBusinessOwner: () => {

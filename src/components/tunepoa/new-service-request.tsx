@@ -747,19 +747,19 @@ export function NewServiceRequest() {
                 <ol className="mt-2 space-y-1.5 text-xs text-emerald-700">
                   <li className="flex items-start gap-2">
                     <span className="font-bold text-emerald-500 shrink-0">1.</span>
-                    We review your request
+                    Admin reviews your request
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="font-bold text-emerald-500 shrink-0">2.</span>
-                    Studio team creates your ad
+                    Once approved, subscription starts automatically
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="font-bold text-emerald-500 shrink-0">3.</span>
-                    Preview via WhatsApp
+                    Make payment to activate your ringback tone
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="font-bold text-emerald-500 shrink-0">4.</span>
-                    Approve and go live!
+                    Your ad goes live on every incoming call!
                   </li>
                 </ol>
               </div>

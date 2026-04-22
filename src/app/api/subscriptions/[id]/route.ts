@@ -24,11 +24,7 @@ export async function GET(
           select: { id: true, name: true, email: true, phone: true, businessName: true },
         },
         package: true,
-        request: {
-          include: {
-            recordings: true,
-          },
-        },
+        request: true,
         mnoProvider: true,
         payments: {
           orderBy: { createdAt: 'desc' },

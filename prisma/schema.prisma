@@ -1,5 +1,11 @@
 // TunePoa - Ringback Tone Management Platform
 // Database Schema
+//
+// Simplified Flow:
+//   1. User creates service request + pays → PENDING
+//   2. Admin reviews → APPROVED or REJECTED
+//   3. On APPROVED → subscription is created automatically
+//   4. User can re-submit if REJECTED
 
 generator client {
   provider = "prisma-client-js"
@@ -19,7 +25,7 @@ model User {
   phone         String   @unique
   businessName  String
   businessCategory String @default("general")
-  role          String   @default("BUSINESS_OWNER") // SUPER_ADMIN, ADMIN, STUDIO_MANAGER, BUSINESS_OWNER
+  role          String   @default("BUSINESS_OWNER") // SUPER_ADMIN, ADMIN, BUSINESS_OWNER
   status        String   @default("ACTIVE") // ACTIVE, SUSPENDED, INACTIVE
   password      String?  // hashed password for direct login
   avatar        String?
@@ -43,64 +49,16 @@ model ServiceRequest {
   adScript          String
   preferredLanguage String   @default("swahili")
   specialInstructions String?
-  status            String   @default("PENDING") // PENDING, IN_PROGRESS, RECORDING, AWAITING_VERIFICATION, APPROVED, REJECTED, COMPLETED
-  assignedTo        String?  // studio manager user ID
+  status            String   @default("PENDING") // PENDING, APPROVED, REJECTED
   rejectionReason   String?
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
 
   user              User       @relation(fields: [userId], references: [id])
-  recordings        Recording[]
   subscriptions     Subscription[]
-  whatsappVerifications WhatsAppVerification[]
 
   @@index([userId])
   @@index([status])
-}
-
-// ==================== RECORDINGS ====================
-
-model Recording {
-  id            String   @id @default(cuid())
-  requestId     String
-  title         String
-  fileName      String
-  filePath      String
-  fileSize      Int      @default(0)
-  duration      Int      @default(0) // in seconds
-  format        String   @default("MP3")
-  status        String   @default("DRAFT") // DRAFT, FINAL, APPROVED, REJECTED
-  recordedBy    String?  // studio manager user ID
-  notes         String?
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-
-  request       ServiceRequest  @relation(fields: [requestId], references: [id])
-  whatsappVerifications WhatsAppVerification[]
-
-  @@index([requestId])
-}
-
-// ==================== WHATSAPP VERIFICATIONS ====================
-
-model WhatsAppVerification {
-  id            String   @id @default(cuid())
-  recordingId   String
-  requestId     String
-  phoneNumber   String
-  messageStatus String   @default("PENDING") // PENDING, SENT, DELIVERED, READ, RESPONDED, FAILED
-  response      String?  // APPROVED or REJECTED
-  responseNotes String?
-  sentAt        DateTime?
-  respondedAt   DateTime?
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-
-  recording     Recording      @relation(fields: [recordingId], references: [id])
-  request       ServiceRequest @relation(fields: [requestId], references: [id])
-
-  @@index([recordingId])
-  @@index([requestId])
 }
 
 // ==================== PRICING TIERS ====================
@@ -244,7 +202,7 @@ model ActivityLog {
   id          String   @id @default(cuid())
   userId      String?
   action      String   // CREATED, UPDATED, DELETED, STATUS_CHANGE, LOGIN, etc
-  entityType  String   // USER, SERVICE_REQUEST, RECORDING, SUBSCRIPTION, etc
+  entityType  String   // USER, SERVICE_REQUEST, SUBSCRIPTION, etc
   entityId    String?
   details     String   // JSON string with details
   ipAddress   String?

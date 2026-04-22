@@ -1,7 +1,7 @@
 import { NextRequest } from 'next/server'
 import { db } from '@/lib/db'
 import { success, error, unauthorized, forbidden } from '@/lib/api-response'
-import { authenticate, isAdmin, isManager } from '@/lib/auth'
+import { authenticate, isAdmin } from '@/lib/auth'
 import { SR_TRANSITIONS, VALID_STATUSES } from '@/lib/constants'
 
 export async function GET(
@@ -23,21 +23,12 @@ export async function GET(
         user: {
           select: { id: true, name: true, email: true, phone: true, businessName: true },
         },
-        recordings: {
-          orderBy: { createdAt: 'desc' },
-        },
         subscriptions: {
           include: {
             package: true,
             payments: true,
             mnoProvider: true,
           },
-        },
-        whatsappVerifications: {
-          include: {
-            recording: true,
-          },
-          orderBy: { createdAt: 'desc' },
         },
       },
     })
@@ -66,24 +57,22 @@ export async function PATCH(
     const { id } = await params
     const body = await request.json()
 
-    // Auth required
+    // Auth required - admins only
     const auth = await authenticate(request)
-    if (!auth.authenticated || !auth.user) {
-      return unauthorized()
-    }
-
-    // Only managers/admins can update service requests
-    if (!isManager(auth.user.role)) {
+    if (!auth.authenticated || !auth.user || !isAdmin(auth.user.role)) {
       return forbidden()
     }
 
-    const existing = await db.serviceRequest.findUnique({ where: { id } })
+    const existing = await db.serviceRequest.findUnique({
+      where: { id },
+      include: { subscriptions: true },
+    })
     if (!existing) {
       return error('Service request not found', 404)
     }
 
     const updateData: Record<string, unknown> = {}
-    const allowedFields = ['status', 'assignedTo', 'rejectionReason', 'adScript', 'targetAudience', 'specialInstructions', 'preferredLanguage', 'businessName', 'businessCategory', 'adType']
+    const allowedFields = ['status', 'rejectionReason', 'adScript', 'targetAudience', 'specialInstructions', 'preferredLanguage', 'businessName', 'businessCategory', 'adType']
 
     for (const field of allowedFields) {
       if (body[field] !== undefined) {
@@ -112,23 +101,6 @@ export async function PATCH(
       }
     }
 
-    // Validate assignedTo is a valid manager/admin user
-    if (body.assignedTo) {
-      const assignedUser = await db.user.findUnique({
-        where: { id: body.assignedTo },
-        select: { id: true, role: true, status: true },
-      })
-      if (!assignedUser) {
-        return error('Assigned user not found', 404)
-      }
-      if (!isManager(assignedUser.role)) {
-        return error('Can only assign to STUDIO_MANAGER or ADMIN users')
-      }
-      if (assignedUser.status !== 'ACTIVE') {
-        return error('Cannot assign to an inactive user')
-      }
-    }
-
     const serviceRequest = await db.serviceRequest.update({
       where: { id },
       data: updateData,
@@ -136,9 +108,56 @@ export async function PATCH(
         user: {
           select: { id: true, name: true, email: true, businessName: true },
         },
-        recordings: true,
       },
     })
+
+    // ── AUTO-SUBSCRIBE ON APPROVAL ──
+    // When admin approves a request, automatically create a subscription
+    if (body.status === 'APPROVED' && existing.status !== 'APPROVED') {
+      // Check if a subscription already exists for this request
+      const existingSub = existing.subscriptions && existing.subscriptions.length > 0
+      if (!existingSub) {
+        const startDate = new Date()
+        const endDate = new Date()
+        endDate.setMonth(endDate.getMonth() + 1) // default 1-month subscription
+
+        const subscription = await db.subscription.create({
+          data: {
+            userId: existing.userId,
+            requestId: existing.id,
+            startDate,
+            endDate,
+            status: 'ACTIVE',
+            amount: 0,
+            unitPrice: 0,
+            userCount: 1,
+            durationMonths: 1,
+            currency: 'TZS',
+            paymentStatus: 'UNPAID',
+            mnoStatus: 'NOT_SUBMITTED',
+            autoRenew: false,
+          },
+          include: {
+            user: { select: { id: true, name: true, businessName: true } },
+          },
+        })
+
+        // Log auto-subscription
+        await db.activityLog.create({
+          data: {
+            userId: auth.user.id,
+            action: 'CREATED',
+            entityType: 'SUBSCRIPTION',
+            entityId: subscription.id,
+            details: JSON.stringify({
+              autoCreated: true,
+              reason: 'Auto-created on service request approval',
+              requestId: existing.id,
+            }),
+          },
+        })
+      }
+    }
 
     // Log activity
     await db.activityLog.create({
@@ -182,9 +201,6 @@ export async function DELETE(
 
     // Only own requests (BUSINESS_OWNER) or any (ADMIN) can delete
     if (auth.user.role === 'BUSINESS_OWNER' && existing.userId !== auth.user.id) {
-      return forbidden()
-    }
-    if (auth.user.role === 'STUDIO_MANAGER') {
       return forbidden()
     }
 

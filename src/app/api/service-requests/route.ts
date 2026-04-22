@@ -42,16 +42,10 @@ export async function GET(request: NextRequest) {
         user: {
           select: { id: true, name: true, email: true, businessName: true, phone: true },
         },
-        recordings: {
-          orderBy: { createdAt: 'desc' },
-        },
         subscriptions: {
           include: {
             package: { select: { id: true, name: true } },
           },
-        },
-        _count: {
-          select: { whatsappVerifications: true },
         },
       },
     })

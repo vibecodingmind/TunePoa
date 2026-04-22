@@ -26,7 +26,6 @@ interface UserItem {
 const roleColors: Record<string, string> = {
   SUPER_ADMIN: 'bg-red-100 text-red-700',
   ADMIN: 'bg-orange-100 text-orange-700',
-  STUDIO_MANAGER: 'bg-purple-100 text-purple-700',
   BUSINESS_OWNER: 'bg-blue-100 text-blue-700',
 }
 
@@ -107,7 +106,6 @@ export function AdminUsers() {
             <SelectItem value="ALL">All Roles</SelectItem>
             <SelectItem value="SUPER_ADMIN">Super Admin</SelectItem>
             <SelectItem value="ADMIN">Admin</SelectItem>
-            <SelectItem value="STUDIO_MANAGER">Studio Manager</SelectItem>
             <SelectItem value="BUSINESS_OWNER">Business Owner</SelectItem>
           </SelectContent>
         </Select>

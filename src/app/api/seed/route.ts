@@ -15,8 +15,6 @@ export async function POST(request: NextRequest) {
     // Clear existing data in correct order (respecting foreign keys)
     await db.payment.deleteMany({})
     await db.subscription.deleteMany({})
-    await db.whatsAppVerification.deleteMany({})
-    await db.recording.deleteMany({})
     await db.serviceRequest.deleteMany({})
     await db.activityLog.deleteMany({})
     await db.package.deleteMany({})
@@ -49,19 +47,6 @@ export async function POST(request: NextRequest) {
         role: 'ADMIN',
         status: 'ACTIVE',
         password: hashPassword('admin123'),
-      },
-    })
-
-    const studioManager = await db.user.create({
-      data: {
-        name: 'Juma Msonge',
-        email: 'studio@tunepoa.co.tz',
-        phone: '+255700000003',
-        businessName: 'TunePoa Studio',
-        businessCategory: 'media',
-        role: 'STUDIO_MANAGER',
-        status: 'ACTIVE',
-        password: hashPassword('studio123'),
       },
     })
 
@@ -196,22 +181,22 @@ export async function POST(request: NextRequest) {
         {
           key: 'audio_recording_price',
           value: '15000',
-          label: 'Audio Recording Price (TZS) — Bei ya kurekordi sauti',
+          label: 'Audio Recording Price (TZS)',
         },
         {
           key: 'starter_package_basic',
           value: '50000',
-          label: 'Starter Basic Package (TZS) — 1 number, 1 month, includes audio recording',
+          label: 'Starter Basic Package (TZS) - 1 number, 1 month, includes audio recording',
         },
         {
           key: 'starter_package_standard',
           value: '120000',
-          label: 'Starter Standard Package (TZS) — 5 numbers, 3 months, includes audio recording',
+          label: 'Starter Standard Package (TZS) - 5 numbers, 3 months, includes audio recording',
         },
         {
           key: 'starter_package_premium',
           value: '250000',
-          label: 'Starter Premium Package (TZS) — 10 numbers, 6 months, includes audio recording, dedicated support',
+          label: 'Starter Premium Package (TZS) - 10 numbers, 6 months, includes audio recording, dedicated support',
         },
       ],
     })
@@ -307,7 +292,7 @@ export async function POST(request: NextRequest) {
       },
     })
 
-    // Create service requests
+    // Create service requests (simplified statuses: PENDING, APPROVED, REJECTED)
     const sr1 = await db.serviceRequest.create({
       data: {
         userId: fatima.id,
@@ -318,8 +303,7 @@ export async function POST(request: NextRequest) {
         adScript: 'Karibu Kijani Bora! Where fresh meets flavour. Come enjoy our special nyama choma this weekend at an unbeatable price. Visit us at city centre, opposite the clock tower. Kijani Bora - Chakula kitamu kila wakati!',
         preferredLanguage: 'swahili',
         specialInstructions: 'Make it energetic and welcoming. Use a friendly voice.',
-        status: 'COMPLETED',
-        assignedTo: studioManager.id,
+        status: 'APPROVED',
       },
     })
 
@@ -334,7 +318,6 @@ export async function POST(request: NextRequest) {
         preferredLanguage: 'english',
         specialInstructions: 'Professional tone, not too fast.',
         status: 'APPROVED',
-        assignedTo: studioManager.id,
       },
     })
 
@@ -348,8 +331,7 @@ export async function POST(request: NextRequest) {
         adScript: 'Pata discount ya 30% kwenye mavazi mapya ya Fashion Spot! Bidhaa za hali ya juu kwa bei nafuu. Tupo Kariakoo, Ghorofa ya 2. Fashion Spot - Urembo wako, mtindo wetu!',
         preferredLanguage: 'swahili',
         specialInstructions: 'Fashionable, upbeat tone with background music feel.',
-        status: 'IN_PROGRESS',
-        assignedTo: studioManager.id,
+        status: 'PENDING',
       },
     })
 
@@ -382,53 +364,7 @@ export async function POST(request: NextRequest) {
       },
     })
 
-    // Create recordings
-    const rec1 = await db.recording.create({
-      data: {
-        requestId: sr1.id,
-        title: 'Kijani Bora - Weekend Nyama Choma Promo',
-        fileName: 'kijani_bora_nyama_choma.mp3',
-        filePath: '/uploads/kijani_bora_nyama_choma.mp3',
-        fileSize: 524288,
-        duration: 22,
-        format: 'MP3',
-        status: 'APPROVED',
-        recordedBy: studioManager.id,
-        notes: 'Recorded with energetic Swahili voice. Client approved.',
-      },
-    })
-
-    const rec2 = await db.recording.create({
-      data: {
-        requestId: sr2.id,
-        title: 'Tech Solutions Hub - Branding Ad',
-        fileName: 'tech_solutions_branding.mp3',
-        filePath: '/uploads/tech_solutions_branding.mp3',
-        fileSize: 393216,
-        duration: 18,
-        format: 'MP3',
-        status: 'APPROVED',
-        recordedBy: studioManager.id,
-        notes: 'Professional English voice over, client approved on first take.',
-      },
-    })
-
-    const rec3 = await db.recording.create({
-      data: {
-        requestId: sr3.id,
-        title: 'Fashion Spot - 30% Discount Offer',
-        fileName: 'fashion_spot_discount.mp3',
-        filePath: '/uploads/fashion_spot_discount.mp3',
-        fileSize: 471859,
-        duration: 20,
-        format: 'MP3',
-        status: 'DRAFT',
-        recordedBy: studioManager.id,
-        notes: 'First draft, needs background music mixing.',
-      },
-    })
-
-    // Create subscriptions
+    // Create subscriptions (auto-created for APPROVED requests)
     const sub1 = await db.subscription.create({
       data: {
         userId: fatima.id,
@@ -547,13 +483,6 @@ export async function POST(request: NextRequest) {
           details: JSON.stringify({ name: 'Gold Package' }),
         },
         {
-          userId: studioManager.id,
-          action: 'STATUS_CHANGE',
-          entityType: 'SERVICE_REQUEST',
-          entityId: sr1.id,
-          details: JSON.stringify({ from: 'RECORDING', to: 'AWAITING_VERIFICATION' }),
-        },
-        {
           userId: superAdmin.id,
           action: 'STATUS_CHANGE',
           entityType: 'SUBSCRIPTION',
@@ -567,6 +496,13 @@ export async function POST(request: NextRequest) {
           entityId: sr1.id,
           details: JSON.stringify({ adType: 'PROMO' }),
         },
+        {
+          userId: superAdmin.id,
+          action: 'STATUS_CHANGE',
+          entityType: 'SERVICE_REQUEST',
+          entityId: sr1.id,
+          details: JSON.stringify({ from: 'PENDING', to: 'APPROVED' }),
+        },
       ],
     })
 
@@ -575,7 +511,6 @@ export async function POST(request: NextRequest) {
     const tokens = {
       superAdmin: createToken({ id: superAdmin.id, email: superAdmin.email, role: superAdmin.role, name: superAdmin.name }),
       admin: createToken({ id: admin.id, email: admin.email, role: admin.role, name: admin.name }),
-      studioManager: createToken({ id: studioManager.id, email: studioManager.email, role: studioManager.role, name: studioManager.name }),
       businessOwner: createToken({ id: fatima.id, email: fatima.email, role: fatima.role, name: fatima.name }),
     }
 
@@ -585,7 +520,6 @@ export async function POST(request: NextRequest) {
         users: {
           superAdmin: { email: superAdmin.email, password: 'admin123', role: superAdmin.role },
           admin: { email: admin.email, password: 'admin123', role: admin.role },
-          studioManager: { email: studioManager.email, password: 'studio123', role: studioManager.role },
           businessOwners: businessOwners.map(u => ({ email: u.email, password: 'password123', role: u.role, status: u.status })),
         },
         packages: [bronzePkg.name, silverPkg.name, goldPkg.name, platinumPkg.name],

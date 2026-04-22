@@ -32,8 +32,8 @@ export async function GET(request: NextRequest) {
       // Pending requests
       db.serviceRequest.count({ where: { status: 'PENDING' } }),
 
-      // Completed requests
-      db.serviceRequest.count({ where: { status: { in: ['APPROVED', 'COMPLETED'] } } }),
+      // Completed requests (APPROVED status)
+      db.serviceRequest.count({ where: { status: 'APPROVED' } }),
 
       // Total revenue
       db.payment.aggregate({

@@ -55,11 +55,11 @@ const faqItems = [
   },
   {
     q: 'How long does it take to set up?',
-    a: 'Typically 2-5 business days from request to going live. This includes script writing, professional studio recording, your approval via WhatsApp, and activation on your chosen mobile network.',
+    a: 'Typically 1-2 business days from request to going live. Submit your request, get approved, and your ad goes live on the network.',
   },
   {
     q: 'Can I change my ad anytime?',
-    a: 'Yes! You can request a new ad recording anytime from your dashboard. Simply submit a new service request and our production team will create a fresh recording for you.',
+    a: 'Yes! You can request a new ad recording anytime from your dashboard. Simply submit a new service request and our team will review and approve it.',
   },
   {
     q: 'Which networks are supported?',
@@ -67,7 +67,7 @@ const faqItems = [
   },
   {
     q: 'How do I approve my ad?',
-    a: 'We send your recorded ad via WhatsApp for your review. You can listen, request revisions, or approve it directly. Once approved, we handle the activation on your mobile network within 24 hours.',
+    a: 'Once your request is approved by our team, your subscription starts automatically. You then make payment to activate your ringback tone on the mobile network within 24 hours.',
   },
   {
     q: 'What payment methods do you accept?',
@@ -132,8 +132,8 @@ const howItWorksSteps = [
   {
     icon: <Mic className="h-6 w-6" />,
     step: 3,
-    title: 'Studio Recording',
-    desc: 'Our professional studio records your custom ad with experienced voice artists and premium sound quality.',
+    title: 'Get Approved',
+    desc: 'Our team reviews your request. Once approved, your subscription starts automatically.',
     color: 'from-emerald-500 to-green-500',
     shadowColor: 'shadow-emerald-500/25',
   },
@@ -141,7 +141,7 @@ const howItWorksSteps = [
     icon: <Radio className="h-6 w-6" />,
     step: 4,
     title: 'Go Live',
-    desc: 'Approve the recording via WhatsApp and your ad goes live on every incoming call. It is that simple.',
+    desc: 'Your ad goes live on every incoming call. It is that simple.',
     color: 'from-green-500 to-emerald-600',
     shadowColor: 'shadow-green-500/25',
   },
@@ -179,8 +179,8 @@ const featureCards = [
   },
   {
     icon: <MessageCircle className="h-5 w-5" />,
-    title: 'WhatsApp Verification',
-    desc: 'Review and approve your ad via WhatsApp before going live. Quick, convenient, and always accessible.',
+    title: 'Quick Approval',
+    desc: 'Fast review and approval process. Submit your request and get approved quickly.',
     gradient: 'from-emerald-500/10 to-green-500/10',
     iconBg: 'bg-emerald-100 text-emerald-600 dark:bg-emerald-900/40 dark:text-emerald-400',
   },

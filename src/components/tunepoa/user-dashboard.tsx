@@ -194,7 +194,7 @@ export function UserDashboard() {
 
   const activeSubs = subscriptions.filter((s) => s.status === 'ACTIVE').length
   const pendingRequests = requests.filter((r) =>
-    ['PENDING', 'IN_PROGRESS', 'RECORDING', 'AWAITING_VERIFICATION'].includes(r.status),
+    r.status === 'PENDING',
   ).length
   const totalSpent = payments
     .filter((p) => p.status === 'COMPLETED')

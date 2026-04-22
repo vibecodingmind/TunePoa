@@ -72,7 +72,7 @@ const navSections: NavSection[] = [
 
 /* ─── Sidebar Content (shared between desktop and mobile) ─── */
 function SidebarContent({ onClose }: { onClose?: () => void }) {
-  const { currentUser, currentView, navigate, logout, isAdmin, isStudioManager } = useAppStore()
+  const { currentUser, currentView, navigate, logout, isAdmin } = useAppStore()
   const { theme } = useStore()
 
   const handleNav = (viewId: string) => {
@@ -80,7 +80,7 @@ function SidebarContent({ onClose }: { onClose?: () => void }) {
     onClose?.()
   }
 
-  const showAdminSection = isAdmin || isStudioManager
+  const showAdminSection = isAdmin
 
   return (
     <div className="flex flex-col h-full bg-white dark:bg-slate-900">
@@ -138,7 +138,6 @@ function SidebarContent({ onClose }: { onClose?: () => void }) {
 
             const items = section.items.filter((item) => {
               if (item.adminOnly && !isAdmin) return false
-              if (item.managerOnly && !isAdmin && !isStudioManager) return false
               return true
             })
 

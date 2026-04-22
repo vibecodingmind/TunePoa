@@ -1,20 +1,15 @@
 export const VALID_STATUSES = {
-  SERVICE_REQUEST: ['PENDING', 'IN_PROGRESS', 'RECORDING', 'AWAITING_VERIFICATION', 'APPROVED', 'REJECTED', 'COMPLETED'],
+  SERVICE_REQUEST: ['PENDING', 'APPROVED', 'REJECTED'],
   SUBSCRIPTION: ['PENDING', 'ACTIVE', 'EXPIRED', 'CANCELLED', 'SUSPENDED'],
   PAYMENT: ['PENDING', 'COMPLETED', 'FAILED', 'REFUNDED'],
   MNO_STATUS: ['NOT_SUBMITTED', 'PENDING_MNO', 'ACTIVE_MNO', 'FAILED_MNO', 'REMOVED_MNO'],
-  RECORDING: ['DRAFT', 'FINAL', 'APPROVED', 'REJECTED'],
   PAYMENT_STATUS: ['UNPAID', 'PAID', 'OVERDUE', 'REFUNDED'],
 } as const
 
 export const STATUS_LABELS: Record<string, string> = {
   PENDING: 'Pending',
-  IN_PROGRESS: 'In Progress',
-  RECORDING: 'Recording',
-  AWAITING_VERIFICATION: 'Awaiting Verification',
   APPROVED: 'Approved',
   REJECTED: 'Rejected',
-  COMPLETED: 'Completed',
   ACTIVE: 'Active',
   EXPIRED: 'Expired',
   CANCELLED: 'Cancelled',
@@ -28,18 +23,12 @@ export const STATUS_LABELS: Record<string, string> = {
   ACTIVE_MNO: 'Active on MNO',
   FAILED_MNO: 'Failed at MNO',
   REMOVED_MNO: 'Removed from MNO',
-  DRAFT: 'Draft',
-  FINAL: 'Final',
 }
 
 export const STATUS_COLORS: Record<string, string> = {
   PENDING: 'bg-yellow-100 text-yellow-800 border-yellow-200',
-  IN_PROGRESS: 'bg-blue-100 text-blue-800 border-blue-200',
-  RECORDING: 'bg-purple-100 text-purple-800 border-purple-200',
-  AWAITING_VERIFICATION: 'bg-orange-100 text-orange-800 border-orange-200',
   APPROVED: 'bg-emerald-100 text-emerald-800 border-emerald-200',
   REJECTED: 'bg-red-100 text-red-800 border-red-200',
-  COMPLETED: 'bg-emerald-100 text-emerald-800 border-emerald-200',
   ACTIVE: 'bg-emerald-100 text-emerald-800 border-emerald-200',
   EXPIRED: 'bg-gray-100 text-gray-800 border-gray-200',
   CANCELLED: 'bg-red-100 text-red-800 border-red-200',
@@ -52,8 +41,6 @@ export const STATUS_COLORS: Record<string, string> = {
   ACTIVE_MNO: 'bg-emerald-100 text-emerald-800 border-emerald-200',
   FAILED_MNO: 'bg-red-100 text-red-800 border-red-200',
   REMOVED_MNO: 'bg-gray-100 text-gray-800 border-gray-200',
-  DRAFT: 'bg-gray-100 text-gray-800 border-gray-200',
-  FINAL: 'bg-blue-100 text-blue-800 border-blue-200',
 }
 
 // Starter subscription packages with fixed pricing
@@ -107,14 +94,11 @@ export const PACKAGE_FEATURES: Record<string, string[]> = {
 }
 
 // Valid status transitions for service requests
+// Simplified flow: PENDING → APPROVED/REJECTED, REJECTED → PENDING (re-submit)
 export const SR_TRANSITIONS: Record<string, string[]> = {
-  PENDING: ['IN_PROGRESS', 'REJECTED'],
-  IN_PROGRESS: ['RECORDING', 'REJECTED'],
-  RECORDING: ['AWAITING_VERIFICATION', 'REJECTED'],
-  AWAITING_VERIFICATION: ['APPROVED', 'REJECTED'],
-  APPROVED: ['COMPLETED'],
+  PENDING: ['APPROVED', 'REJECTED'],
+  APPROVED: [],
   REJECTED: ['PENDING'], // allow re-submission
-  COMPLETED: [],
 }
 
 // Valid status transitions for subscriptions
@@ -128,4 +112,3 @@ export const SUB_TRANSITIONS: Record<string, string[]> = {
 
 // Admin roles
 export const ADMIN_ROLES = ['SUPER_ADMIN', 'ADMIN'] as const
-export const MANAGER_ROLES = ['SUPER_ADMIN', 'ADMIN', 'STUDIO_MANAGER'] as const

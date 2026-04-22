@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback } from 'react'
 import { useAppStore } from '@/lib/store'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
@@ -17,7 +17,7 @@ import {
 } from '@/components/ui/dialog'
 import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
-import { Search, Eye, UserCheck, XCircle, Loader2, RefreshCw } from 'lucide-react'
+import { Search, Eye, CheckCircle2, XCircle, Loader2, RefreshCw } from 'lucide-react'
 import { useToast } from '@/hooks/use-toast'
 
 interface ServiceRequest {
@@ -30,20 +30,15 @@ interface ServiceRequest {
   preferredLanguage: string
   specialInstructions: string | null
   status: string
-  assignedTo: string | null
   rejectionReason: string | null
   createdAt: string
-  user: { id: string; name: string; email: string; businessName: string }
-  recordings: { id: string; title: string; status: string }[]
+  user: { id: string; name: string; email: string; businessName: string; phone: string }
+  subscriptions: { id: string; status: string; package: { id: string; name: string } | null }[]
 }
 
 const statusColors: Record<string, string> = {
   PENDING: 'bg-yellow-100 text-yellow-700 border-yellow-200',
-  IN_PROGRESS: 'bg-blue-100 text-blue-700 border-blue-200',
-  RECORDING: 'bg-purple-100 text-purple-700 border-purple-200',
-  AWAITING_VERIFICATION: 'bg-orange-100 text-orange-700 border-orange-200',
   APPROVED: 'bg-emerald-100 text-emerald-700 border-emerald-200',
-  COMPLETED: 'bg-green-100 text-green-700 border-green-200',
   REJECTED: 'bg-red-100 text-red-700 border-red-200',
 }
 
@@ -56,12 +51,9 @@ export function AdminRequests() {
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedReq, setSelectedReq] = useState<ServiceRequest | null>(null)
   const [detailOpen, setDetailOpen] = useState(false)
-  const [assignOpen, setAssignOpen] = useState(false)
   const [rejectOpen, setRejectOpen] = useState(false)
   const [actionLoading, setActionLoading] = useState(false)
-  const [assignTo, setAssignTo] = useState('')
   const [rejectionReason, setRejectionReason] = useState('')
-  const [newStatus, setNewStatus] = useState('')
 
   const fetchRequests = useCallback(async () => {
     try {
@@ -93,43 +85,21 @@ export function AdminRequests() {
     r.adScript.toLowerCase().includes(searchTerm.toLowerCase())
   )
 
-  const handleUpdateStatus = async (id: string, status: string) => {
+  const handleApprove = async (id: string) => {
     setActionLoading(true)
     try {
       const res = await fetch(`/api/service-requests/${id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ status }),
+        body: JSON.stringify({ status: 'APPROVED' }),
       })
       if (res.ok) {
-        toast({ title: 'Updated', description: `Status changed to ${status}` })
+        toast({ title: 'Approved', description: 'Request approved. Subscription created automatically.' })
         fetchRequests()
         setDetailOpen(false)
       }
     } catch {
-      toast({ title: 'Error', description: 'Failed to update', variant: 'destructive' })
-    } finally {
-      setActionLoading(false)
-    }
-  }
-
-  const handleAssign = async () => {
-    if (!selectedReq) return
-    setActionLoading(true)
-    try {
-      const res = await fetch(`/api/service-requests/${selectedReq.id}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ assignedTo: assignTo, status: 'IN_PROGRESS' }),
-      })
-      if (res.ok) {
-        toast({ title: 'Assigned', description: 'Studio manager assigned' })
-        fetchRequests()
-        setAssignOpen(false)
-        setDetailOpen(false)
-      }
-    } catch {
-      toast({ title: 'Error', description: 'Failed to assign', variant: 'destructive' })
+      toast({ title: 'Error', description: 'Failed to approve request', variant: 'destructive' })
     } finally {
       setActionLoading(false)
     }
@@ -151,7 +121,7 @@ export function AdminRequests() {
         setDetailOpen(false)
       }
     } catch {
-      toast({ title: 'Error', description: 'Failed to reject', variant: 'destructive' })
+      toast({ title: 'Error', description: 'Failed to reject request', variant: 'destructive' })
     } finally {
       setActionLoading(false)
     }
@@ -192,11 +162,7 @@ export function AdminRequests() {
           <SelectContent>
             <SelectItem value="ALL">All Statuses</SelectItem>
             <SelectItem value="PENDING">Pending</SelectItem>
-            <SelectItem value="IN_PROGRESS">In Progress</SelectItem>
-            <SelectItem value="RECORDING">Recording</SelectItem>
-            <SelectItem value="AWAITING_VERIFICATION">Awaiting Review</SelectItem>
             <SelectItem value="APPROVED">Approved</SelectItem>
-            <SelectItem value="COMPLETED">Completed</SelectItem>
             <SelectItem value="REJECTED">Rejected</SelectItem>
           </SelectContent>
         </Select>
@@ -220,7 +186,7 @@ export function AdminRequests() {
                         <Badge variant="outline" className="text-xs shrink-0">{req.adType}</Badge>
                       </div>
                       <p className="text-xs text-gray-500 mt-1">
-                        by {req.user.name} • {new Date(req.createdAt).toLocaleDateString()}
+                        by {req.user.name} - {req.user.email} - {new Date(req.createdAt).toLocaleDateString()}
                       </p>
                       <p className="text-xs text-gray-400 mt-0.5 truncate max-w-md">{req.adScript}</p>
                     </div>
@@ -255,10 +221,10 @@ export function AdminRequests() {
                 <div className="grid sm:grid-cols-2 gap-4 text-sm">
                   <div><span className="text-gray-500">Client:</span> <span className="font-medium">{selectedReq.user.name}</span></div>
                   <div><span className="text-gray-500">Email:</span> <span className="font-medium">{selectedReq.user.email}</span></div>
+                  <div><span className="text-gray-500">Phone:</span> <span className="font-medium">{selectedReq.user.phone}</span></div>
                   <div><span className="text-gray-500">Category:</span> <span className="font-medium">{selectedReq.businessCategory}</span></div>
                   <div><span className="text-gray-500">Ad Type:</span> <span className="font-medium">{selectedReq.adType}</span></div>
                   <div><span className="text-gray-500">Language:</span> <span className="font-medium">{selectedReq.preferredLanguage}</span></div>
-                  <div><span className="text-gray-500">Assigned:</span> <span className="font-medium">{selectedReq.assignedTo || 'Not assigned'}</span></div>
                   <div className="sm:col-span-2"><span className="text-gray-500">Audience:</span> <span className="font-medium">{selectedReq.targetAudience || 'Not specified'}</span></div>
                 </div>
                 <div>
@@ -277,14 +243,14 @@ export function AdminRequests() {
                     <div className="mt-1 p-3 bg-red-50 rounded-lg text-sm">{selectedReq.rejectionReason}</div>
                   </div>
                 )}
-                {selectedReq.recordings.length > 0 && (
+                {selectedReq.subscriptions.length > 0 && (
                   <div>
-                    <span className="text-sm text-gray-500">Recordings ({selectedReq.recordings.length}):</span>
+                    <span className="text-sm text-gray-500">Subscriptions ({selectedReq.subscriptions.length}):</span>
                     <div className="mt-1 space-y-1">
-                      {selectedReq.recordings.map(rec => (
-                        <div key={rec.id} className="flex items-center justify-between text-sm p-2 bg-gray-50 rounded">
-                          <span>{rec.title}</span>
-                          <Badge variant="outline" className="text-xs">{rec.status}</Badge>
+                      {selectedReq.subscriptions.map(sub => (
+                        <div key={sub.id} className="flex items-center justify-between text-sm p-2 bg-gray-50 rounded">
+                          <span>{sub.package?.name || 'Subscription'}</span>
+                          <Badge variant="outline" className="text-xs">{sub.status}</Badge>
                         </div>
                       ))}
                     </div>
@@ -292,51 +258,27 @@ export function AdminRequests() {
                 )}
               </div>
               <DialogFooter className="flex-wrap gap-2">
-                <Button variant="outline" size="sm" onClick={() => setAssignOpen(true)}>
-                  <UserCheck className="h-4 w-4 mr-1" /> Assign
-                </Button>
-                <Select value={newStatus} onValueChange={setNewStatus}>
-                  <SelectTrigger className="w-40 h-9">
-                    <SelectValue placeholder="Change status" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="IN_PROGRESS">In Progress</SelectItem>
-                    <SelectItem value="RECORDING">Recording</SelectItem>
-                    <SelectItem value="AWAITING_VERIFICATION">Awaiting Review</SelectItem>
-                    <SelectItem value="APPROVED">Approved</SelectItem>
-                    <SelectItem value="COMPLETED">Completed</SelectItem>
-                  </SelectContent>
-                </Select>
-                <Button size="sm" className="bg-emerald-600" disabled={!newStatus} onClick={() => handleUpdateStatus(selectedReq.id, newStatus)}>
-                  Update Status
-                </Button>
-                <Button variant="destructive" size="sm" onClick={() => setRejectOpen(true)}>
-                  <XCircle className="h-4 w-4 mr-1" /> Reject
-                </Button>
+                {selectedReq.status === 'PENDING' && (
+                  <>
+                    <Button
+                      size="sm"
+                      className="bg-emerald-600 hover:bg-emerald-700"
+                      disabled={actionLoading}
+                      onClick={() => handleApprove(selectedReq.id)}
+                    >
+                      {actionLoading && <Loader2 className="h-4 w-4 mr-1 animate-spin" />}
+                      <CheckCircle2 className="h-4 w-4 mr-1" />
+                      Approve
+                    </Button>
+                    <Button variant="destructive" size="sm" onClick={() => setRejectOpen(true)}>
+                      <XCircle className="h-4 w-4 mr-1" />
+                      Reject
+                    </Button>
+                  </>
+                )}
               </DialogFooter>
             </>
           )}
-        </DialogContent>
-      </Dialog>
-
-      {/* Assign Dialog */}
-      <Dialog open={assignOpen} onOpenChange={setAssignOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Assign Studio Manager</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-2">
-            <Label>Studio Manager User ID</Label>
-            <Input value={assignTo} onChange={(e) => setAssignTo(e.target.value)} placeholder="Enter user ID" />
-            <p className="text-xs text-gray-400">Enter the user ID of the studio manager</p>
-          </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setAssignOpen(false)}>Cancel</Button>
-            <Button className="bg-emerald-600" disabled={actionLoading || !assignTo} onClick={handleAssign}>
-              {actionLoading && <Loader2 className="h-4 w-4 mr-1 animate-spin" />}
-              Assign
-            </Button>
-          </DialogFooter>
         </DialogContent>
       </Dialog>
 

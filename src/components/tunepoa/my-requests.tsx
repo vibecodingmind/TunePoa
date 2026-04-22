@@ -27,7 +27,6 @@ import {
   ChevronRight,
   Clock,
   CheckCircle2,
-  Mic,
   ChevronDown,
   ChevronUp,
   Calendar,
@@ -97,59 +96,22 @@ function StatusMessage({ req }: { req: ServiceRequest }) {
               Reason: {req.rejectionReason}
             </p>
           )}
+          <p className="text-xs text-red-500 mt-1">You can re-submit a new request.</p>
         </div>
       </div>
     )
   }
 
-  if (req.status === 'AWAITING_VERIFICATION') {
-    return (
-      <div className="flex items-start gap-2.5 mt-3 p-3 rounded-xl bg-amber-50 border border-amber-100">
-        <div className="h-7 w-7 rounded-full bg-amber-100 flex items-center justify-center shrink-0 mt-0.5">
-          <Clock className="h-3.5 w-3.5 text-amber-600" />
-        </div>
-        <div>
-          <p className="text-sm font-semibold text-amber-700">Pending Your Approval</p>
-          <p className="text-xs text-amber-600 mt-1">
-            Your ad has been recorded and is awaiting your verification via WhatsApp.
-          </p>
-        </div>
-      </div>
-    )
-  }
-
-  if (req.status === 'RECORDING' || req.status === 'APPROVED') {
+  if (req.status === 'APPROVED') {
     return (
       <div className="flex items-start gap-2.5 mt-3 p-3 rounded-xl bg-emerald-50 border border-emerald-100">
         <div className="h-7 w-7 rounded-full bg-emerald-100 flex items-center justify-center shrink-0 mt-0.5">
           <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600" />
         </div>
         <div>
-          <p className="text-sm font-semibold text-emerald-700">
-            {req.status === 'RECORDING'
-              ? 'Your ad is being processed'
-              : 'Your ad has been approved'}
-          </p>
+          <p className="text-sm font-semibold text-emerald-700">Request Approved</p>
           <p className="text-xs text-emerald-600 mt-1">
-            {req.status === 'RECORDING'
-              ? 'Our studio team is working on your ringback tone ad.'
-              : 'Your ad is ready and will be submitted to the MNO.'}
-          </p>
-        </div>
-      </div>
-    )
-  }
-
-  if (req.status === 'IN_PROGRESS') {
-    return (
-      <div className="flex items-start gap-2.5 mt-3 p-3 rounded-xl bg-sky-50 border border-sky-100">
-        <div className="h-7 w-7 rounded-full bg-sky-100 flex items-center justify-center shrink-0 mt-0.5">
-          <Mic className="h-3.5 w-3.5 text-sky-600" />
-        </div>
-        <div>
-          <p className="text-sm font-semibold text-sky-700">In Progress</p>
-          <p className="text-xs text-sky-600 mt-1">
-            Your request has been assigned and is being worked on.
+            Your ad has been approved! A subscription has been created automatically.
           </p>
         </div>
       </div>
