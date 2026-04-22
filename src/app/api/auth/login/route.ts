@@ -63,7 +63,8 @@ export async function POST(request: NextRequest) {
     })
 
     return success({ token, user: safeUser })
-  } catch {
+  } catch (err: any) {
+    console.error('[LOGIN ERROR]', err?.message, err?.stack)
     return error('Internal server error', 500)
   }
 }
