@@ -38,9 +38,6 @@ export async function GET(request: NextRequest) {
         request: {
           select: { id: true, businessName: true, adType: true },
         },
-        mnoProvider: {
-          select: { id: true, name: true, code: true },
-        },
         payments: {
           orderBy: { createdAt: 'desc' },
         },
@@ -147,7 +144,7 @@ export async function POST(request: NextRequest) {
         includesAudio: finalIncludesAudio,
         currency: 'TZS',
         paymentStatus: 'UNPAID',
-        mnoStatus: 'NOT_SUBMITTED',
+        vodacomStatus: 'NOT_SUBMITTED',
         phoneNumber: phoneNumber || null,
         autoRenew: autoRenew || false,
       },

@@ -63,7 +63,7 @@ const faqItems = [
   },
   {
     q: 'Which networks are supported?',
-    a: 'We support all major Tanzanian networks: Vodacom, Airtel, Tigo, Halotel, and TTCL. Your ringback tone can be active on one or multiple networks depending on your chosen package.',
+    a: 'We work exclusively with Vodacom Tanzania for ringback tone delivery. Your ad will be heard by everyone who calls your Vodacom number.',
   },
   {
     q: 'How do I approve my ad?',
@@ -71,7 +71,7 @@ const faqItems = [
   },
   {
     q: 'What payment methods do you accept?',
-    a: 'We accept M-Pesa, Tigo Pesa, Airtel Money, and bank transfers. All payments are processed securely and you receive an instant confirmation receipt.',
+    a: 'We accept payments via Pesapal (Mobile Money, Credit/Debit Cards), Stripe, and PayPal. All payments are processed securely and you receive an instant confirmation receipt.',
   },
 ]
 
@@ -198,16 +198,12 @@ const heroStats = [
   { value: '500+', label: 'Active Businesses', icon: <Users className="h-5 w-5" /> },
   { value: '10,000+', label: 'Daily Calls', icon: <Phone className="h-5 w-5" /> },
   { value: '98%', label: 'Satisfaction Rate', icon: <Star className="h-5 w-5" /> },
-  { value: '4+', label: 'MNO Partners', icon: <Globe className="h-5 w-5" /> },
+  { value: '1', label: 'Network Partner', icon: <Globe className="h-5 w-5" /> },
 ]
 
 /* ─── Trusted networks ─── */
 const networks = [
   { name: 'Vodacom', color: 'text-red-500' },
-  { name: 'Airtel', color: 'text-red-600' },
-  { name: 'Tigo', color: 'text-blue-500' },
-  { name: 'Halotel', color: 'text-orange-500' },
-  { name: 'TTCL', color: 'text-sky-600' },
 ]
 
 /* ─── Pricing Cards ─── */
@@ -239,7 +235,7 @@ const pricingCards = [
     iconColor: 'text-emerald-400',
     accentFrom: 'from-emerald-500',
     accentTo: 'to-teal-400',
-    features: ['5 phone numbers', '3 months duration', '30-sec ad duration', 'Priority support', 'Multi-network'],
+    features: ['5 phone numbers', '3 months duration', '30-sec ad duration', 'Priority support', 'Vodacom Network'],
     btnStyle: 'bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 shadow-lg shadow-emerald-500/25',
     popular: true,
   },
@@ -249,13 +245,13 @@ const pricingCards = [
     duration: '6 months',
     badge: 'Best Value',
     subtitle: 'For serious brand builders',
-    description: 'Maximize brand awareness and reach across all networks.',
+    description: 'Maximize brand awareness and reach on Vodacom network.',
     icon: <Crown className="h-6 w-6" />,
     iconBg: 'bg-emerald-500/10 border-emerald-500/20',
     iconColor: 'text-emerald-400',
     accentFrom: 'from-emerald-400',
     accentTo: 'to-cyan-400',
-    features: ['10 phone numbers', '6 months duration', '45-sec ad duration', 'Dedicated manager', 'All networks'],
+    features: ['10 phone numbers', '6 months duration', '45-sec ad duration', 'Dedicated manager', 'Vodacom Network'],
     btnStyle: 'bg-white/[0.08] border-white/[0.12] hover:bg-emerald-500 hover:border-emerald-500',
   },
 ]
@@ -645,7 +641,7 @@ export function LandingPage() {
       <section className="py-12 bg-gradient-to-b from-emerald-50/50 to-white dark:from-emerald-950/30 dark:to-slate-900/5 border-b border-emerald-100/50 dark:border-emerald-900/20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <p className="text-center text-xs font-bold uppercase tracking-[0.2em] text-emerald-600/60 dark:text-emerald-400/60 mb-8">
-            Trusted Across All Major Networks
+            Powered by Vodacom Tanzania
           </p>
           <div className="flex flex-wrap items-center justify-center gap-8 sm:gap-14">
             {networks.map((net) => (

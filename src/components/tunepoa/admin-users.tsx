@@ -75,6 +75,7 @@ export function AdminUsers() {
   const [form, setForm] = useState(defaultForm)
 
   const isSuperAdmin = currentUser?.role === 'SUPER_ADMIN'
+  const canCreateAdmin = currentUser?.role === 'SUPER_ADMIN' || currentUser?.role === 'ADMIN'
 
   const fetchUsers = useCallback(async () => {
     try {
@@ -135,8 +136,8 @@ export function AdminUsers() {
       toast({ title: 'Error', description: 'Password must be at least 6 characters', variant: 'destructive' })
       return
     }
-    if (form.role !== 'BUSINESS_OWNER' && !isSuperAdmin) {
-      toast({ title: 'Error', description: 'Only Super Admin can create admin users', variant: 'destructive' })
+    if (form.role !== 'BUSINESS_OWNER' && !isSuperAdmin && form.role !== 'ADMIN') {
+      toast({ title: 'Error', description: 'You do not have permission to create this role', variant: 'destructive' })
       return
     }
 
@@ -350,18 +351,18 @@ export function AdminUsers() {
                 <SelectTrigger><SelectValue placeholder="Select role" /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="BUSINESS_OWNER">Business Owner (Customer)</SelectItem>
+                  {canCreateAdmin && (
+                    <SelectItem value="ADMIN">Admin</SelectItem>
+                  )}
                   {isSuperAdmin && (
-                    <>
-                      <SelectItem value="ADMIN">Admin</SelectItem>
-                      <SelectItem value="SUPER_ADMIN">Super Admin</SelectItem>
-                    </>
+                    <SelectItem value="SUPER_ADMIN">Super Admin</SelectItem>
                   )}
                 </SelectContent>
               </Select>
               {form.role === 'ADMIN' && (
                 <p className="text-xs text-amber-600 flex items-center gap-1">
                   <Shield className="h-3 w-3" />
-                  Admin users can manage all platform data but cannot create other admins.
+                  Admin users can manage platform data and create other admin users.
                 </p>
               )}
               {form.role === 'SUPER_ADMIN' && (

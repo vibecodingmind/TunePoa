@@ -62,8 +62,8 @@ export async function GET(request: NextRequest) {
 
 /**
  * POST /api/users - Create a new user
- * - SUPER_ADMIN can create ADMIN or BUSINESS_OWNER users
- * - ADMIN can create BUSINESS_OWNER users only
+ * - SUPER_ADMIN can create SUPER_ADMIN, ADMIN, or BUSINESS_OWNER users
+ * - ADMIN can create ADMIN or BUSINESS_OWNER users (but NOT SUPER_ADMIN)
  */
 export async function POST(request: NextRequest) {
   try {
@@ -95,9 +95,9 @@ export async function POST(request: NextRequest) {
         }
         assignedRole = 'SUPER_ADMIN'
       } else if (role === 'ADMIN') {
-        // Only SUPER_ADMIN can create ADMIN
-        if (auth.user.role !== 'SUPER_ADMIN') {
-          return forbidden('Only Super Admin can create Admin users')
+        // Both SUPER_ADMIN and ADMIN can create ADMIN
+        if (!['SUPER_ADMIN', 'ADMIN'].includes(auth.user.role)) {
+          return forbidden('Only Admin or Super Admin can create Admin users')
         }
         assignedRole = 'ADMIN'
       } else if (role === 'BUSINESS_OWNER') {

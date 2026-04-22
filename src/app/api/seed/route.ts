@@ -20,20 +20,7 @@ export async function POST(request: NextRequest) {
     await db.package.deleteMany({})
     await db.pricingTier.deleteMany({})
     await db.pricingSettings.deleteMany({})
-    await db.mnoProvider.deleteMany({})
     await db.user.deleteMany({})
-
-    // ─── Create Vodacom MNO Provider (only one we work with) ───
-    const vodacom = await db.mnoProvider.create({
-      data: {
-        name: 'Vodacom Tanzania',
-        country: 'Tanzania',
-        code: 'VODACOM',
-        apiEndpoint: 'https://api.vodacom.co.tz/rbt',
-        isActive: true,
-        notes: 'Primary MNO partner - only network provider for ringback tone delivery',
-      },
-    })
 
     // ─── Create Admin Users ───
     const superAdmin = await db.user.create({
@@ -45,7 +32,7 @@ export async function POST(request: NextRequest) {
         businessCategory: 'technology',
         role: 'SUPER_ADMIN',
         status: 'ACTIVE',
-        password: hashPassword('Admin@2025'),
+        password: hashPassword('TunePoa@Admin2025!'),
       },
     })
 
@@ -58,15 +45,15 @@ export async function POST(request: NextRequest) {
         businessCategory: 'technology',
         role: 'ADMIN',
         status: 'ACTIVE',
-        password: hashPassword('Admin@2025'),
+        password: hashPassword('TunePoa@Ops2025!'),
       },
     })
 
-    // ─── Create Business Owner Users (real customers) ───
-    const fatima = await db.user.create({
+    // ─── Create Business Owner Users (production sample) ───
+    const customer1 = await db.user.create({
       data: {
-        name: 'Fatima Hassan',
-        email: 'fatima@kijanibora.tz',
+        name: 'Kijani Bora Restaurant',
+        email: 'info@kijanibora.co.tz',
         phone: '+255712345678',
         businessName: 'Kijani Bora Restaurant',
         businessCategory: 'restaurant',
@@ -76,59 +63,18 @@ export async function POST(request: NextRequest) {
       },
     })
 
-    const peter = await db.user.create({
+    const customer2 = await db.user.create({
       data: {
-        name: 'Peter Kimaro',
-        email: 'peter@techsolutions.tz',
+        name: 'TechHub Solutions',
+        email: 'contact@techhubtz.com',
         phone: '+255723456789',
-        businessName: 'Tech Solutions Hub',
+        businessName: 'TechHub Solutions',
         businessCategory: 'technology',
         role: 'BUSINESS_OWNER',
         status: 'ACTIVE',
         password: hashPassword('Customer@2025'),
       },
     })
-
-    const asha = await db.user.create({
-      data: {
-        name: 'Asha Mwenda',
-        email: 'asha@fashionspot.tz',
-        phone: '+255734567890',
-        businessName: 'Fashion Spot Tanzania',
-        businessCategory: 'fashion',
-        role: 'BUSINESS_OWNER',
-        status: 'ACTIVE',
-        password: hashPassword('Customer@2025'),
-      },
-    })
-
-    const joseph = await db.user.create({
-      data: {
-        name: 'Joseph Mwangi',
-        email: 'joseph@pembeje.tz',
-        phone: '+255745678901',
-        businessName: 'Pembeje Electronics',
-        businessCategory: 'electronics',
-        role: 'BUSINESS_OWNER',
-        status: 'ACTIVE',
-        password: hashPassword('Customer@2025'),
-      },
-    })
-
-    const mariam = await db.user.create({
-      data: {
-        name: 'Mariam Said',
-        email: 'mariam@dalali.tz',
-        phone: '+255756789012',
-        businessName: 'Dalali Real Estate',
-        businessCategory: 'real_estate',
-        role: 'BUSINESS_OWNER',
-        status: 'ACTIVE',
-        password: hashPassword('Customer@2025'),
-      },
-    })
-
-    const businessOwners = [fatima, peter, asha, joseph, mariam]
 
     // ─── Create Pricing Tiers ───
     const tier1_10 = await db.pricingTier.create({
@@ -273,7 +219,7 @@ export async function POST(request: NextRequest) {
     // ─── Create Service Requests ───
     const sr1 = await db.serviceRequest.create({
       data: {
-        userId: fatima.id,
+        userId: customer1.id,
         businessName: 'Kijani Bora Restaurant',
         businessCategory: 'restaurant',
         adType: 'PROMO',
@@ -281,91 +227,28 @@ export async function POST(request: NextRequest) {
         adScript: 'Karibu Kijani Bora! Where fresh meets flavour. Come enjoy our special nyama choma this weekend at an unbeatable price. Visit us at city centre, opposite the clock tower. Kijani Bora - Chakula kitamu kila wakati!',
         preferredLanguage: 'swahili',
         specialInstructions: 'Make it energetic and welcoming. Use a friendly voice.',
-        status: 'APPROVED',
+        status: 'PENDING',
       },
     })
 
     const sr2 = await db.serviceRequest.create({
       data: {
-        userId: peter.id,
-        businessName: 'Tech Solutions Hub',
+        userId: customer2.id,
+        businessName: 'TechHub Solutions',
         businessCategory: 'technology',
         adType: 'BRANDING',
         targetAudience: 'Business professionals and tech enthusiasts',
-        adScript: 'You are calling Tech Solutions Hub - your trusted technology partner in Dar es Salaam. We provide cutting-edge IT solutions, laptop repairs, and networking services. Visit us at Samora Avenue or call us today.',
+        adScript: 'You are calling TechHub Solutions - your trusted technology partner in Dar es Salaam. We provide cutting-edge IT solutions, laptop repairs, and networking services. Visit us at Samora Avenue or call us today.',
         preferredLanguage: 'english',
         specialInstructions: 'Professional tone, not too fast.',
         status: 'APPROVED',
       },
     })
 
-    const sr3 = await db.serviceRequest.create({
-      data: {
-        userId: asha.id,
-        businessName: 'Fashion Spot Tanzania',
-        businessCategory: 'fashion',
-        adType: 'OFFER',
-        targetAudience: 'Young women aged 18-35',
-        adScript: 'Pata discount ya 30% kwenye mavazi mapya ya Fashion Spot! Bidhaa za hali ya juu kwa bei nafuu. Tupo Kariakoo, Ghorofa ya 2. Fashion Spot - Urembo wako, mtindo wetu!',
-        preferredLanguage: 'swahili',
-        specialInstructions: 'Fashionable, upbeat tone with background music feel.',
-        status: 'PENDING',
-      },
-    })
-
-    const sr4 = await db.serviceRequest.create({
-      data: {
-        userId: joseph.id,
-        businessName: 'Pembeje Electronics',
-        businessCategory: 'electronics',
-        adType: 'ANNOUNCEMENT',
-        targetAudience: 'General public',
-        adScript: 'Pembeje Electronics inatangaza ofa maalum ya simu na laptop mpya! Pata bei za kushangaza kwenye bidhaa za mkononi. Tunapatikana Kijitonyama, barabara ya Msimbazi.',
-        preferredLanguage: 'both',
-        specialInstructions: 'Both Swahili and English sections wanted.',
-        status: 'PENDING',
-      },
-    })
-
-    const sr5 = await db.serviceRequest.create({
-      data: {
-        userId: mariam.id,
-        businessName: 'Dalali Real Estate',
-        businessCategory: 'real_estate',
-        adType: 'PROMO',
-        targetAudience: 'Property investors and home seekers',
-        adScript: 'Dalali Real Estate - Malazi bora yanako Dalali! Tuna nyumba, viwanja na ofisi kwa bei nafuu Dar es Salaam. Piga simu sasa au tembelea ofisi yetu Kijitonyama.',
-        preferredLanguage: 'swahili',
-        specialInstructions: 'Confident and trustworthy tone.',
-        status: 'PENDING',
-      },
-    })
-
-    // ─── Create Subscriptions (auto-created for APPROVED requests) ───
+    // ─── Create Subscription (only for approved request) ───
     const sub1 = await db.subscription.create({
       data: {
-        userId: fatima.id,
-        packageId: goldPkg.id,
-        requestId: sr1.id,
-        startDate: new Date('2025-01-01'),
-        endDate: new Date('2025-07-01'),
-        status: 'ACTIVE',
-        amount: goldPkg.price,
-        currency: 'TZS',
-        paymentStatus: 'PAID',
-        mnoProviderId: vodacom.id,
-        mnoReference: 'VOD-RBT-2025-00123',
-        mnoStatus: 'ACTIVE_MNO',
-        mnoSubmittedAt: new Date('2024-12-28'),
-        mnoActivatedAt: new Date('2025-01-01'),
-        phoneNumber: '+255712345678',
-        autoRenew: true,
-      },
-    })
-
-    const sub2 = await db.subscription.create({
-      data: {
-        userId: peter.id,
+        userId: customer2.id,
         packageId: silverPkg.id,
         requestId: sr2.id,
         startDate: new Date('2025-02-15'),
@@ -374,39 +257,24 @@ export async function POST(request: NextRequest) {
         amount: silverPkg.price,
         currency: 'TZS',
         paymentStatus: 'PAID',
-        mnoProviderId: vodacom.id,
-        mnoReference: 'VOD-RBT-2025-00456',
-        mnoStatus: 'ACTIVE_MNO',
-        mnoSubmittedAt: new Date('2025-02-10'),
-        mnoActivatedAt: new Date('2025-02-15'),
+        vodacomReference: 'VOD-RBT-2025-00456',
+        vodacomStatus: 'ACTIVE',
+        vodacomSubmittedAt: new Date('2025-02-10'),
+        vodacomActivatedAt: new Date('2025-02-15'),
         phoneNumber: '+255723456789',
         autoRenew: false,
       },
     })
 
-    // ─── Create Payments ───
+    // ─── Create Payment ───
     await db.payment.create({
       data: {
         subscriptionId: sub1.id,
-        amount: goldPkg.price,
-        currency: 'TZS',
-        method: 'M_PESA',
-        status: 'COMPLETED',
-        reference: 'MPESA-QR3K7L9M2',
-        paidAt: new Date('2024-12-30'),
-        verifiedBy: superAdmin.id,
-        notes: 'Full payment for Gold package - 6 months',
-      },
-    })
-
-    await db.payment.create({
-      data: {
-        subscriptionId: sub2.id,
         amount: silverPkg.price,
         currency: 'TZS',
-        method: 'M_PESA',
+        method: 'PESAPAL',
         status: 'COMPLETED',
-        reference: 'MPESA-PR8N2K5J1',
+        reference: 'PESAPAL-PR8N2K5J1',
         paidAt: new Date('2025-02-12'),
         verifiedBy: admin.id,
         notes: 'Full payment for Silver package - 3 months',
@@ -424,25 +292,18 @@ export async function POST(request: NextRequest) {
           details: JSON.stringify({ message: 'System initialized' }),
         },
         {
-          userId: fatima.id,
+          userId: customer1.id,
           action: 'CREATED',
           entityType: 'SERVICE_REQUEST',
           entityId: sr1.id,
           details: JSON.stringify({ adType: 'PROMO', businessName: 'Kijani Bora Restaurant' }),
         },
         {
-          userId: superAdmin.id,
-          action: 'STATUS_CHANGE',
-          entityType: 'SERVICE_REQUEST',
-          entityId: sr1.id,
-          details: JSON.stringify({ from: 'PENDING', to: 'APPROVED' }),
-        },
-        {
-          userId: peter.id,
+          userId: customer2.id,
           action: 'CREATED',
           entityType: 'SERVICE_REQUEST',
           entityId: sr2.id,
-          details: JSON.stringify({ adType: 'BRANDING', businessName: 'Tech Solutions Hub' }),
+          details: JSON.stringify({ adType: 'BRANDING', businessName: 'TechHub Solutions' }),
         },
         {
           userId: admin.id,
@@ -458,22 +319,24 @@ export async function POST(request: NextRequest) {
     const tokens = {
       superAdmin: createToken({ id: superAdmin.id, email: superAdmin.email, role: superAdmin.role, name: superAdmin.name }),
       admin: createToken({ id: admin.id, email: admin.email, role: admin.role, name: admin.name }),
-      businessOwner: createToken({ id: fatima.id, email: fatima.email, role: fatima.role, name: fatima.name }),
+      businessOwner: createToken({ id: customer2.id, email: customer2.email, role: customer2.role, name: customer2.name }),
     }
 
     return success({
       message: 'Database seeded successfully! Platform is ready for production use.',
       data: {
         users: {
-          superAdmin: { email: superAdmin.email, password: 'Admin@2025', role: superAdmin.role },
-          admin: { email: admin.email, password: 'Admin@2025', role: admin.role },
-          businessOwners: businessOwners.map(u => ({ email: u.email, password: 'Customer@2025', role: u.role, status: u.status })),
+          superAdmin: { email: superAdmin.email, password: 'TunePoa@Admin2025!', role: superAdmin.role },
+          admin: { email: admin.email, password: 'TunePoa@Ops2025!', role: admin.role },
+          customers: [
+            { email: customer1.email, password: 'Customer@2025', role: customer1.role, status: customer1.status },
+            { email: customer2.email, password: 'Customer@2025', role: customer2.role, status: customer2.status },
+          ],
         },
         packages: [bronzePkg.name, silverPkg.name, goldPkg.name, platinumPkg.name],
-        serviceRequests: 5,
-        subscriptions: 2,
-        payments: 2,
-        mnoProvider: vodacom.name,
+        serviceRequests: 2,
+        subscriptions: 1,
+        payments: 1,
         pricingTiers: [tier1_10, tier11_25, tier25_50, tier50plus].map(t => t.name),
         tokens,
       },

@@ -128,12 +128,11 @@ model Subscription {
   durationMonths  Int      @default(1)  // subscription duration in months
   includesAudio   Boolean  @default(false) // whether audio recording is included
   currency        String   @default("TZS")
-  paymentStatus   String   @default("UNPAID") // UNPAID, PAID, OVERDUE, REFUNDED
-  mnoProviderId   String?
-  mnoReference    String?  // reference from MNO
-  mnoStatus       String   @default("NOT_SUBMITTED") // NOT_SUBMITTED, PENDING_MNO, ACTIVE_MNO, FAILED_MNO, REMOVED_MNO
-  mnoSubmittedAt  DateTime?
-  mnoActivatedAt  DateTime?
+  paymentStatus     String   @default("UNPAID") // UNPAID, PAID, OVERDUE, REFUNDED
+  vodacomReference  String?  // reference from Vodacom
+  vodacomStatus     String   @default("NOT_SUBMITTED") // NOT_SUBMITTED, PENDING_ACTIVATION, ACTIVE, FAILED, REMOVED
+  vodacomSubmittedAt DateTime?
+  vodacomActivatedAt DateTime?
   phoneNumber     String?  // the phone number with ringback tone
   autoRenew       Boolean  @default(false)
   notes           String?
@@ -144,34 +143,13 @@ model Subscription {
   package         Package?        @relation(fields: [packageId], references: [id])
   pricingTier     PricingTier?    @relation(fields: [pricingTierId], references: [id])
   request         ServiceRequest  @relation(fields: [requestId], references: [id])
-  mnoProvider     MnoProvider?    @relation(fields: [mnoProviderId], references: [id])
   payments        Payment[]
 
   @@index([userId])
   @@index([status])
   @@index([packageId])
   @@index([pricingTierId])
-}
-
-// ==================== MNO PROVIDERS ====================
-
-model MnoProvider {
-  id          String   @id @default(cuid())
-  name        String   @unique
-  country     String   @default("Tanzania")
-  code        String   @unique // VODACOM, AIRTEL, etc
-  apiEndpoint String?
-  apiKey      String?
-  isActive    Boolean  @default(true)
-  notes       String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  subscriptions Subscription[]
-
-  @@index([code])
-
-  @@map("mno_providers")
+  @@index([vodacomStatus])
 }
 
 // ==================== PAYMENTS ====================
@@ -181,12 +159,16 @@ model Payment {
   subscriptionId  String
   amount          Float
   currency        String   @default("TZS")
-  method          String   @default("M_PESA") // M_PESA, TIGO_PESA, AIRTEL_MONEY, BANK, CASH
+  method          String   @default("PESAPAL") // PESAPAL, STRIPE, PAYPAL, BANK, CASH
   status          String   @default("PENDING") // PENDING, COMPLETED, FAILED, REFUNDED
   reference       String?  // transaction reference
   paidAt          DateTime?
   verifiedBy      String?  // admin who verified
   notes           String?
+  gateway          String?  // pesapal, stripe, paypal
+  gatewayReference String?  // transaction ID from payment gateway
+  gatewayStatus    String?  // status from gateway callback
+  gatewayPayload   String?  // raw JSON from gateway webhook (stored as string)
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 
@@ -194,6 +176,8 @@ model Payment {
 
   @@index([subscriptionId])
   @@index([status])
+  @@index([gateway])
+  @@index([gatewayStatus])
 }
 
 // ==================== ACTIVITY LOGS ====================

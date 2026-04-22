@@ -71,7 +71,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json()
-    const { subscriptionId, amount, method, status, reference, notes } = body
+    const { subscriptionId, amount, method, status, reference, gateway, gatewayReference, gatewayStatus, notes } = body
 
     if (!subscriptionId || amount === undefined) {
       return error('subscriptionId and amount are required')
@@ -98,12 +98,15 @@ export async function POST(request: NextRequest) {
       data: {
         subscriptionId,
         amount: Number(amount),
-        method: method || 'M_PESA',
+        method: method || 'PESAPAL',
         status: paymentStatus,
         reference,
         paidAt: paymentStatus === 'COMPLETED' ? new Date() : null,
         verifiedBy: paymentStatus === 'COMPLETED' ? auth.user.id : null,
         notes,
+        ...(gateway ? { gateway } : {}),
+        ...(gatewayReference ? { gatewayReference } : {}),
+        ...(gatewayStatus ? { gatewayStatus } : {}),
       },
       include: {
         subscription: {
@@ -129,7 +132,7 @@ export async function POST(request: NextRequest) {
         action: 'CREATED',
         entityType: 'PAYMENT',
         entityId: payment.id,
-        details: JSON.stringify({ amount, method, status: paymentStatus, subscriptionId }),
+        details: JSON.stringify({ amount, method: method || 'PESAPAL', status: paymentStatus, subscriptionId }),
       },
     })
 

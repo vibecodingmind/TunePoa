@@ -159,14 +159,6 @@ export function PricingCalculator({ mode = 'landing', onSubscribe, isAuthenticat
     }).format(amount)
   }
 
-  const detectMNO = (phone: string) => {
-    if (phone.startsWith('+25565') || phone.startsWith('065') || phone.startsWith('076')) return 'Vodacom'
-    if (phone.startsWith('+25567') || phone.startsWith('067') || phone.startsWith('077')) return 'Airtel'
-    if (phone.startsWith('+25571') || phone.startsWith('071') || phone.startsWith('061')) return 'Tigo'
-    return null
-  }
-
-  const mno = detectMNO(phoneNumber)
   const isSubscribeMode = mode === 'subscribe'
 
   return (
@@ -685,11 +677,6 @@ export function PricingCalculator({ mode = 'landing', onSubscribe, isAuthenticat
                     onChange={(e) => setPhoneNumber(e.target.value)}
                     className="pl-4 h-12 text-base"
                   />
-                  {mno && (
-                    <Badge className="absolute right-3 top-1/2 -translate-y-1/2 bg-blue-100 text-blue-700 border-blue-200 text-xs font-bold">
-                      {mno}
-                    </Badge>
-                  )}
                 </div>
               </div>
 

@@ -25,7 +25,6 @@ export async function GET(
         },
         package: true,
         request: true,
-        mnoProvider: true,
         payments: {
           orderBy: { createdAt: 'desc' },
         },
@@ -73,11 +72,11 @@ export async function PATCH(
     }
 
     const updateData: Record<string, unknown> = {}
-    const allowedFields = ['status', 'paymentStatus', 'mnoProviderId', 'mnoReference', 'mnoStatus', 'mnoSubmittedAt', 'mnoActivatedAt', 'phoneNumber', 'autoRenew', 'notes', 'startDate', 'endDate']
+    const allowedFields = ['status', 'paymentStatus', 'vodacomReference', 'vodacomStatus', 'vodacomSubmittedAt', 'vodacomActivatedAt', 'phoneNumber', 'autoRenew', 'notes', 'startDate', 'endDate']
 
     for (const field of allowedFields) {
       if (body[field] !== undefined) {
-        if (field === 'startDate' || field === 'endDate' || field === 'mnoSubmittedAt' || field === 'mnoActivatedAt') {
+        if (field === 'startDate' || field === 'endDate' || field === 'vodacomSubmittedAt' || field === 'vodacomActivatedAt') {
           updateData[field] = typeof body[field] === 'string' ? new Date(body[field]) : body[field]
         } else {
           updateData[field] = body[field]
@@ -109,30 +108,30 @@ export async function PATCH(
       return error(`Invalid payment status: ${body.paymentStatus}`, 400)
     }
 
-    // Validate MNO status independently
-    const VALID_MNO_STATUSES = ['NOT_SUBMITTED', 'PENDING_MNO', 'ACTIVE_MNO', 'FAILED_MNO', 'REMOVED_MNO']
-    if (body.mnoStatus && !VALID_MNO_STATUSES.includes(body.mnoStatus)) {
-      return error(`Invalid MNO status: ${body.mnoStatus}`, 400)
+    // Validate Vodacom status independently
+    const VALID_VODACOM_STATUSES = ['NOT_SUBMITTED', 'PENDING_ACTIVATION', 'ACTIVE', 'FAILED', 'REMOVED']
+    if (body.vodacomStatus && !VALID_VODACOM_STATUSES.includes(body.vodacomStatus)) {
+      return error(`Invalid Vodacom status: ${body.vodacomStatus}`, 400)
     }
 
-    // Handle MNO activation auto-effects
-    if (body.mnoStatus === 'ACTIVE_MNO') {
-      if (!updateData.mnoActivatedAt) {
-        updateData.mnoActivatedAt = new Date()
+    // Handle Vodacom activation auto-effects
+    if (body.vodacomStatus === 'ACTIVE') {
+      if (!updateData.vodacomActivatedAt) {
+        updateData.vodacomActivatedAt = new Date()
       }
       if (existing.status === 'PENDING') {
         updateData.status = 'ACTIVE'
       }
     }
 
-    // Handle MNO submission auto-effects
-    if (body.mnoStatus === 'PENDING_MNO' && !updateData.mnoSubmittedAt) {
-      updateData.mnoSubmittedAt = new Date()
+    // Handle Vodacom submission auto-effects
+    if (body.vodacomStatus === 'PENDING_ACTIVATION' && !updateData.vodacomSubmittedAt) {
+      updateData.vodacomSubmittedAt = new Date()
     }
 
     // Handle cancellation auto-effects
-    if (body.status === 'CANCELLED' && existing.mnoStatus !== 'REMOVED_MNO') {
-      updateData.mnoStatus = 'REMOVED_MNO'
+    if (body.status === 'CANCELLED' && existing.vodacomStatus !== 'REMOVED') {
+      updateData.vodacomStatus = 'REMOVED'
     }
 
     const subscription = await db.subscription.update({
@@ -141,7 +140,6 @@ export async function PATCH(
       include: {
         user: { select: { id: true, name: true, businessName: true } },
         package: true,
-        mnoProvider: true,
         payments: true,
       },
     })
@@ -157,7 +155,7 @@ export async function PATCH(
           updatedFields: Object.keys(updateData),
           ...(body.status && body.status !== existing.status ? { statusFrom: existing.status, statusTo: body.status } : {}),
           ...(body.paymentStatus && body.paymentStatus !== existing.paymentStatus ? { paymentFrom: existing.paymentStatus, paymentTo: body.paymentStatus } : {}),
-          ...(body.mnoStatus && body.mnoStatus !== existing.mnoStatus ? { mnoFrom: existing.mnoStatus, mnoTo: body.mnoStatus } : {}),
+          ...(body.vodacomStatus && body.vodacomStatus !== existing.vodacomStatus ? { vodacomFrom: existing.vodacomStatus, vodacomTo: body.vodacomStatus } : {}),
         }),
       },
     })

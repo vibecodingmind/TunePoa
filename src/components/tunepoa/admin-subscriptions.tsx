@@ -17,6 +17,7 @@ import {
 } from '@/components/ui/dialog'
 import { Search, Eye, RefreshCw, CreditCard, Radio, Loader2, DollarSign } from 'lucide-react'
 import { useToast } from '@/hooks/use-toast'
+import { useAppStore } from '@/lib/store'
 
 interface Subscription {
   id: string
@@ -24,13 +25,12 @@ interface Subscription {
   amount: number
   currency: string
   paymentStatus: string
-  mnoStatus: string
-  mnoReference: string | null
+  vodacomStatus: string
+  vodacomReference: string | null
   phoneNumber: string | null
   startDate: string | null
   endDate: string | null
   autoRenew: boolean
-  mnoProvider: { id: string; name: string; code: string } | null
   package: { id: string; name: string }
   request: { id: string; businessName: string; adType: string }
   user: { id: string; name: string; email: string; businessName: string }
@@ -52,12 +52,12 @@ const payStatusColors: Record<string, string> = {
   REFUNDED: 'bg-gray-100 text-gray-600',
 }
 
-const mnoStatusColors: Record<string, string> = {
+const vodacomStatusColors: Record<string, string> = {
   NOT_SUBMITTED: 'bg-gray-100 text-gray-600',
-  PENDING_MNO: 'bg-yellow-100 text-yellow-700',
-  ACTIVE_MNO: 'bg-emerald-100 text-emerald-700',
-  FAILED_MNO: 'bg-red-100 text-red-700',
-  REMOVED_MNO: 'bg-gray-100 text-gray-600',
+  PENDING_ACTIVATION: 'bg-yellow-100 text-yellow-700',
+  ACTIVE: 'bg-emerald-100 text-emerald-700',
+  FAILED: 'bg-red-100 text-red-700',
+  REMOVED: 'bg-gray-100 text-gray-600',
 }
 
 export function AdminSubscriptions() {
@@ -72,7 +72,7 @@ export function AdminSubscriptions() {
   const [detailOpen, setDetailOpen] = useState(false)
   const [paymentOpen, setPaymentOpen] = useState(false)
   const [actionLoading, setActionLoading] = useState(false)
-  const [paymentForm, setPaymentForm] = useState({ amount: '', method: 'M_PESA', reference: '' })
+  const [paymentForm, setPaymentForm] = useState({ amount: '', method: 'PESAPAL', reference: '' })
 
   const fetchSubscriptions = useCallback(async () => {
     try {
@@ -157,27 +157,15 @@ export function AdminSubscriptions() {
     }
   }
 
-  /** Submit to Vodacom (hardcoded MNO provider) */
-  const handleSubmitToMno = async () => {
+  /** Submit to Vodacom (direct status update) */
+  const handleSubmitToVodacom = async () => {
     if (!selectedSub) return
     setActionLoading(true)
     try {
-      const res = await fetch('/api/mno-providers', {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-      const data = await res.json()
-      const vodacom = (data.data?.providers || []).find(
-        (p: { code: string }) => p.code === 'VODACOM'
-      )
-      if (!vodacom) {
-        toast({ title: 'Error', description: 'Vodacom provider not found in database', variant: 'destructive' })
-        return
-      }
       const ref = `VOD-${Date.now().toString(36).toUpperCase()}`
       await handleUpdateSubscription(selectedSub.id, {
-        mnoProviderId: vodacom.id,
-        mnoReference: ref,
-        mnoStatus: 'PENDING_MNO',
+        vodacomReference: ref,
+        vodacomStatus: 'PENDING_ACTIVATION',
       })
       toast({ title: 'Submitted to Vodacom', description: `Reference: ${ref}` })
     } catch {
@@ -278,13 +266,13 @@ export function AdminSubscriptions() {
                   <div><span className="text-gray-500">Amount:</span> <span className="font-medium">TZS {selectedSub.amount.toLocaleString()}</span></div>
                   <div><span className="text-gray-500">Phone:</span> <span className="font-medium">{selectedSub.phoneNumber || 'N/A'}</span></div>
                   <div><span className="text-gray-500">Network:</span> <span className="font-medium">Vodacom Tanzania</span></div>
-                  <div><span className="text-gray-500">Vodacom Ref:</span> <span className="font-medium">{selectedSub.mnoReference || 'N/A'}</span></div>
+                  <div><span className="text-gray-500">Vodacom Ref:</span> <span className="font-medium">{selectedSub.vodacomReference || 'N/A'}</span></div>
                   <div><span className="text-gray-500">Auto Renew:</span> <span className="font-medium">{selectedSub.autoRenew ? 'Yes' : 'No'}</span></div>
                 </div>
                 <div className="flex flex-wrap gap-2">
                   <Badge className={subStatusColors[selectedSub.status]} variant="outline">Status: {selectedSub.status}</Badge>
                   <Badge className={payStatusColors[selectedSub.paymentStatus]} variant="outline">Payment: {selectedSub.paymentStatus}</Badge>
-                  <Badge className={mnoStatusColors[selectedSub.mnoStatus] || 'bg-gray-100 text-gray-600'} variant="outline">Vodacom: {selectedSub.mnoStatus}</Badge>
+                  <Badge className={vodacomStatusColors[selectedSub.vodacomStatus] || 'bg-gray-100 text-gray-600'} variant="outline">Vodacom: {selectedSub.vodacomStatus}</Badge>
                 </div>
                 {selectedSub.payments.length > 0 && (
                   <div>
@@ -305,17 +293,17 @@ export function AdminSubscriptions() {
               </div>
               <DialogFooter className="flex-wrap gap-2">
                 {selectedSub.paymentStatus === 'UNPAID' && (
-                  <Button variant="outline" size="sm" onClick={() => { setPaymentForm({ amount: String(selectedSub.amount), method: 'M_PESA', reference: '' }); setPaymentOpen(true); }}>
+                  <Button variant="outline" size="sm" onClick={() => { setPaymentForm({ amount: String(selectedSub.amount), method: 'PESAPAL', reference: '' }); setPaymentOpen(true); }}>
                     <DollarSign className="h-4 w-4 mr-1" /> Record Payment
                   </Button>
                 )}
-                {selectedSub.mnoStatus === 'NOT_SUBMITTED' && selectedSub.paymentStatus === 'PAID' && (
-                  <Button variant="outline" size="sm" disabled={actionLoading} onClick={handleSubmitToMno}>
+                {selectedSub.vodacomStatus === 'NOT_SUBMITTED' && selectedSub.paymentStatus === 'PAID' && (
+                  <Button variant="outline" size="sm" disabled={actionLoading} onClick={handleSubmitToVodacom}>
                     <Radio className="h-4 w-4 mr-1" /> Submit to Vodacom
                   </Button>
                 )}
-                {selectedSub.mnoStatus === 'PENDING_MNO' && (
-                  <Button size="sm" className="bg-emerald-600" onClick={() => handleUpdateSubscription(selectedSub.id, { mnoStatus: 'ACTIVE_MNO' })}>
+                {selectedSub.vodacomStatus === 'PENDING_ACTIVATION' && (
+                  <Button size="sm" className="bg-emerald-600" onClick={() => handleUpdateSubscription(selectedSub.id, { vodacomStatus: 'ACTIVE' })}>
                     Activate on Vodacom
                   </Button>
                 )}
@@ -344,9 +332,9 @@ export function AdminSubscriptions() {
               <Select value={paymentForm.method} onValueChange={(v) => setPaymentForm(p => ({ ...p, method: v }))}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="M_PESA">M-Pesa</SelectItem>
-                  <SelectItem value="TIGO_PESA">Tigo Pesa</SelectItem>
-                  <SelectItem value="AIRTEL_MONEY">Airtel Money</SelectItem>
+                  <SelectItem value="PESAPAL">Pesapal - Mobile Money & Cards</SelectItem>
+                  <SelectItem value="STRIPE">Stripe - Credit/Debit Cards</SelectItem>
+                  <SelectItem value="PAYPAL">PayPal</SelectItem>
                   <SelectItem value="BANK">Bank Transfer</SelectItem>
                   <SelectItem value="CASH">Cash</SelectItem>
                 </SelectContent>

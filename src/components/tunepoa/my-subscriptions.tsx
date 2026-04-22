@@ -68,8 +68,8 @@ interface Subscription {
   id: string
   status: string
   paymentStatus: string
-  mnoStatus: string
-  mnoReference: string | null
+  vodacomStatus: string
+  vodacomReference: string | null
   phoneNumber: string | null
   startDate: string | null
   endDate: string | null
@@ -78,7 +78,6 @@ interface Subscription {
   autoRenew: boolean
   package: { id: string; name: string; price: number; durationMonths: number }
   request: { id: string; businessName: string; adType: string }
-  mnoProvider: { id: string; name: string; code: string } | null
 }
 
 /* ========================================================================= */
@@ -348,7 +347,7 @@ export function MySubscriptions() {
             </div>
             <h3 className="text-lg font-semibold text-slate-700">No subscriptions yet</h3>
             <p className="text-sm text-slate-500 mt-1 max-w-sm mx-auto">
-              Subscribe to a package to activate your ringback tone ad on the network.
+              Subscribe to a package to activate your ringback tone ad on Vodacom.
             </p>
             <Button
               className="mt-5 bg-emerald-600 hover:bg-emerald-700 text-white"
@@ -404,12 +403,10 @@ export function MySubscriptions() {
                             <span>{sub.phoneNumber}</span>
                           </div>
                         )}
-                        {sub.mnoProvider && (
-                          <div className="flex items-center gap-2 text-slate-600">
-                            <Wifi className="h-3.5 w-3.5 text-slate-400 shrink-0" />
-                            <span>{sub.mnoProvider.name}</span>
-                          </div>
-                        )}
+                        <div className="flex items-center gap-2 text-slate-600">
+                          <Wifi className="h-3.5 w-3.5 text-slate-400 shrink-0" />
+                          <span>Vodacom Tanzania</span>
+                        </div>
                         <div className="flex items-center gap-2 text-slate-900">
                           <Banknote className="h-3.5 w-3.5 text-slate-400 shrink-0" />
                           <span className="font-semibold">{formatCurrency(sub.amount)}</span>
@@ -429,7 +426,7 @@ export function MySubscriptions() {
                       <div className="flex items-center gap-2 mt-3 flex-wrap">
                         <StatusBadge label="Subscription" status={sub.status} icon={CreditCard} />
                         <StatusBadge label="Payment" status={sub.paymentStatus} icon={Banknote} />
-                        <StatusBadge label="MNO" status={sub.mnoStatus} icon={Wifi} />
+                        <StatusBadge label="Vodacom" status={sub.vodacomStatus} icon={Wifi} />
                       </div>
                     </div>
 
@@ -563,7 +560,7 @@ export function MySubscriptions() {
                 {cancelTarget?.package.name} Package
               </span>{' '}
               subscription? This action cannot be undone. Your ringback tone ad will be removed from
-              the active network.
+              Vodacom.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter className="gap-2 sm:gap-0 pt-2">
