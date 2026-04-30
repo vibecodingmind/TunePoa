@@ -25,7 +25,6 @@ import {
   Bell,
   UserCircle,
   Music,
-  TrendingUp,
   ScrollText,
   Headphones,
   Receipt,
@@ -68,11 +67,10 @@ const adminNavItems: NavItem[] = [
   { id: 'admin-users', label: 'Users', i18nKey: 'nav.admin.users', icon: <Users className="h-[18px] w-[18px]" />, adminOnly: true },
   { id: 'admin-packages', label: 'Packages', i18nKey: 'nav.admin.packages', icon: <Shield className="h-[18px] w-[18px]" />, adminOnly: true },
   { id: 'admin-pricing', label: 'Pricing', i18nKey: 'nav.admin.pricing', icon: <DollarSign className="h-[18px] w-[18px]" />, adminOnly: true },
-  { id: 'admin-analytics', label: 'Analytics', i18nKey: 'nav.admin.analytics', icon: <TrendingUp className="h-[18px] w-[18px]" />, adminOnly: true },
   { id: 'admin-activity-logs', label: 'Activity Logs', i18nKey: 'nav.admin.activityLogs', icon: <ScrollText className="h-[18px] w-[18px]" />, adminOnly: true },
   { id: 'admin-audio', label: 'Audio Library', i18nKey: 'nav.admin.audio', icon: <Headphones className="h-[18px] w-[18px]" />, adminOnly: true },
   { id: 'admin-invoices', label: 'Invoices', i18nKey: 'nav.admin.invoices', icon: <Receipt className="h-[18px] w-[18px]" />, adminOnly: true },
-  { id: 'admin-sample-tunes', label: 'Sample Tunes', i18nKey: 'nav.admin.sampleTunes', icon: <Music className="h-[18px] w-[18px]" />, adminOnly: true },
+  { id: 'admin-sample-tunes', label: 'RBT Samples', i18nKey: 'nav.admin.sampleTunes', icon: <Music className="h-[18px] w-[18px]" />, adminOnly: true },
   { id: 'admin-export', label: 'Data Export', i18nKey: 'common.export', icon: <Download className="h-[18px] w-[18px]" />, adminOnly: true },
 ]
 

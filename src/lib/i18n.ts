@@ -27,7 +27,7 @@ const translations: Record<Locale, Record<string, string>> = {
     'nav.admin.activityLogs': 'Activity Logs',
     'nav.admin.audio': 'Audio Library',
     'nav.admin.invoices': 'Invoices',
-    'nav.admin.sampleTunes': 'Sample Tunes',
+    'nav.admin.sampleTunes': 'RBT Samples',
     'nav.admin.export': 'Data Export',
     // Common
     'common.save': 'Save',
@@ -88,7 +88,7 @@ const translations: Record<Locale, Record<string, string>> = {
     'nav.admin.activityLogs': 'Kumbukumbu',
     'nav.admin.audio': 'Maktaba Sauti',
     'nav.admin.invoices': 'Anuani',
-    'nav.admin.sampleTunes': 'Nyaraka za Sauti',
+    'nav.admin.sampleTunes': 'Sampuli za RBT',
     'nav.admin.export': 'Toa Data',
     // Common
     'common.save': 'Hifadhi',
