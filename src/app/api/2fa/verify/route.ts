@@ -1,6 +1,7 @@
 import { NextRequest } from 'next/server'
 import { db } from '@/lib/db'
 import { success, error } from '@/lib/api-response'
+import { createToken } from '@/lib/auth'
 import { timingSafeEqual } from 'node:crypto'
 
 // ---------------------------------------------------------------------------
@@ -36,11 +37,8 @@ export async function POST(request: NextRequest) {
       return error('Invalid verification code', 401)
     }
 
-    // Clear the 2FA secret (one-time use in this simplified version)
-    await db.user.update({
-      where: { id: userId },
-      data: { twoFactorSecret: null },
-    })
+    // Create JWT token for the user
+    const token = createToken({ id: user.id, email: user.email, role: user.role, name: user.name })
 
     await db.activityLog.create({
       data: {
@@ -54,6 +52,7 @@ export async function POST(request: NextRequest) {
 
     return success({
       verified: true,
+      token,
       message: 'Two-factor authentication verified successfully',
     })
   } catch {

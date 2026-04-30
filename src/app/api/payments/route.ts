@@ -78,6 +78,12 @@ export async function POST(request: NextRequest) {
 
     // Validate payment status
     const paymentStatus = status || 'PENDING'
+
+    // Non-admin users cannot set payment status to COMPLETED
+    if (paymentStatus === 'COMPLETED' && !isAdmin(auth.user.role)) {
+      return error('Only admins can mark payments as completed', 403)
+    }
+
     if (!(VALID_STATUSES.PAYMENT as readonly string[]).includes(paymentStatus)) {
       return error(`Invalid payment status: ${paymentStatus}`, 400)
     }
@@ -121,6 +127,18 @@ export async function POST(request: NextRequest) {
       await db.subscription.update({
         where: { id: subscriptionId },
         data: { paymentStatus: 'PAID' },
+      })
+    }
+
+    // Notify user about payment completion
+    if (paymentStatus === 'COMPLETED') {
+      await db.notification.create({
+        data: {
+          userId: subscription.userId,
+          title: 'Payment Received',
+          message: `Your payment of ${Number(amount).toLocaleString()} TZS has been received and confirmed.`,
+          type: 'SUCCESS',
+        },
       })
     }
 

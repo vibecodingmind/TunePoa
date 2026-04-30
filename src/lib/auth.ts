@@ -1,4 +1,4 @@
-import { scrypt, randomBytes, createHmac, timingSafeEqual, scryptSync } from 'node:crypto'
+import { randomBytes, createHmac, timingSafeEqual, scryptSync } from 'node:crypto'
 import { NextRequest } from 'next/server'
 import { db } from '@/lib/db'
 import { ADMIN_ROLES } from './constants'
@@ -161,7 +161,7 @@ function timingSafeEqualStrings(a: string, b: string): boolean {
 // ---------------------------------------------------------------------------
 
 /**
- * Extract token from request (Authorization header or ?token query param)
+ * Extract token from request (Authorization header only)
  */
 function extractToken(request: NextRequest): string | null {
   // Check Authorization header
@@ -172,11 +172,6 @@ function extractToken(request: NextRequest): string | null {
       return parts[1]
     }
   }
-
-  // Check query params
-  const { searchParams } = new URL(request.url)
-  const queryToken = searchParams.get('token')
-  if (queryToken) return queryToken
 
   return null
 }

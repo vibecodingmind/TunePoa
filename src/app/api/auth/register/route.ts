@@ -2,6 +2,7 @@ import { NextRequest } from 'next/server'
 import { db } from '@/lib/db'
 import { success, error } from '@/lib/api-response'
 import { hashPassword, createToken, excludePassword } from '@/lib/auth'
+import { sendWelcomeEmail } from '@/lib/email'
 import { checkRateLimit } from '@/lib/rate-limit'
 
 export async function POST(request: NextRequest) {
@@ -63,6 +64,19 @@ export async function POST(request: NextRequest) {
         details: JSON.stringify({ name, email, action: 'registration' }),
       },
     })
+
+    // Send welcome notification
+    await db.notification.create({
+      data: {
+        userId: user.id,
+        title: 'Welcome to TunePoa!',
+        message: 'Your account has been created successfully. Get started by exploring your dashboard.',
+        type: 'SUCCESS',
+      },
+    })
+
+    // Send welcome email (logs to console until SMTP is configured)
+    sendWelcomeEmail({ name: user.name, email: user.email }).catch(() => {})
 
     // Return user WITHOUT password
     const safeUser = excludePassword(user)

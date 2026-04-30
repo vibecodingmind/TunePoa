@@ -34,7 +34,6 @@ export async function POST(request: NextRequest) {
       'image/png',
       'image/jpeg',
       'image/gif',
-      'image/svg+xml',
       'image/webp',
       'audio/mpeg',
       'audio/wav',
@@ -51,18 +50,24 @@ export async function POST(request: NextRequest) {
       .replace(/[^a-zA-Z0-9._-]/g, '_')
       .replace(/\.{2,}/g, '.')
 
+    // Add unique suffix to prevent overwrites
+    const ext = safeName.includes('.') ? '.' + safeName.split('.').pop() : ''
+    const baseName = safeName.includes('.') ? safeName.slice(0, safeName.lastIndexOf('.')) : safeName
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9)
+    const uniqueName = `${baseName}-${uniqueSuffix}${ext}`
+
     // Build upload path
     const uploadsDir = join(process.cwd(), 'public', 'uploads')
     await mkdir(uploadsDir, { recursive: true })
 
-    const filePath = join(uploadsDir, safeName)
+    const filePath = join(uploadsDir, uniqueName)
 
     const bytes = await file.arrayBuffer()
     await writeFile(filePath, Buffer.from(bytes))
 
     return success({
-      url: `/uploads/${safeName}`,
-      name: safeName,
+      url: `/uploads/${uniqueName}`,
+      name: uniqueName,
       size: file.size,
       type: file.type,
     }, 201)

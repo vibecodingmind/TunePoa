@@ -27,16 +27,6 @@ export async function PATCH(request: NextRequest) {
 
     if (!user) return error('User not found', 404)
 
-    // If user has 2FA enabled, skip password check
-    if (user.twoFactorEnabled) {
-      // Just set new password without verifying current
-      await db.user.update({
-        where: { id: auth.user.id },
-        data: { password: hashPassword(newPassword) },
-      })
-      return success({ message: 'Password updated successfully' })
-    }
-
     // Verify current password
     if (!user.password) {
       return error('No password set for this account. Contact support.')

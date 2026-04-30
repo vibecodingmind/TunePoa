@@ -70,6 +70,16 @@ export async function GET(request: NextRequest) {
         const users = await db.user.findMany({
           where: { ...statusFilter, ...dateFilter },
           orderBy: { createdAt: 'desc' },
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            phone: true,
+            businessName: true,
+            role: true,
+            status: true,
+            createdAt: true,
+          },
         })
         csv = buildCsv(
           ['id', 'name', 'email', 'phone', 'businessName', 'role', 'status', 'createdAt'],

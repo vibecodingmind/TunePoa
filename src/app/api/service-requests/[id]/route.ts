@@ -157,6 +157,26 @@ export async function PATCH(
       }
     }
 
+    // Notify user about status change
+    if (body.status && body.status !== existing.status) {
+      await db.notification.create({
+        data: {
+          userId: existing.userId,
+          title: `Request ${body.status}`,
+          message: `Your service request for "${existing.businessName}" has been ${body.status.toLowerCase()}. ${body.status === 'REJECTED' && body.rejectionReason ? 'Reason: ' + (body.rejectionReason || existing.rejectionReason) : ''}`,
+          type: body.status === 'APPROVED' ? 'SUCCESS' : 'WARNING',
+        },
+      })
+
+      // Send status update email (logs to console until SMTP is configured)
+      const { sendRequestStatusUpdate } = await import('@/lib/email')
+      sendRequestStatusUpdate(
+        { name: serviceRequest.user.name, email: serviceRequest.user.email },
+        body.status,
+        existing.businessName || 'Service Request'
+      ).catch(() => {})
+    }
+
     // Log activity
     await db.activityLog.create({
       data: {
