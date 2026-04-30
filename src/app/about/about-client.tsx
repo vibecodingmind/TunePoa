@@ -1,6 +1,5 @@
 'use client'
 
-import Image from 'next/image'
 import { PublicLayout } from '@/components/tunepoa/public-layout'
 import { Sparkles, Shield, Volume2, Zap, CheckCircle2, Target, Heart, Lightbulb } from 'lucide-react'
 
@@ -58,8 +57,13 @@ export function AboutPageClient() {
                 </p>
               </div>
             </div>
-            <div className="rounded-2xl overflow-hidden glass-card p-2">
-              <Image src="/about-team.png" alt="TunePoa Team" width={600} height={400} className="w-full h-auto rounded-xl object-cover" />
+            <div className="glass-card p-8 flex items-center justify-center">
+              <div className="text-center">
+                <div className="h-20 w-20 rounded-2xl bg-gradient-to-br from-teal-500 to-cyan-400 text-white flex items-center justify-center mx-auto mb-4 shadow-lg shadow-teal-500/20">
+                  <Sparkles className="h-10 w-10" />
+                </div>
+                <p className="text-sm text-slate-400">Empowering businesses across Tanzania with innovative ringback tone solutions.</p>
+              </div>
             </div>
           </div>
         </div>

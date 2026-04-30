@@ -58,9 +58,9 @@ export function ContactPageClient() {
 
               <div className="space-y-5">
                 {[
-                  { icon: <MapPin className="h-5 w-5" />, title: 'Visit Our Office', detail: 'Ohio Street, City Centre\nDar es Salaam, Tanzania' },
-                  { icon: <Mail className="h-5 w-5" />, title: 'Email Us', detail: 'info@tunepoa.co.tz', href: 'mailto:info@tunepoa.co.tz' },
-                  { icon: <Phone className="h-5 w-5" />, title: 'Call Us', detail: '+255 700 000 000', href: 'tel:+255700000000' },
+                  { icon: <MapPin className="h-5 w-5" />, title: 'Visit Our Office', detail: '10636, Sokoine Rd, ACU Building\nArusha, Tanzania' },
+                  { icon: <Mail className="h-5 w-5" />, title: 'Email Us', detail: 'hello@tunepoa.com', href: 'mailto:hello@tunepoa.com' },
+                  { icon: <Phone className="h-5 w-5" />, title: 'Call Us', detail: '+255 741 0 17 0 17', href: 'tel:+255741017017' },
                   { icon: <Clock className="h-5 w-5" />, title: 'Business Hours', detail: 'Mon - Fri: 8:00 AM - 5:00 PM\nSat: 9:00 AM - 1:00 PM' },
                 ].map((item) => (
                   <div key={item.title} className="flex items-start gap-4 group">

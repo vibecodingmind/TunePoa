@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
@@ -16,8 +16,6 @@ import { useStore } from '@/lib/store'
 import {
   Menu,
   X,
-  ArrowRight,
-  Volume2,
   Twitter,
   Linkedin,
   Facebook,
@@ -38,15 +36,26 @@ const navLinks = [
 
 const footerCompanyLinks = [
   { label: 'About', href: '/about' },
-  { label: 'Benefits', href: '/#benefits' },
+  { label: 'Features', href: '/#benefits' },
   { label: 'Pricing', href: '/packages' },
-  { label: 'Sample Tunes', href: '/sample-tunes' },
+  { label: 'Why TunePoa', href: '/#benefits' },
   { label: 'Contact', href: '/contact' },
 ]
 
-const footerLegalLinks = [
+const footerProductLinks = [
+  { label: 'API', href: '#' },
+  { label: 'Partnership', href: '#' },
+  { label: 'Coverage', href: '#' },
+  { label: 'Support Desk', href: '/contact' },
+  { label: 'Blog', href: '#' },
+]
+
+const footerOtherLinks = [
   { label: 'Privacy Policy', href: '/privacy' },
-  { label: 'Terms of Service', href: '/terms' },
+  { label: 'Terms Of Services', href: '/terms' },
+  { label: 'Refund Policy', href: '#' },
+  { label: 'Cookies Policy', href: '#' },
+  { label: 'FAQ', href: '/#faq' },
 ]
 
 export function PublicLayout({ children }: { children: React.ReactNode }) {
@@ -97,13 +106,6 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
               >
                 Sign In
               </Button>
-              <Button
-                className="bg-gradient-to-r from-teal-500 to-cyan-500 hover:from-teal-500/90 hover:to-cyan-500/90 text-white shadow-lg shadow-teal-500/25 font-semibold text-sm px-6 h-10 rounded-xl transition-all duration-300 hover:shadow-xl hover:shadow-teal-500/30 hover:-translate-y-0.5"
-                onClick={() => { setAuthMode('register'); setAuthDialogOpen(true) }}
-              >
-                Get Started
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
             </div>
 
             <div className="lg:hidden flex items-center">
@@ -125,12 +127,13 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
                   {link.label}
                 </Link>
               ))}
-              <div className="flex gap-3 pt-4 px-2 border-t border-white/[0.08]">
-                <Button variant="outline" className="flex-1 rounded-xl border-white/20 text-white hover:bg-white/10 hover:text-white h-11" onClick={() => { setAuthMode('login'); setAuthDialogOpen(true); setMobileMenuOpen(false) }}>
+              <div className="pt-4 px-2 border-t border-white/[0.08]">
+                <Button
+                  variant="outline"
+                  className="w-full rounded-xl border-white/20 text-white hover:bg-white/10 hover:text-white h-11"
+                  onClick={() => { setAuthMode('login'); setAuthDialogOpen(true); setMobileMenuOpen(false) }}
+                >
                   Sign In
-                </Button>
-                <Button className="flex-1 bg-gradient-to-r from-teal-500 to-cyan-500 text-white rounded-xl h-11 font-semibold" onClick={() => { setAuthMode('register'); setAuthDialogOpen(true); setMobileMenuOpen(false) }}>
-                  Get Started
                 </Button>
               </div>
             </div>
@@ -147,7 +150,8 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
       <footer className="bg-[#060e1a] text-slate-400 relative">
         <div className="h-px bg-gradient-to-r from-transparent via-teal-500/30 to-transparent" />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-12">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-12">
+            {/* Brand column */}
             <div>
               <Link href="/">
                 <div className="flex items-center mb-5">
@@ -158,18 +162,22 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
                 Your Ring Back Tone, your style. Transform every call into a memorable experience with TunePoa.
               </p>
               <div className="flex items-center gap-4">
-                {[
-                  { icon: <Twitter className="h-4 w-4" />, href: '#' },
-                  { icon: <Linkedin className="h-4 w-4" />, href: '#' },
-                  { icon: <Facebook className="h-4 w-4" />, href: '#' },
-                  { icon: <Instagram className="h-4 w-4" />, href: '#' },
-                ].map((s, i) => (
-                  <a key={i} href={s.href} className="h-9 w-9 rounded-xl bg-white/[0.06] border border-white/[0.08] flex items-center justify-center text-slate-400 hover:text-teal-400 hover:bg-teal-500/10 hover:border-teal-500/20 transition-all duration-300">
-                    {s.icon}
-                  </a>
-                ))}
+                <a href="#" className="h-9 w-9 rounded-xl bg-white/[0.06] border border-white/[0.08] flex items-center justify-center text-slate-400 hover:text-teal-400 hover:bg-teal-500/10 hover:border-teal-500/20 transition-all duration-300">
+                  <Twitter className="h-4 w-4" />
+                </a>
+                <a href="#" className="h-9 w-9 rounded-xl bg-white/[0.06] border border-white/[0.08] flex items-center justify-center text-slate-400 hover:text-teal-400 hover:bg-teal-500/10 hover:border-teal-500/20 transition-all duration-300">
+                  <Linkedin className="h-4 w-4" />
+                </a>
+                <a href="#" className="h-9 w-9 rounded-xl bg-white/[0.06] border border-white/[0.08] flex items-center justify-center text-slate-400 hover:text-teal-400 hover:bg-teal-500/10 hover:border-teal-500/20 transition-all duration-300">
+                  <Facebook className="h-4 w-4" />
+                </a>
+                <a href="#" className="h-9 w-9 rounded-xl bg-white/[0.06] border border-white/[0.08] flex items-center justify-center text-slate-400 hover:text-teal-400 hover:bg-teal-500/10 hover:border-teal-500/20 transition-all duration-300">
+                  <Instagram className="h-4 w-4" />
+                </a>
               </div>
             </div>
+
+            {/* Company column */}
             <div>
               <h4 className="text-[11px] font-bold text-slate-300 mb-5 uppercase tracking-[0.15em]">Company</h4>
               <ul className="space-y-3">
@@ -180,10 +188,24 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
                 ))}
               </ul>
             </div>
+
+            {/* Product column */}
             <div>
-              <h4 className="text-[11px] font-bold text-slate-300 mb-5 uppercase tracking-[0.15em]">Legal</h4>
+              <h4 className="text-[11px] font-bold text-slate-300 mb-5 uppercase tracking-[0.15em]">Product</h4>
               <ul className="space-y-3">
-                {footerLegalLinks.map((link) => (
+                {footerProductLinks.map((link) => (
+                  <li key={link.label}>
+                    <Link href={link.href} className="text-sm hover:text-teal-400 transition-colors duration-200">{link.label}</Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Other column */}
+            <div>
+              <h4 className="text-[11px] font-bold text-slate-300 mb-5 uppercase tracking-[0.15em]">Other</h4>
+              <ul className="space-y-3">
+                {footerOtherLinks.map((link) => (
                   <li key={link.label}>
                     <Link href={link.href} className="text-sm hover:text-teal-400 transition-colors duration-200">{link.label}</Link>
                   </li>
@@ -191,22 +213,22 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
               </ul>
               <div className="mt-8 space-y-2">
                 <h4 className="text-[11px] font-bold text-slate-300 mb-3 uppercase tracking-[0.15em]">Contact</h4>
-                <a href="mailto:info@tunepoa.co.tz" className="flex items-center gap-2 text-sm hover:text-teal-400 transition-colors duration-200">
+                <a href="mailto:hello@tunepoa.com" className="flex items-center gap-2 text-sm hover:text-teal-400 transition-colors duration-200">
                   <Mail className="h-4 w-4" />
-                  info@tunepoa.co.tz
+                  hello@tunepoa.com
                 </a>
-                <a href="tel:+255700000000" className="flex items-center gap-2 text-sm hover:text-teal-400 transition-colors duration-200">
+                <a href="tel:+255741017017" className="flex items-center gap-2 text-sm hover:text-teal-400 transition-colors duration-200">
                   <Phone className="h-4 w-4" />
-                  +255 700 000 000
+                  +255 741 0 17 0 17
                 </a>
               </div>
             </div>
           </div>
           <div className="mt-16 pt-8 border-t border-white/[0.06] flex flex-col sm:flex-row items-center justify-between gap-4">
-            <p className="text-xs text-slate-500">&copy; {new Date().getFullYear()} TunePoa. All Rights Reserved.</p>
+            <p className="text-xs text-slate-500">&copy; Tune Poa {new Date().getFullYear()} All Rights Reserved.</p>
             <div className="flex items-center gap-1 text-xs text-slate-500">
               <MapPin className="h-3.5 w-3.5" />
-              Dar es Salaam, Tanzania
+              Arusha, Tanzania
             </div>
           </div>
         </div>

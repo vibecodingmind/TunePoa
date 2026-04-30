@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback, useRef } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useStore } from '@/lib/store'
@@ -36,12 +36,8 @@ import {
   Instagram,
   Mail,
   Phone,
-  Users,
-  ThumbsUp,
   Headphones,
-  UserPlus,
   Music,
-  Rocket,
   MapPin,
 } from 'lucide-react'
 
@@ -66,6 +62,10 @@ const faqItems = [
   {
     q: 'Is there a cost for using TunePoa.com services?',
     a: 'TunePoa.com offers different pricing plans depending on the features and customization you need. There are options for both individual users and businesses, ensuring you get the best value based on your requirements.',
+  },
+  {
+    q: 'Is my payment information secure with TunePoa?',
+    a: 'Absolutely. TunePoa uses industry-standard encryption and secure payment gateways to ensure your financial information is fully protected. We take your security and privacy seriously.',
   },
 ]
 
@@ -94,17 +94,6 @@ const testimonials = [
   },
 ]
 
-/* ─── Package type ─── */
-interface PackageData {
-  id: string
-  name: string
-  price: number
-  duration: number
-  durationUnit: string
-  features: string[]
-  isActive: boolean
-}
-
 /* ─── Benefit Cards ─── */
 const benefitCards = [
   {
@@ -130,48 +119,12 @@ const benefitCards = [
   },
 ]
 
-/* ─── How It Works Steps ─── */
-const howItWorksSteps = [
-  {
-    step: 1,
-    icon: <UserPlus className="h-6 w-6" />,
-    title: 'Sign Up',
-    desc: 'Create your TunePoa account in minutes. Our streamlined onboarding gets you started right away.',
-  },
-  {
-    step: 2,
-    icon: <Music className="h-6 w-6" />,
-    title: 'Choose Your Tone',
-    desc: 'Browse our library of professional ringback tones or request a fully custom tone for your brand.',
-  },
-  {
-    step: 3,
-    icon: <Headphones className="h-6 w-6" />,
-    title: 'We Produce It',
-    desc: 'Our production team creates a high-quality, polished ringback tone tailored to your specifications.',
-  },
-  {
-    step: 4,
-    icon: <Rocket className="h-6 w-6" />,
-    title: 'Go Live',
-    desc: 'We activate your tone across your chosen phone numbers. Your callers start hearing your brand immediately.',
-  },
-]
-
-/* ─── Stats ─── */
-const stats = [
-  { value: '500+', label: 'Businesses', icon: <Users className="h-5 w-5" /> },
-  { value: '10M+', label: 'Calls Enhanced', icon: <Phone className="h-5 w-5" /> },
-  { value: '98%', label: 'Satisfaction', icon: <ThumbsUp className="h-5 w-5" /> },
-  { value: '24/7', label: 'Support', icon: <Headphones className="h-5 w-5" /> },
-]
-
 /* ─── Pricing Cards ─── */
-const pricingCards = [
+const monthlyPricing = [
   {
     name: 'Starter',
     price: '20,000',
-    subtitle: 'Per User',
+    subtitle: 'Per Month',
     badge: null,
     description: 'Perfect for individuals and small businesses getting started with custom ringback tones.',
     icon: <Sparkles className="h-6 w-6" />,
@@ -180,13 +133,13 @@ const pricingCards = [
     accentFrom: 'from-teal-500',
     accentTo: 'to-cyan-400',
     features: ['Customizable Tones', 'High-quality Experience', 'Scheduled Tones'],
-    btnLabel: 'Get Started',
+    btnLabel: 'Select Plan',
     btnStyle: 'bg-white/[0.08] border border-white/[0.12] hover:bg-gradient-to-r hover:from-teal-500 hover:to-cyan-500 hover:border-teal-500/50',
   },
   {
     name: 'Pro',
     price: '57,000',
-    subtitle: 'Per 3 Users',
+    subtitle: 'Per Month',
     badge: 'Most Popular',
     description: 'Ideal for growing businesses that want broader reach with more users and enhanced features.',
     icon: <Zap className="h-6 w-6" />,
@@ -211,7 +164,56 @@ const pricingCards = [
     accentFrom: 'from-cyan-400',
     accentTo: 'to-teal-400',
     features: ['Customizable Tones', 'High-quality Experience', 'Scheduled Tones'],
-    btnLabel: 'Contact Us',
+    btnLabel: 'Contact Sales',
+    btnStyle: 'bg-white/[0.08] border border-white/[0.12] hover:bg-gradient-to-r hover:from-teal-500 hover:to-cyan-500 hover:border-teal-500/50',
+  },
+]
+
+const annualPricing = [
+  {
+    name: 'Starter',
+    price: '199,000',
+    subtitle: 'Per Year',
+    badge: null,
+    description: 'Perfect for individuals and small businesses getting started with custom ringback tones.',
+    icon: <Sparkles className="h-6 w-6" />,
+    iconBg: 'bg-teal-500/10 border-teal-500/20',
+    iconColor: 'text-teal-400',
+    accentFrom: 'from-teal-500',
+    accentTo: 'to-cyan-400',
+    features: ['Customizable Tones', 'High-quality Experience', 'Scheduled Tones'],
+    btnLabel: 'Select Plan',
+    btnStyle: 'bg-white/[0.08] border border-white/[0.12] hover:bg-gradient-to-r hover:from-teal-500 hover:to-cyan-500 hover:border-teal-500/50',
+  },
+  {
+    name: 'Pro',
+    price: '499,000',
+    subtitle: 'Per Year',
+    badge: 'Most Popular',
+    description: 'Ideal for growing businesses that want broader reach with more users and enhanced features.',
+    icon: <Zap className="h-6 w-6" />,
+    iconBg: 'bg-teal-500/10 border-teal-500/20',
+    iconColor: 'text-teal-400',
+    accentFrom: 'from-teal-500',
+    accentTo: 'to-cyan-400',
+    features: ['Customizable Tones', 'High-quality Experience', 'Scheduled Tones'],
+    btnLabel: 'Select Plan',
+    btnStyle: 'bg-gradient-to-r from-teal-500 to-cyan-500 hover:from-teal-500/90 hover:to-cyan-500/90 shadow-lg shadow-teal-500/25',
+    popular: true,
+  },
+  {
+    name: 'Enterprise',
+    price: 'Custom',
+    subtitle: 'Tailored for you',
+    badge: null,
+    description: 'For large organizations needing a fully customized ringback tone solution at scale.',
+    icon: <Star className="h-6 w-6" />,
+    iconBg: 'bg-teal-500/10 border-teal-500/20',
+    iconColor: 'text-teal-400',
+    accentFrom: 'from-cyan-400',
+    accentTo: 'to-teal-400',
+    features: ['Customizable Tones', 'High-quality Experience', 'Scheduled Tones'],
+    btnLabel: 'Contact Sales',
     btnStyle: 'bg-white/[0.08] border border-white/[0.12] hover:bg-gradient-to-r hover:from-teal-500 hover:to-cyan-500 hover:border-teal-500/50',
   },
 ]
@@ -219,15 +221,25 @@ const pricingCards = [
 /* ─── Footer Links ─── */
 const footerCompanyLinks = [
   { label: 'About', href: '/about' },
-  { label: 'Benefits', action: 'benefits' },
+  { label: 'Features', action: 'benefits' },
   { label: 'Pricing', href: '/packages' },
-  { label: 'Sample Tunes', href: '/sample-tunes' },
+  { label: 'Why TunePoa', action: 'benefits' },
   { label: 'Contact', href: '/contact' },
+]
+
+const footerProductLinks = [
+  { label: 'API', href: '#' },
+  { label: 'Partnership', href: '#' },
+  { label: 'Coverage', href: '#' },
+  { label: 'Support Desk', href: '/contact' },
+  { label: 'Blog', href: '#' },
 ]
 
 const footerOtherLinks = [
   { label: 'Privacy Policy', href: '/privacy' },
-  { label: 'Terms of Service', href: '/terms' },
+  { label: 'Terms Of Services', href: '/terms' },
+  { label: 'Refund Policy', href: '#' },
+  { label: 'Cookies Policy', href: '#' },
   { label: 'FAQ', action: 'faq' },
 ]
 
@@ -241,142 +253,14 @@ const navLinks = [
   { label: 'Contact', id: 'footer' },
 ]
 
-/* ─── Animated Counter Hook ─── */
-function useCounter(target: string, duration = 2000) {
-  const [display, setDisplay] = useState('0')
-  const ref = useRef<HTMLDivElement>(null)
-  const hasAnimated = useRef(false)
-
-  useEffect(() => {
-    const el = ref.current
-    if (!el) return
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting && !hasAnimated.current) {
-          hasAnimated.current = true
-          const numericPart = target.replace(/[^0-9.]/g, '')
-          const suffix = target.replace(/[0-9.,]/g, '')
-          const num = parseFloat(numericPart)
-          const start = performance.now()
-
-          function tick(now: number) {
-            const elapsed = now - start
-            const progress = Math.min(elapsed / duration, 1)
-            const eased = 1 - Math.pow(1 - progress, 3)
-            const current = num * eased
-            setDisplay(`${Math.floor(current)}${suffix}`)
-            if (progress < 1) requestAnimationFrame(tick)
-          }
-          requestAnimationFrame(tick)
-        }
-      },
-      { threshold: 0.3 },
-    )
-
-    observer.observe(el)
-    return () => observer.disconnect()
-  }, [target, duration])
-
-  return { display, ref }
-}
-
-/* ─── Stat Counter Component ─── */
-function StatCounter({ stat }: { stat: typeof stats[number] }) {
-  const { display, ref } = useCounter(stat.value)
-  return (
-    <div ref={ref} className="text-center glass-card group relative p-7 hover:-translate-y-1 transition-all duration-500">
-      <div className="relative">
-        <div className="h-12 w-12 rounded-xl bg-teal-500/15 text-teal-400 flex items-center justify-center mb-4 mx-auto shadow-sm group-hover:scale-110 transition-transform duration-300">
-          {stat.icon}
-        </div>
-        <div className="text-3xl sm:text-4xl font-extrabold bg-gradient-to-r from-teal-400 to-cyan-400 bg-clip-text text-transparent mb-2">
-          {display}
-        </div>
-        <p className="text-sm text-slate-400 font-medium">{stat.label}</p>
-      </div>
-    </div>
-  )
-}
-
 export function LandingPage() {
-  const { isAuthenticated, navigate, authMode, setAuthMode } = useStore()
-  const [packages, setPackages] = useState<PackageData[]>([])
-  const [packagesLoading, setPackagesLoading] = useState(true)
+  const { isAuthenticated, authMode, setAuthMode } = useStore()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const [authDialogOpen, setAuthDialogOpen] = useState(false)
+  const [pricingPeriod, setPricingPeriod] = useState<'monthly' | 'annual'>('monthly')
 
-  // Fetch packages from API
-  useEffect(() => {
-    let cancelled = false
-
-    async function loadPackages() {
-      try {
-        const res = await fetch('/api/packages')
-        const data = await res.json()
-
-        if (data.needsSetup || (data.success && Array.isArray(data.data) && data.data.length === 0)) {
-          try {
-            const seedRes = await fetch('/api/seed', { method: 'POST' })
-            const seedData = await seedRes.json()
-            if (seedData.success) {
-              const retryRes = await fetch('/api/packages')
-              const retryData = await retryRes.json()
-              if (!cancelled && retryData.success && Array.isArray(retryData.data)) {
-                setPackages(
-                  retryData.data
-                    .filter((p: PackageData) => p.isActive)
-                    .map((p: PackageData & { features?: string }) => ({
-                      ...p,
-                      features:
-                        typeof p.features === 'string'
-                          ? JSON.parse(p.features)
-                          : Array.isArray(p.features)
-                            ? p.features
-                            : [],
-                    }))
-                    .sort((a: PackageData, b: PackageData) => a.price - b.price),
-                )
-              }
-            }
-          } catch {
-            // Seed request failed
-          }
-        } else if (data.success && Array.isArray(data.data)) {
-          if (!cancelled) {
-            setPackages(
-              data.data
-                .filter((p: PackageData) => p.isActive)
-                .map((p: PackageData & { features?: string }) => ({
-                  ...p,
-                  features:
-                    typeof p.features === 'string'
-                      ? JSON.parse(p.features)
-                      : Array.isArray(p.features)
-                        ? p.features
-                        : [],
-                }))
-                .sort((a: PackageData, b: PackageData) => a.price - b.price),
-            )
-          }
-        }
-      } catch {
-        // Silently fail
-      } finally {
-        if (!cancelled) setPackagesLoading(false)
-      }
-    }
-
-    loadPackages()
-    return () => { cancelled = true }
-  }, [])
-
-  // Scroll helper
-  const scrollTo = useCallback((id: string) => {
-    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
-    setMobileMenuOpen(false)
-  }, [])
+  const pricingCards = pricingPeriod === 'monthly' ? monthlyPricing : annualPricing
 
   // Shadow on scroll
   useEffect(() => {
@@ -386,6 +270,11 @@ export function LandingPage() {
   }, [])
 
   if (isAuthenticated) return null
+
+  const scrollTo = useCallback((id: string) => {
+    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
+    setMobileMenuOpen(false)
+  }, [])
 
   const handleNavClick = (link: typeof navLinks[number]) => {
     if (link.href) {
@@ -438,13 +327,6 @@ export function LandingPage() {
               >
                 Sign In
               </Button>
-              <Button
-                className="bg-gradient-to-r from-teal-500 to-cyan-500 hover:from-teal-500/90 hover:to-cyan-500/90 text-white shadow-lg shadow-teal-500/25 font-semibold text-sm px-6 h-10 rounded-xl transition-all duration-300 hover:shadow-xl hover:shadow-teal-500/30 hover:-translate-y-0.5"
-                onClick={() => { setAuthMode('register'); setAuthDialogOpen(true) }}
-              >
-                Get Started
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
             </div>
 
             {/* Mobile hamburger */}
@@ -471,19 +353,13 @@ export function LandingPage() {
                   {link.label}
                 </button>
               ))}
-              <div className="flex gap-3 pt-4 px-2 border-t border-white/[0.08]">
+              <div className="pt-4 px-2 border-t border-white/[0.08]">
                 <Button
                   variant="outline"
-                  className="flex-1 rounded-xl border-white/20 text-white hover:bg-white/10 hover:text-white h-11"
+                  className="w-full rounded-xl border-white/20 text-white hover:bg-white/10 hover:text-white h-11"
                   onClick={() => { setAuthMode('login'); setAuthDialogOpen(true); setMobileMenuOpen(false) }}
                 >
                   Sign In
-                </Button>
-                <Button
-                  className="flex-1 bg-gradient-to-r from-teal-500 to-cyan-500 text-white rounded-xl h-11 font-semibold"
-                  onClick={() => { setAuthMode('register'); setAuthDialogOpen(true); setMobileMenuOpen(false) }}
-                >
-                  Get Started
                 </Button>
               </div>
             </div>
@@ -522,16 +398,15 @@ export function LandingPage() {
             </div>
 
             <h1 className="text-4xl sm:text-5xl lg:text-7xl font-extrabold text-white mb-7 leading-[1.08] tracking-tight animate-fade-in-up">
-              Turn Every Call into an{' '}
-              <br className="hidden sm:block" />
+              Make It{' '}
               <span className="relative">
                 <span className="bg-gradient-to-r from-[#00c9b7] via-[#4ab2cf] to-[#00c9b7] bg-clip-text text-transparent">
-                  Opportunity
+                  Ring
                 </span>
-                <svg className="absolute -bottom-2 left-0 w-full" viewBox="0 0 300 12" fill="none">
-                  <path d="M2 10C50 3 100 3 150 6C200 9 250 4 298 8" stroke="url(#underline-grad)" strokeWidth="3" strokeLinecap="round"/>
+                <svg className="absolute -bottom-2 left-0 w-full" viewBox="0 0 200 12" fill="none">
+                  <path d="M2 10C50 3 100 3 150 6C180 8 195 5 198 7" stroke="url(#underline-grad)" strokeWidth="3" strokeLinecap="round"/>
                   <defs>
-                    <linearGradient id="underline-grad" x1="0" y1="0" x2="300" y2="0" gradientUnits="userSpaceOnUse">
+                    <linearGradient id="underline-grad" x1="0" y1="0" x2="200" y2="0" gradientUnits="userSpaceOnUse">
                       <stop stopColor="#00c9b7" />
                       <stop offset="1" stopColor="#4ab2cf" stopOpacity="0" />
                     </linearGradient>
@@ -540,20 +415,13 @@ export function LandingPage() {
               </span>
             </h1>
 
-            <p className="text-base sm:text-lg lg:text-xl text-slate-300 mb-12 max-w-3xl mx-auto leading-relaxed animate-fade-in-up animation-delay-200">
-              Our platform allows businesses to replace the traditional ringing sound with personalized music or branded messages while customers wait on the line.
-            </p>
+            <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-slate-300 mb-7 animate-fade-in-up animation-delay-100">
+              Revolutionize the call-waiting experience!
+            </h2>
 
-            <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in-up animation-delay-300">
-              <Button
-                size="lg"
-                className="bg-gradient-to-r from-teal-500 to-cyan-500 hover:from-teal-500/90 hover:to-cyan-500/90 text-white font-bold text-base px-10 h-13 rounded-2xl shadow-2xl shadow-teal-500/25 group transition-all duration-300 hover:-translate-y-1"
-                onClick={() => { setAuthMode('register'); setAuthDialogOpen(true) }}
-              >
-                Get Started
-                <ArrowRight className="ml-2.5 h-5 w-5 transition-transform group-hover:translate-x-1" />
-              </Button>
-            </div>
+            <p className="text-base sm:text-lg lg:text-xl text-slate-300/80 mb-12 max-w-3xl mx-auto leading-relaxed animate-fade-in-up animation-delay-200">
+              TunePoa&apos;s RBT replaces boring beeps with delightful melodies, transforming call experiences while driving revenue and enhancing satisfaction.
+            </p>
           </div>
         </div>
       </section>
@@ -564,40 +432,31 @@ export function LandingPage() {
       <section id="about" className="py-24 sm:py-32 bg-[#0a1628] relative">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(0,201,183,0.06),transparent_70%)]" />
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-3xl mx-auto text-center glass-card p-8 sm:p-10">
+          <div className="max-w-3xl mx-auto text-center">
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-teal-500/10 border border-teal-500/20 text-teal-400 text-[11px] font-bold uppercase tracking-[0.15em] mb-6">
               <Megaphone className="h-3.5 w-3.5" />
               About TunePoa
             </div>
-            <h2 className="text-2xl sm:text-3xl font-bold text-white mb-4">
-              More Than Just Music
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-6">
+              Turn Every Call into an Opportunity
             </h2>
-            <p className="text-slate-400 leading-relaxed mb-8">
-              With TunePoa, your ringback tone is not just music — it&apos;s a powerful tool for branding, advertising, and customer engagement.
+            <p className="text-slate-400 leading-relaxed text-base sm:text-lg">
+              TunePoa is a cutting-edge Ringback Tone (RBT) platform designed to transform the way businesses connect with their customers. Instead of the standard &quot;ring ring&quot; that callers hear while waiting for a connection, TunePoa replaces it with customized music, branded messages, or promotional content that reflects your unique identity. Whether you&apos;re looking to enhance brand recognition, engage your audience, or create an unforgettable caller experience, TunePoa provides the tools to make every call count. Our easy-to-use platform, seamless integration with mobile networks, and professional tone production services ensure that your business stands out from the moment a customer dials your number.
             </p>
-            <Link href="/about">
-              <Button
-                size="lg"
-                className="bg-gradient-to-r from-teal-500 to-cyan-500 hover:from-teal-500/90 hover:to-cyan-500/90 text-white font-bold text-base px-10 h-12 rounded-2xl shadow-2xl shadow-teal-500/25 group transition-all duration-300 hover:-translate-y-1"
-              >
-                Learn More About Us
-                <ArrowRight className="ml-2.5 h-5 w-5 transition-transform group-hover:translate-x-1" />
-              </Button>
-            </Link>
           </div>
         </div>
       </section>
 
       {/* ════════════════════════════════════════════════════════════════
-          BENEFITS SECTION
+          BENEFITS INTRO
           ════════════════════════════════════════════════════════════════ */}
-      <section id="benefits" className="py-24 sm:py-32 bg-[#0b1929] relative">
+      <section className="py-24 sm:py-32 bg-[#0b1929] relative">
         <div className="absolute inset-0 bg-dot-pattern opacity-20" />
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-20">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-teal-500/10 border border-teal-500/20 text-teal-400 text-[11px] font-bold uppercase tracking-[0.15em] mb-5">
+          <div className="max-w-3xl mx-auto text-center mb-20">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-teal-500/10 border border-teal-500/20 text-teal-400 text-[11px] font-bold uppercase tracking-[0.15em] mb-6">
               <Sparkles className="h-3.5 w-3.5" />
-              Key Benefits
+              More Than Just Music
             </div>
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white mb-5 tracking-tight">
               Why Choose TunePoa?
@@ -628,67 +487,27 @@ export function LandingPage() {
       </section>
 
       {/* ════════════════════════════════════════════════════════════════
-          HOW IT WORKS
+          EXPRESS THROUGH TONES
           ════════════════════════════════════════════════════════════════ */}
-      <section id="how-it-works" className="py-24 sm:py-32 bg-[#0a1628] relative">
+      <section className="py-24 sm:py-32 bg-[#0a1628] relative">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(0,201,183,0.06),transparent_70%)]" />
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-20">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-teal-500/10 border border-teal-500/20 text-teal-400 text-[11px] font-bold uppercase tracking-[0.15em] mb-5">
-              <Rocket className="h-3.5 w-3.5" />
-              How It Works
+        <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-teal-500/10 border border-teal-500/20 text-teal-400 text-[11px] font-bold uppercase tracking-[0.15em] mb-6">
+              <Music className="h-3.5 w-3.5" />
+              Express Through Tones
             </div>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white mb-5 tracking-tight">
-              Get Started in 4 Simple Steps
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-white mb-6 tracking-tight">
+              Let Your Brand Speak Through Music
             </h2>
-            <p className="text-slate-400 max-w-3xl mx-auto text-base sm:text-lg leading-relaxed">
-              Setting up your custom ringback tone is quick and hassle-free. Our team handles the heavy lifting so you can focus on what matters.
-            </p>
-          </div>
-
-          {/* Steps grid */}
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {howItWorksSteps.map((step, idx) => (
-              <div
-                key={step.step}
-                className="glass-card group relative p-7 hover:-translate-y-1 transition-all duration-500 animate-fade-in-up"
-                style={{ animationDelay: `${idx * 100}ms` }}
-              >
-                {/* Step number */}
-                <div className="absolute -top-3 -left-1 h-8 w-8 rounded-lg bg-gradient-to-br from-teal-500 to-cyan-500 text-white flex items-center justify-center font-extrabold text-sm shadow-lg shadow-teal-500/25">
-                  {step.step}
-                </div>
-                <div className="relative">
-                  <div className="h-12 w-12 rounded-xl bg-teal-500/15 text-teal-400 flex items-center justify-center mb-5 shadow-sm group-hover:scale-110 transition-transform duration-300">
-                    {step.icon}
-                  </div>
-                  <h3 className="text-base font-bold text-white mb-2">{step.title}</h3>
-                  <p className="text-sm text-slate-400 leading-relaxed">{step.desc}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ════════════════════════════════════════════════════════════════
-          STATS / NUMBERS
-          ════════════════════════════════════════════════════════════════ */}
-      <section id="stats" className="py-24 sm:py-32 bg-[#0b1929] relative">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(0,201,183,0.08),transparent_50%)]" />
-        <div className="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white mb-5 tracking-tight">
-              Trusted by Businesses Across Tanzania
-            </h2>
-            <p className="text-slate-400 max-w-2xl mx-auto text-base sm:text-lg leading-relaxed">
-              Numbers that speak for themselves. Join hundreds of businesses already using TunePoa.
-            </p>
-          </div>
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-5">
-            {stats.map((stat) => (
-              <StatCounter key={stat.label} stat={stat} />
-            ))}
+            <div className="space-y-4 text-slate-400 text-base sm:text-lg leading-relaxed">
+              <p>
+                Your ringback tone is more than just sound — it&apos;s an extension of your brand identity. With TunePoa, you can choose from a wide range of professionally produced tones or work with our team to create something entirely unique. From upbeat melodies that energize callers to calm tunes that create a soothing wait, the right tone sets the perfect mood.
+              </p>
+              <p>
+                Whether you want to promote a new product, share a seasonal greeting, or simply create a memorable calling experience, TunePoa gives you the creative freedom to express yourself. Update your tones as often as you like, schedule them for specific times, and let every call tell your story.
+              </p>
+            </div>
           </div>
         </div>
       </section>
@@ -705,7 +524,7 @@ export function LandingPage() {
         <div className="absolute bottom-10 right-[10%] w-[300px] h-[300px] bg-cyan-400/[0.06] rounded-full blur-[80px]" />
 
         <div className="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
+          <div className="text-center mb-10">
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-teal-500/10 border border-teal-500/20 text-teal-400 text-[11px] font-bold uppercase tracking-[0.15em] mb-5 backdrop-blur-sm">
               Pricing
             </div>
@@ -715,6 +534,32 @@ export function LandingPage() {
             <p className="text-slate-400 max-w-2xl mx-auto text-base sm:text-lg leading-relaxed">
               With TunePoa, enjoy cost-effective and impactful custom Ringback Tones that enhance your brand, engage customers, and deliver advertising messages seamlessly during every call.
             </p>
+          </div>
+
+          {/* Monthly / Annual Toggle */}
+          <div className="flex items-center justify-center mb-12">
+            <div className="inline-flex items-center gap-1 p-1 rounded-xl bg-white/[0.06] border border-white/[0.08]">
+              <button
+                onClick={() => setPricingPeriod('monthly')}
+                className={`px-5 py-2.5 rounded-lg text-sm font-semibold transition-all duration-300 ${
+                  pricingPeriod === 'monthly'
+                    ? 'bg-gradient-to-r from-teal-500 to-cyan-500 text-white shadow-lg shadow-teal-500/25'
+                    : 'text-slate-400 hover:text-white'
+                }`}
+              >
+                Monthly
+              </button>
+              <button
+                onClick={() => setPricingPeriod('annual')}
+                className={`px-5 py-2.5 rounded-lg text-sm font-semibold transition-all duration-300 ${
+                  pricingPeriod === 'annual'
+                    ? 'bg-gradient-to-r from-teal-500 to-cyan-500 text-white shadow-lg shadow-teal-500/25'
+                    : 'text-slate-400 hover:text-white'
+                }`}
+              >
+                Annual
+              </button>
+            </div>
           </div>
 
           <div className="grid md:grid-cols-3 gap-6 lg:gap-8 mb-16">
@@ -757,10 +602,6 @@ export function LandingPage() {
                   onClick={() => {
                     if (card.price === 'Custom') {
                       window.location.href = '/contact'
-                    } else if (!isAuthenticated) {
-                      window.dispatchEvent(new CustomEvent('open-auth', { detail: 'register' }))
-                    } else {
-                      navigate('packages')
                     }
                   }}
                   className={`w-full py-3.5 rounded-xl text-white font-semibold text-sm transition-all duration-300 hover:-translate-y-0.5 ${card.btnStyle}`}
@@ -864,30 +705,21 @@ export function LandingPage() {
 
         <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white mb-6 tracking-tight leading-tight">
-            Ready to Transform Your Caller Experience?
+            Your Ring Back Tone, your style
           </h2>
           <p className="text-base sm:text-lg text-white/80 mb-10 max-w-xl mx-auto leading-relaxed">
-            Join hundreds of businesses already using TunePoa to make every call count.
+            Get started today and make every call memorable!
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <Link href="/sample-tunes">
             <Button
               size="lg"
-              className="bg-white text-teal-700 hover:bg-white/90 font-bold text-base px-10 h-13 rounded-2xl shadow-2xl shadow-black/25 group transition-all duration-300 hover:-translate-y-1"
-              onClick={() => { setAuthMode('register'); setAuthDialogOpen(true) }}
+              variant="outline"
+              className="border-2 border-white/30 text-white hover:bg-white/10 hover:border-white/50 font-bold text-base px-10 h-13 rounded-2xl transition-all duration-300 hover:-translate-y-1 bg-transparent"
             >
-              Get Started Free
+              Need Samples
               <ArrowRight className="ml-2.5 h-5 w-5 transition-transform group-hover:translate-x-1" />
             </Button>
-            <Link href="/contact">
-              <Button
-                size="lg"
-                variant="outline"
-                className="border-2 border-white/30 text-white hover:bg-white/10 hover:border-white/50 font-bold text-base px-10 h-13 rounded-2xl transition-all duration-300 hover:-translate-y-1 bg-transparent"
-              >
-                Contact Sales
-              </Button>
-            </Link>
-          </div>
+          </Link>
         </div>
       </section>
 
@@ -913,7 +745,7 @@ export function LandingPage() {
       <footer id="footer" className="bg-[#060e1a] text-slate-400 relative">
         <div className="h-px bg-gradient-to-r from-transparent via-teal-500/30 to-transparent" />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-12">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-12">
             {/* Brand column */}
             <div>
               <Link href="/">
@@ -964,10 +796,30 @@ export function LandingPage() {
               </ul>
             </div>
 
-            {/* Legal column */}
+            {/* Product column */}
             <div>
               <h4 className="text-[11px] font-bold text-slate-300 mb-5 uppercase tracking-[0.15em]">
-                Legal
+                Product
+              </h4>
+              <ul className="space-y-3">
+                {footerProductLinks.map((link) => (
+                  <li key={link.label}>
+                    {link.href ? (
+                      <Link href={link.href} className="text-sm hover:text-teal-400 transition-colors duration-200">
+                        {link.label}
+                      </Link>
+                    ) : (
+                      <span className="text-sm">{link.label}</span>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Other column */}
+            <div>
+              <h4 className="text-[11px] font-bold text-slate-300 mb-5 uppercase tracking-[0.15em]">
+                Other
               </h4>
               <ul className="space-y-3">
                 {footerOtherLinks.map((link) => (
@@ -990,13 +842,13 @@ export function LandingPage() {
               {/* Contact info */}
               <div className="mt-8 space-y-2">
                 <h4 className="text-[11px] font-bold text-slate-300 mb-3 uppercase tracking-[0.15em]">Contact</h4>
-                <a href="mailto:info@tunepoa.co.tz" className="flex items-center gap-2 text-sm hover:text-teal-400 transition-colors duration-200">
+                <a href="mailto:hello@tunepoa.com" className="flex items-center gap-2 text-sm hover:text-teal-400 transition-colors duration-200">
                   <Mail className="h-4 w-4" />
-                  info@tunepoa.co.tz
+                  hello@tunepoa.com
                 </a>
-                <a href="tel:+255700000000" className="flex items-center gap-2 text-sm hover:text-teal-400 transition-colors duration-200">
+                <a href="tel:+255741017017" className="flex items-center gap-2 text-sm hover:text-teal-400 transition-colors duration-200">
                   <Phone className="h-4 w-4" />
-                  +255 700 000 000
+                  +255 741 0 17 0 17
                 </a>
               </div>
             </div>
@@ -1005,11 +857,11 @@ export function LandingPage() {
           {/* Bottom bar */}
           <div className="mt-16 pt-8 border-t border-white/[0.06] flex flex-col sm:flex-row items-center justify-between gap-4">
             <p className="text-xs text-slate-500">
-              &copy; {new Date().getFullYear()} TunePoa. All Rights Reserved.
+              &copy; Tune Poa {new Date().getFullYear()} All Rights Reserved.
             </p>
             <div className="flex items-center gap-1 text-xs text-slate-500">
               <MapPin className="h-3.5 w-3.5" />
-              Dar es Salaam, Tanzania
+              Arusha, Tanzania
             </div>
           </div>
         </div>
