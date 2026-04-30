@@ -6,10 +6,10 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
-import { Mail, Phone, MapPin, Clock, Send, CheckCircle2, Loader2 } from 'lucide-react'
+import { Mail, Phone, MapPin, Clock, Send, CheckCircle2, Loader2, MessageSquare } from 'lucide-react'
 
 export function ContactPageClient() {
-  const [form, setForm] = useState({ name: '', email: '', phone: '', message: '' })
+  const [form, setForm] = useState({ name: '', email: '', phone: '', subject: '', message: '' })
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
 
@@ -20,7 +20,7 @@ export function ContactPageClient() {
     await new Promise((r) => setTimeout(r, 1500))
     setLoading(false)
     setSuccess(true)
-    setForm({ name: '', email: '', phone: '', message: '' })
+    setForm({ name: '', email: '', phone: '', subject: '', message: '' })
   }
 
   return (
@@ -29,40 +29,45 @@ export function ContactPageClient() {
       <section className="relative overflow-hidden py-20 sm:py-28">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(0,201,183,0.1),transparent_60%)]" />
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-teal-500/10 border border-teal-500/20 text-teal-400 text-[11px] font-bold uppercase tracking-[0.15em] mb-6">
+            <MessageSquare className="h-3.5 w-3.5" />
+            Contact Us
+          </div>
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white mb-6 tracking-tight">
             Get in <span className="bg-gradient-to-r from-teal-400 to-cyan-400 bg-clip-text text-transparent">Touch</span>
           </h1>
           <p className="text-slate-400 text-base sm:text-lg leading-relaxed max-w-2xl mx-auto">
-            Have a question or ready to get started? We&apos;d love to hear from you.
+            Have a question, need a custom solution, or ready to transform how your callers experience your brand? We&apos;d love to hear from you. Our dedicated team is here to help you every step of the way.
           </p>
         </div>
       </section>
 
       {/* Contact Section */}
       <section className="py-24 sm:py-32 bg-[#0b1929] relative">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(0,201,183,0.04),transparent_60%)]" />
         <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-5 gap-12">
+          <div className="grid lg:grid-cols-2 gap-12 lg:gap-16">
             {/* Contact Info */}
-            <div className="lg:col-span-2 space-y-8">
+            <div className="space-y-8">
               <div>
-                <h2 className="text-2xl font-bold text-white mb-6">Contact Information</h2>
-                <p className="text-slate-400 leading-relaxed">
-                  Reach out to us through any of the channels below. Our team typically responds within 24 hours.
+                <h2 className="text-2xl sm:text-3xl font-bold text-white mb-4">Let&apos;s Start a Conversation</h2>
+                <p className="text-slate-400 leading-relaxed mb-6">
+                  Whether you&apos;re exploring ringback tones for the first time or looking to scale your existing setup, our team is ready to provide personalized guidance. Reach out through any of the channels below, and we&apos;ll respond within 24 hours.
                 </p>
               </div>
 
-              <div className="space-y-6">
+              <div className="space-y-5">
                 {[
-                  { icon: <MapPin className="h-5 w-5" />, title: 'Office Address', detail: 'Ohio Street, City Centre\nDar es Salaam, Tanzania' },
-                  { icon: <Mail className="h-5 w-5" />, title: 'Email', detail: 'info@tunepoa.co.tz', href: 'mailto:info@tunepoa.co.tz' },
-                  { icon: <Phone className="h-5 w-5" />, title: 'Phone', detail: '+255 700 000 000', href: 'tel:+255700000000' },
+                  { icon: <MapPin className="h-5 w-5" />, title: 'Visit Our Office', detail: 'Ohio Street, City Centre\nDar es Salaam, Tanzania' },
+                  { icon: <Mail className="h-5 w-5" />, title: 'Email Us', detail: 'info@tunepoa.co.tz', href: 'mailto:info@tunepoa.co.tz' },
+                  { icon: <Phone className="h-5 w-5" />, title: 'Call Us', detail: '+255 700 000 000', href: 'tel:+255700000000' },
                   { icon: <Clock className="h-5 w-5" />, title: 'Business Hours', detail: 'Mon - Fri: 8:00 AM - 5:00 PM\nSat: 9:00 AM - 1:00 PM' },
                 ].map((item) => (
-                  <div key={item.title} className="flex items-start gap-4">
-                    <div className="h-11 w-11 rounded-xl bg-teal-500/10 border border-teal-500/20 flex items-center justify-center text-teal-400 shrink-0">
+                  <div key={item.title} className="flex items-start gap-4 group">
+                    <div className="h-12 w-12 rounded-xl bg-teal-500/10 border border-teal-500/20 flex items-center justify-center text-teal-400 shrink-0 group-hover:bg-teal-500/15 group-hover:border-teal-500/30 transition-all duration-300">
                       {item.icon}
                     </div>
-                    <div>
+                    <div className="pt-1">
                       <h4 className="font-semibold text-white text-sm mb-1">{item.title}</h4>
                       {item.href ? (
                         <a href={item.href} className="text-sm text-slate-400 hover:text-teal-400 transition-colors whitespace-pre-line">
@@ -76,30 +81,36 @@ export function ContactPageClient() {
                 ))}
               </div>
 
-              {/* Map placeholder */}
-              <div className="glass-card p-6 rounded-2xl">
-                <div className="aspect-[4/3] rounded-xl bg-gradient-to-br from-[#0a1628] to-[#0d1f2d] flex items-center justify-center border border-white/[0.06]">
-                  <div className="text-center">
-                    <MapPin className="h-8 w-8 text-teal-400/40 mx-auto mb-2" />
-                    <p className="text-sm text-slate-500">Dar es Salaam, Tanzania</p>
+              {/* Quick Response Promise */}
+              <div className="glass-card p-6">
+                <div className="flex items-start gap-3">
+                  <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-teal-500 to-cyan-500 text-white flex items-center justify-center shrink-0 shadow-lg shadow-teal-500/20">
+                    <CheckCircle2 className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-white text-sm mb-1">Quick Response Guarantee</h4>
+                    <p className="text-sm text-slate-400 leading-relaxed">
+                      We understand the importance of timely communication. Our support team reviews every inquiry and responds within one business day, ensuring you never have to wait long for the answers you need.
+                    </p>
                   </div>
                 </div>
               </div>
             </div>
 
             {/* Contact Form */}
-            <div className="lg:col-span-3">
+            <div>
               <div className="glass-card p-8 sm:p-10">
-                <h2 className="text-2xl font-bold text-white mb-6">Send Us a Message</h2>
+                <h2 className="text-2xl sm:text-3xl font-bold text-white mb-2">Send Us a Message</h2>
+                <p className="text-slate-400 text-sm mb-8">Fill out the form below and we&apos;ll get back to you promptly.</p>
 
                 {success ? (
                   <div className="flex flex-col items-center justify-center py-12 text-center">
                     <div className="h-16 w-16 rounded-full bg-teal-500/15 border border-teal-500/25 flex items-center justify-center mb-4">
                       <CheckCircle2 className="h-8 w-8 text-teal-400" />
                     </div>
-                    <h3 className="text-lg font-bold text-white mb-2">Message Sent!</h3>
-                    <p className="text-slate-400 mb-6">Thank you for reaching out. We&apos;ll get back to you shortly.</p>
-                    <Button onClick={() => setSuccess(false)} className="bg-gradient-to-r from-teal-500 to-cyan-500 text-white">
+                    <h3 className="text-lg font-bold text-white mb-2">Message Sent Successfully!</h3>
+                    <p className="text-slate-400 mb-6">Thank you for reaching out to TunePoa. Our team will review your message and get back to you within 24 hours.</p>
+                    <Button onClick={() => setSuccess(false)} className="bg-gradient-to-r from-teal-500 to-cyan-500 text-white font-semibold px-8 h-11 rounded-xl">
                       Send Another Message
                     </Button>
                   </div>
@@ -107,7 +118,7 @@ export function ContactPageClient() {
                   <form onSubmit={handleSubmit} className="space-y-5">
                     <div className="grid sm:grid-cols-2 gap-5">
                       <div className="space-y-2">
-                        <Label className="text-slate-300">Full Name</Label>
+                        <Label className="text-slate-300 text-sm">Full Name <span className="text-red-400">*</span></Label>
                         <Input
                           required
                           value={form.name}
@@ -117,7 +128,7 @@ export function ContactPageClient() {
                         />
                       </div>
                       <div className="space-y-2">
-                        <Label className="text-slate-300">Email Address</Label>
+                        <Label className="text-slate-300 text-sm">Email Address <span className="text-red-400">*</span></Label>
                         <Input
                           required
                           type="email"
@@ -128,23 +139,34 @@ export function ContactPageClient() {
                         />
                       </div>
                     </div>
-                    <div className="space-y-2">
-                      <Label className="text-slate-300">Phone Number</Label>
-                      <Input
-                        value={form.phone}
-                        onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))}
-                        placeholder="+255 7XX XXX XXX"
-                        className="h-11 glass-input"
-                      />
+                    <div className="grid sm:grid-cols-2 gap-5">
+                      <div className="space-y-2">
+                        <Label className="text-slate-300 text-sm">Phone Number</Label>
+                        <Input
+                          value={form.phone}
+                          onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))}
+                          placeholder="+255 7XX XXX XXX"
+                          className="h-11 glass-input"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label className="text-slate-300 text-sm">Subject</Label>
+                        <Input
+                          value={form.subject}
+                          onChange={(e) => setForm((f) => ({ ...f, subject: e.target.value }))}
+                          placeholder="How can we help?"
+                          className="h-11 glass-input"
+                        />
+                      </div>
                     </div>
                     <div className="space-y-2">
-                      <Label className="text-slate-300">Message</Label>
+                      <Label className="text-slate-300 text-sm">Message <span className="text-red-400">*</span></Label>
                       <Textarea
                         required
                         rows={5}
                         value={form.message}
                         onChange={(e) => setForm((f) => ({ ...f, message: e.target.value }))}
-                        placeholder="Tell us how we can help..."
+                        placeholder="Tell us about your business and how we can help..."
                         className="glass-input resize-none"
                       />
                     </div>

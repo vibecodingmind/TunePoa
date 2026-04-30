@@ -42,7 +42,6 @@ import {
   UserPlus,
   Music,
   Rocket,
-  Check,
   MapPin,
 } from 'lucide-react'
 
@@ -645,17 +644,6 @@ export function LandingPage() {
             <p className="text-slate-400 max-w-3xl mx-auto text-base sm:text-lg leading-relaxed">
               Setting up your custom ringback tone is quick and hassle-free. Our team handles the heavy lifting so you can focus on what matters.
             </p>
-          </div>
-
-          {/* Image */}
-          <div className="mb-16 rounded-2xl overflow-hidden glass-card p-2">
-            <Image
-              src="/how-it-works.png"
-              alt="How TunePoa works"
-              width={1200}
-              height={400}
-              className="w-full h-auto rounded-xl object-cover"
-            />
           </div>
 
           {/* Steps grid */}
