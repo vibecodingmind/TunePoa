@@ -7,10 +7,7 @@ import { Music, Play, Pause, Volume2, VolumeX, Loader2 } from 'lucide-react'
 interface SampleTune {
   id: string
   title: string
-  category: string
-  description: string | null
   audioUrl: string
-  duration: number | null
   isActive: boolean
   displayOrder: number
 }
@@ -23,10 +20,7 @@ function formatTime(seconds: number): string {
   return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`
 }
 
-function formatRemaining(seconds: number | null): string {
-  if (!seconds) return '-00:00'
-  return `-${formatTime(seconds)}`
-}
+
 
 /* ---------- tiny waveform component ---------- */
 
@@ -72,7 +66,7 @@ function AudioPlayerCard({
 }) {
   const [loading, setLoading] = useState(false)
   const [muted, setMuted] = useState(false)
-  const duration = tune.duration || 0
+  const [duration, setDuration] = useState(0)
 
   const handleToggle = useCallback(async () => {
     if (isPlaying) {
@@ -96,6 +90,9 @@ function AudioPlayerCard({
 
     audio.onerror = () => setLoading(false)
     audio.ontimeupdate = onTimeUpdate
+    audio.onloadedmetadata = () => {
+      setDuration(audio.duration || 0)
+    }
     audio.onended = () => {
       onToggle() // will set playingId to null via parent
       audio.currentTime = 0
@@ -175,7 +172,7 @@ function AudioPlayerCard({
         <span className="text-[11px] text-slate-500 font-mono w-10 shrink-0">
           {isPlaying && duration > 0
             ? `-${formatTime(Math.max(0, duration - currentTime))}`
-            : formatRemaining(duration)}
+            : duration > 0 ? `-${formatTime(duration)}` : '-00:00'}
         </span>
       </div>
     </div>

@@ -6,15 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Badge } from '@/components/ui/badge'
-import { Textarea } from '@/components/ui/textarea'
 import { Skeleton } from '@/components/ui/skeleton'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
 import {
   Dialog,
   DialogContent,
@@ -42,7 +34,6 @@ import {
   RefreshCw,
   Loader2,
   AlertCircle,
-  Volume2,
   Search,
   X,
 } from 'lucide-react'
@@ -51,28 +42,10 @@ import { useToast } from '@/hooks/use-toast'
 interface SampleTune {
   id: string
   title: string
-  category: string
-  description: string | null
   audioUrl: string
-  duration: number | null
   isActive: boolean
   displayOrder: number
   createdAt: string
-}
-
-const CATEGORY_COLORS: Record<string, string> = {
-  promo: 'bg-violet-500/15 text-violet-400 border-violet-500/25',
-  branding: 'bg-teal-500/15 text-teal-400 border-teal-500/25',
-  offer: 'bg-amber-500/15 text-amber-400 border-amber-500/25',
-  announcement: 'bg-cyan-500/15 text-cyan-400 border-cyan-500/25',
-  hold: 'bg-emerald-500/15 text-emerald-400 border-emerald-500/25',
-}
-
-function formatDuration(seconds: number | null): string {
-  if (!seconds) return '--:--'
-  const m = Math.floor(seconds / 60)
-  const s = seconds % 60
-  return `${m}:${s.toString().padStart(2, '0')}`
 }
 
 export function AdminSampleTunesPage() {
@@ -88,7 +61,7 @@ export function AdminSampleTunesPage() {
   // Create/Edit dialog
   const [dialogOpen, setDialogOpen] = useState(false)
   const [editId, setEditId] = useState<string | null>(null)
-  const [form, setForm] = useState({ title: '', category: 'promo', audioUrl: '', description: '', duration: '' })
+  const [form, setForm] = useState({ title: '', audioUrl: '' })
   const [saving, setSaving] = useState(false)
 
   // Delete dialog
@@ -132,11 +105,6 @@ export function AdminSampleTunesPage() {
 
   useEffect(() => { fetchTunes() }, [fetchTunes])
 
-  // Note: The GET endpoint only returns active tunes. For admin, we need to show all.
-  // Let's use a workaround - fetch all tunes including inactive.
-  // Since the GET endpoint only returns active ones, for admin we show those plus allow adding/deleting.
-  // This is a simplification; in production, we'd add an admin-specific GET endpoint.
-
   const filteredTunes = tunes.filter((t) => {
     const matchesSearch = !searchQuery || t.title.toLowerCase().includes(searchQuery.toLowerCase())
     const matchesActive = showInactive || t.isActive
@@ -145,15 +113,21 @@ export function AdminSampleTunesPage() {
 
   const handlePlay = (tune: SampleTune) => {
     if (playingId === tune.id) {
+      audioRef[0]?.pause()
       setPlayingId(null)
       return
     }
+    if (audioRef[0]) audioRef[0].pause()
+    const audio = new Audio(tune.audioUrl)
+    audio.play().catch(() => {})
+    audioRef[1](audio)
     setPlayingId(tune.id)
+    audio.onended = () => setPlayingId(null)
   }
 
   const openCreate = () => {
     setEditId(null)
-    setForm({ title: '', category: 'promo', audioUrl: '', description: '', duration: '' })
+    setForm({ title: '', audioUrl: '' })
     setDialogOpen(true)
   }
 
@@ -161,10 +135,7 @@ export function AdminSampleTunesPage() {
     setEditId(tune.id)
     setForm({
       title: tune.title,
-      category: tune.category,
       audioUrl: tune.audioUrl,
-      description: tune.description || '',
-      duration: tune.duration?.toString() || '',
     })
     setDialogOpen(true)
   }
@@ -175,11 +146,8 @@ export function AdminSampleTunesPage() {
     try {
       const body: Record<string, string> = {
         title: form.title,
-        category: form.category,
         audioUrl: form.audioUrl,
-        description: form.description,
       }
-      if (form.duration) body.duration = form.duration
 
       let res: Response
       if (editId) {
@@ -326,22 +294,13 @@ export function AdminSampleTunesPage() {
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-1">
                   <p className="text-sm font-semibold text-white truncate">{tune.title}</p>
-                  <Badge variant="outline" className={`text-xs shrink-0 ${CATEGORY_COLORS[tune.category] || ''}`}>
-                    {tune.category}
-                  </Badge>
                   {!tune.isActive && (
                     <Badge variant="outline" className="text-xs bg-slate-500/15 text-slate-400 border-slate-500/25">
                       Inactive
                     </Badge>
                   )}
                 </div>
-                <div className="flex items-center gap-3 text-xs text-slate-500">
-                  <span className="truncate max-w-[200px]">{tune.audioUrl}</span>
-                  <span className="flex items-center gap-1 shrink-0">
-                    <Volume2 className="h-3 w-3" />
-                    {formatDuration(tune.duration)}
-                  </span>
-                </div>
+                <p className="text-xs text-slate-500 truncate">{tune.audioUrl}</p>
               </div>
 
               {/* Actions */}
@@ -369,32 +328,9 @@ export function AdminSampleTunesPage() {
               <Label>Title *</Label>
               <Input value={form.title} onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))} placeholder="Tune title" className="h-11 glass-input" />
             </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label>Category</Label>
-                <Select value={form.category} onValueChange={(v) => setForm((f) => ({ ...f, category: v }))}>
-                  <SelectTrigger className="h-11 glass-input"><SelectValue /></SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="promo">Promo</SelectItem>
-                    <SelectItem value="branding">Branding</SelectItem>
-                    <SelectItem value="offer">Offer</SelectItem>
-                    <SelectItem value="announcement">Announcement</SelectItem>
-                    <SelectItem value="hold">Hold</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="space-y-2">
-                <Label>Duration (sec)</Label>
-                <Input type="number" value={form.duration} onChange={(e) => setForm((f) => ({ ...f, duration: e.target.value }))} placeholder="e.g. 30" className="h-11 glass-input" />
-              </div>
-            </div>
             <div className="space-y-2">
               <Label>Audio URL *</Label>
               <Input value={form.audioUrl} onChange={(e) => setForm((f) => ({ ...f, audioUrl: e.target.value }))} placeholder="https://example.com/audio.mp3" className="h-11 glass-input" />
-            </div>
-            <div className="space-y-2">
-              <Label>Description</Label>
-              <Textarea value={form.description} onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))} placeholder="Optional description" className="glass-input resize-none" rows={3} />
             </div>
           </div>
           <DialogFooter>
