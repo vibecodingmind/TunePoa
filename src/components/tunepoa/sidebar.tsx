@@ -191,11 +191,7 @@ function SidebarContent({ onClose }: { onClose?: () => void }) {
                         {isActive && (
                           <ChevronRight className="h-3.5 w-3.5 text-teal-500/60" />
                         )}
-                        {item.adminOnly && !isActive && (
-                          <span className="text-[9px] px-1.5 py-0.5 rounded-md bg-teal-500/10 text-teal-400 font-semibold border border-teal-500/20">
-                            ADMIN
-                          </span>
-                        )}
+
                       </button>
                     )
                   })}
