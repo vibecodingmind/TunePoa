@@ -40,6 +40,7 @@ export type ViewId =
   | 'admin-analytics'
   | 'admin-audio'
   | 'admin-invoices'
+  | 'admin-sample-tunes'
   | 'admin-export'
   | 'settings'
 

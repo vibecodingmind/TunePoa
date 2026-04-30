@@ -1,7 +1,8 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import Image from 'next/image'
+import Link from 'next/link'
 import { useStore } from '@/lib/store'
 import { Button } from '@/components/ui/button'
 import {
@@ -29,13 +30,20 @@ import {
   ArrowRight,
   Shield,
   Volume2,
-  Network,
-  MapPin,
   Linkedin,
   Twitter,
   Facebook,
   Instagram,
   Mail,
+  Phone,
+  Users,
+  ThumbsUp,
+  Headphones,
+  UserPlus,
+  Music,
+  Rocket,
+  Check,
+  MapPin,
 } from 'lucide-react'
 
 /* ─── FAQ Data ─── */
@@ -73,7 +81,7 @@ const testimonials = [
   },
   {
     quote:
-      'TunePoa has revolutionized how we manage our HR and payroll. The automated functionalities and in-depth reports have brought a new level of efficiency and accuracy to our daily work.',
+      'TunePoa transformed the way our customers perceive our brand. Every time someone calls us, they hear our custom ringback tone and it leaves a professional impression. Our caller engagement has noticeably improved since we started using the service.',
     name: 'Benard N.',
     business: 'Dar es Salaam',
     rating: 5,
@@ -98,7 +106,7 @@ interface PackageData {
   isActive: boolean
 }
 
-/* ─── Benefit Cards (from live site) ─── */
+/* ─── Benefit Cards ─── */
 const benefitCards = [
   {
     icon: <Shield className="h-5 w-5" />,
@@ -123,7 +131,43 @@ const benefitCards = [
   },
 ]
 
-/* ─── Pricing Cards (from live site) ─── */
+/* ─── How It Works Steps ─── */
+const howItWorksSteps = [
+  {
+    step: 1,
+    icon: <UserPlus className="h-6 w-6" />,
+    title: 'Sign Up',
+    desc: 'Create your TunePoa account in minutes. Our streamlined onboarding gets you started right away.',
+  },
+  {
+    step: 2,
+    icon: <Music className="h-6 w-6" />,
+    title: 'Choose Your Tone',
+    desc: 'Browse our library of professional ringback tones or request a fully custom tone for your brand.',
+  },
+  {
+    step: 3,
+    icon: <Headphones className="h-6 w-6" />,
+    title: 'We Produce It',
+    desc: 'Our production team creates a high-quality, polished ringback tone tailored to your specifications.',
+  },
+  {
+    step: 4,
+    icon: <Rocket className="h-6 w-6" />,
+    title: 'Go Live',
+    desc: 'We activate your tone across your chosen phone numbers. Your callers start hearing your brand immediately.',
+  },
+]
+
+/* ─── Stats ─── */
+const stats = [
+  { value: '500+', label: 'Businesses', icon: <Users className="h-5 w-5" /> },
+  { value: '10M+', label: 'Calls Enhanced', icon: <Phone className="h-5 w-5" /> },
+  { value: '98%', label: 'Satisfaction', icon: <ThumbsUp className="h-5 w-5" /> },
+  { value: '24/7', label: 'Support', icon: <Headphones className="h-5 w-5" /> },
+]
+
+/* ─── Pricing Cards ─── */
 const pricingCards = [
   {
     name: 'Starter',
@@ -173,40 +217,88 @@ const pricingCards = [
   },
 ]
 
-/* ─── Footer Links (from live site) ─── */
+/* ─── Footer Links ─── */
 const footerCompanyLinks = [
-  { label: 'About', action: 'about' },
-  { label: 'Features', action: 'benefits' },
-  { label: 'Pricing', action: 'pricing' },
-  { label: 'Why TunePoa', action: 'about' },
-  { label: 'Contact', action: 'footer' },
-]
-
-const footerProductLinks = [
-  { label: 'API' },
-  { label: 'Partnership' },
-  { label: 'Coverage' },
-  { label: 'Support Desk' },
-  { label: 'Blog' },
+  { label: 'About', href: '/about' },
+  { label: 'Benefits', action: 'benefits' },
+  { label: 'Pricing', href: '/packages' },
+  { label: 'Sample Tunes', href: '/sample-tunes' },
+  { label: 'Contact', href: '/contact' },
 ]
 
 const footerOtherLinks = [
-  { label: 'Privacy Policy' },
-  { label: 'Terms Of Services' },
-  { label: 'Refund Policy' },
-  { label: 'Cookies Policy' },
+  { label: 'Privacy Policy', href: '/privacy' },
+  { label: 'Terms of Service', href: '/terms' },
   { label: 'FAQ', action: 'faq' },
 ]
 
-/* ─── Nav Links (from live site) ─── */
+/* ─── Nav Links ─── */
 const navLinks = [
   { label: 'About', id: 'about' },
   { label: 'Benefits', id: 'benefits' },
-  { label: 'Integrations', id: 'integrations' },
   { label: 'Pricing', id: 'pricing' },
   { label: 'Testimonials', id: 'testimonials' },
+  { label: 'Sample Tunes', href: '/sample-tunes' },
   { label: 'Contact', id: 'footer' },
 ]
+
+/* ─── Animated Counter Hook ─── */
+function useCounter(target: string, duration = 2000) {
+  const [display, setDisplay] = useState('0')
+  const ref = useRef<HTMLDivElement>(null)
+  const hasAnimated = useRef(false)
+
+  useEffect(() => {
+    const el = ref.current
+    if (!el) return
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !hasAnimated.current) {
+          hasAnimated.current = true
+          const numericPart = target.replace(/[^0-9.]/g, '')
+          const suffix = target.replace(/[0-9.,]/g, '')
+          const num = parseFloat(numericPart)
+          const start = performance.now()
+
+          function tick(now: number) {
+            const elapsed = now - start
+            const progress = Math.min(elapsed / duration, 1)
+            const eased = 1 - Math.pow(1 - progress, 3)
+            const current = num * eased
+            setDisplay(`${Math.floor(current)}${suffix}`)
+            if (progress < 1) requestAnimationFrame(tick)
+          }
+          requestAnimationFrame(tick)
+        }
+      },
+      { threshold: 0.3 },
+    )
+
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [target, duration])
+
+  return { display, ref }
+}
+
+/* ─── Stat Counter Component ─── */
+function StatCounter({ stat }: { stat: typeof stats[number] }) {
+  const { display, ref } = useCounter(stat.value)
+  return (
+    <div ref={ref} className="text-center glass-card group relative p-7 hover:-translate-y-1 transition-all duration-500">
+      <div className="relative">
+        <div className="h-12 w-12 rounded-xl bg-teal-500/15 text-teal-400 flex items-center justify-center mb-4 mx-auto shadow-sm group-hover:scale-110 transition-transform duration-300">
+          {stat.icon}
+        </div>
+        <div className="text-3xl sm:text-4xl font-extrabold bg-gradient-to-r from-teal-400 to-cyan-400 bg-clip-text text-transparent mb-2">
+          {display}
+        </div>
+        <p className="text-sm text-slate-400 font-medium">{stat.label}</p>
+      </div>
+    </div>
+  )
+}
 
 export function LandingPage() {
   const { isAuthenticated, navigate, authMode, setAuthMode } = useStore()
@@ -216,7 +308,7 @@ export function LandingPage() {
   const [scrolled, setScrolled] = useState(false)
   const [authDialogOpen, setAuthDialogOpen] = useState(false)
 
-  // Fetch packages from API — auto-seed if database is empty
+  // Fetch packages from API
   useEffect(() => {
     let cancelled = false
 
@@ -248,11 +340,9 @@ export function LandingPage() {
                     .sort((a: PackageData, b: PackageData) => a.price - b.price),
                 )
               }
-            } else {
-              // Seed failed — will show empty state gracefully
             }
           } catch {
-            // Seed request failed — database may not be reachable yet
+            // Seed request failed
           }
         } else if (data.success && Array.isArray(data.data)) {
           if (!cancelled) {
@@ -273,7 +363,7 @@ export function LandingPage() {
           }
         }
       } catch {
-        // Silently fail -- pricing section will show static packages
+        // Silently fail
       } finally {
         if (!cancelled) setPackagesLoading(false)
       }
@@ -298,6 +388,15 @@ export function LandingPage() {
 
   if (isAuthenticated) return null
 
+  const handleNavClick = (link: typeof navLinks[number]) => {
+    if (link.href) {
+      window.location.href = link.href
+    } else if (link.id) {
+      scrollTo(link.id)
+    }
+    setMobileMenuOpen(false)
+  }
+
   return (
     <div className="min-h-screen bg-[#0a1628]">
       {/* ════════════════════════════════════════════════════════════════
@@ -305,24 +404,21 @@ export function LandingPage() {
           ════════════════════════════════════════════════════════════════ */}
       <nav
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-          scrolled
-            ? 'glass-nav'
-            : 'bg-transparent'
+          scrolled ? 'glass-nav' : 'bg-transparent'
         }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-[72px]">
-            {/* Logo */}
-            <div className="flex items-center">
+            <Link href="/">
               <Image src="/tunepoa-logo.png" alt="TunePoa" width={120} height={25} className="object-contain" />
-            </div>
+            </Link>
 
             {/* Desktop nav links */}
             <div className="hidden lg:flex items-center gap-1">
               {navLinks.map((link) => (
                 <button
                   key={link.label}
-                  onClick={() => scrollTo(link.id)}
+                  onClick={() => handleNavClick(link)}
                   className={`text-[13px] font-semibold uppercase tracking-wider transition-all duration-300 px-4 py-2 rounded-lg ${
                     scrolled
                       ? 'text-slate-400 hover:text-teal-400 hover:bg-white/[0.06]'
@@ -339,19 +435,13 @@ export function LandingPage() {
               <Button
                 variant="ghost"
                 className="font-semibold text-sm text-slate-300 hover:text-teal-400 hover:bg-white/[0.06] transition-all duration-300"
-                onClick={() => {
-                  setAuthMode('login')
-                  setAuthDialogOpen(true)
-                }}
+                onClick={() => { setAuthMode('login'); setAuthDialogOpen(true) }}
               >
                 Sign In
               </Button>
               <Button
                 className="bg-gradient-to-r from-teal-500 to-cyan-500 hover:from-teal-500/90 hover:to-cyan-500/90 text-white shadow-lg shadow-teal-500/25 font-semibold text-sm px-6 h-10 rounded-xl transition-all duration-300 hover:shadow-xl hover:shadow-teal-500/30 hover:-translate-y-0.5"
-                onClick={() => {
-                  setAuthMode('register')
-                  setAuthDialogOpen(true)
-                }}
+                onClick={() => { setAuthMode('register'); setAuthDialogOpen(true) }}
               >
                 Get Started
                 <ArrowRight className="ml-2 h-4 w-4" />
@@ -365,11 +455,7 @@ export function LandingPage() {
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                 aria-label="Toggle navigation menu"
               >
-                {mobileMenuOpen ? (
-                  <X className="h-5 w-5 text-white" />
-                ) : (
-                  <Menu className="h-5 w-5 text-white" />
-                )}
+                {mobileMenuOpen ? <X className="h-5 w-5 text-white" /> : <Menu className="h-5 w-5 text-white" />}
               </button>
             </div>
           </div>
@@ -380,7 +466,7 @@ export function LandingPage() {
               {navLinks.map((link) => (
                 <button
                   key={link.label}
-                  onClick={() => scrollTo(link.id)}
+                  onClick={() => handleNavClick(link)}
                   className="block w-full text-left px-4 py-3 text-sm font-medium text-slate-300 hover:text-teal-400 hover:bg-white/[0.06] rounded-lg transition-colors"
                 >
                   {link.label}
@@ -390,21 +476,13 @@ export function LandingPage() {
                 <Button
                   variant="outline"
                   className="flex-1 rounded-xl border-white/20 text-white hover:bg-white/10 hover:text-white h-11"
-                  onClick={() => {
-                    setAuthMode('login')
-                    setAuthDialogOpen(true)
-                    setMobileMenuOpen(false)
-                  }}
+                  onClick={() => { setAuthMode('login'); setAuthDialogOpen(true); setMobileMenuOpen(false) }}
                 >
                   Sign In
                 </Button>
                 <Button
                   className="flex-1 bg-gradient-to-r from-teal-500 to-cyan-500 text-white rounded-xl h-11 font-semibold"
-                  onClick={() => {
-                    setAuthMode('register')
-                    setAuthDialogOpen(true)
-                    setMobileMenuOpen(false)
-                  }}
+                  onClick={() => { setAuthMode('register'); setAuthDialogOpen(true); setMobileMenuOpen(false) }}
                 >
                   Get Started
                 </Button>
@@ -418,42 +496,32 @@ export function LandingPage() {
           HERO SECTION
           ════════════════════════════════════════════════════════════════ */}
       <section className="relative overflow-hidden">
-        {/* Background */}
         <div className="absolute inset-0 bg-gradient-to-br from-[#0a1628] via-[#0d1f2d] to-[#0a1628]" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(0,201,183,0.12),transparent_60%)]" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,rgba(74,178,207,0.08),transparent_50%)]" />
-
-        {/* Animated grid */}
         <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:80px_80px]" />
-
-        {/* Floating orbs */}
         <div className="absolute top-1/4 left-[10%] w-[500px] h-[500px] bg-teal-500/[0.08] rounded-full blur-[120px] animate-pulse-glow" />
         <div className="absolute bottom-0 right-[5%] w-[400px] h-[400px] bg-cyan-400/[0.06] rounded-full blur-[100px] animate-pulse-glow" style={{ animationDelay: '2s' }} />
         <div className="absolute top-1/2 right-[30%] w-[300px] h-[300px] bg-teal-500/[0.04] rounded-full blur-[80px] animate-pulse-glow" style={{ animationDelay: '4s' }} />
 
-        {/* Sound wave decoration at bottom */}
+        {/* Sound wave decoration */}
         <div className="absolute bottom-0 left-0 right-0 flex justify-center items-end gap-[2px] h-16 opacity-[0.04]" aria-hidden="true">
           {[...Array(80)].map((_, i) => (
             <div
               key={i}
               className="w-[2px] bg-gradient-to-t from-teal-500 to-cyan-400 rounded-t"
-              style={{
-                height: `${Math.max(8, Math.sin(i * 0.3) * 50 + Math.cos(i * 0.15) * 30 + 30)}%`,
-              }}
+              style={{ height: `${Math.max(8, Math.sin(i * 0.3) * 50 + Math.cos(i * 0.15) * 30 + 30)}%` }}
             />
           ))}
         </div>
 
-        {/* Content */}
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-32 sm:pt-40 lg:pt-48 pb-24">
           <div className="text-center max-w-4xl mx-auto">
-            {/* Badge */}
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-teal-500/10 border border-teal-500/20 backdrop-blur-md text-teal-400 text-xs font-bold uppercase tracking-[0.15em] mb-8 animate-fade-in-down">
               <Volume2 className="h-3.5 w-3.5" />
               <span>Ringback Tones</span>
             </div>
 
-            {/* Heading */}
             <h1 className="text-4xl sm:text-5xl lg:text-7xl font-extrabold text-white mb-7 leading-[1.08] tracking-tight animate-fade-in-up">
               Turn Every Call into an{' '}
               <br className="hidden sm:block" />
@@ -473,42 +541,30 @@ export function LandingPage() {
               </span>
             </h1>
 
-            {/* Subtitle */}
             <p className="text-base sm:text-lg lg:text-xl text-slate-300 mb-12 max-w-3xl mx-auto leading-relaxed animate-fade-in-up animation-delay-200">
-              Our Platform allows businesses to replace the traditional ringing sound with personalized music or messages while customers wait on the line. This service enhances customer experience, boosts brand visibility, and engages callers with professional, branded content. We help reduce perceived wait times and leave a lasting impression on clients.
+              Our platform allows businesses to replace the traditional ringing sound with personalized music or branded messages while customers wait on the line.
             </p>
 
-            {/* CTA Button */}
             <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in-up animation-delay-300">
               <Button
                 size="lg"
                 className="bg-gradient-to-r from-teal-500 to-cyan-500 hover:from-teal-500/90 hover:to-cyan-500/90 text-white font-bold text-base px-10 h-13 rounded-2xl shadow-2xl shadow-teal-500/25 group transition-all duration-300 hover:-translate-y-1"
-                onClick={() => {
-                  setAuthMode('register')
-                  setAuthDialogOpen(true)
-                }}
+                onClick={() => { setAuthMode('register'); setAuthDialogOpen(true) }}
               >
                 Get Started
                 <ArrowRight className="ml-2.5 h-5 w-5 transition-transform group-hover:translate-x-1" />
               </Button>
             </div>
-
-            {/* Trust text */}
-            <p className="mt-8 text-sm text-slate-500 animate-fade-in-up animation-delay-500">
-              Used by leading companies around the Country
-            </p>
           </div>
         </div>
       </section>
 
       {/* ════════════════════════════════════════════════════════════════
-          MORE THAN JUST MUSIC
+          ABOUT TUNEPOA
           ════════════════════════════════════════════════════════════════ */}
       <section id="about" className="py-24 sm:py-32 bg-[#0a1628] relative">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(0,201,183,0.06),transparent_70%)]" />
-
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Glass card */}
           <div className="max-w-3xl mx-auto text-center glass-card p-8 sm:p-10">
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-teal-500/10 border border-teal-500/20 text-teal-400 text-[11px] font-bold uppercase tracking-[0.15em] mb-6">
               <Megaphone className="h-3.5 w-3.5" />
@@ -518,19 +574,17 @@ export function LandingPage() {
               More Than Just Music
             </h2>
             <p className="text-slate-400 leading-relaxed mb-8">
-              With TunePoa, your ringback tone is not just music—it&apos;s a powerful tool for branding, advertising, and customer engagement.
+              With TunePoa, your ringback tone is not just music — it&apos;s a powerful tool for branding, advertising, and customer engagement.
             </p>
-            <Button
-              size="lg"
-              className="bg-gradient-to-r from-teal-500 to-cyan-500 hover:from-teal-500/90 hover:to-cyan-500/90 text-white font-bold text-base px-10 h-12 rounded-2xl shadow-2xl shadow-teal-500/25 group transition-all duration-300 hover:-translate-y-1"
-              onClick={() => {
-                setAuthMode('register')
-                setAuthDialogOpen(true)
-              }}
-            >
-              Get Started
-              <ArrowRight className="ml-2.5 h-5 w-5 transition-transform group-hover:translate-x-1" />
-            </Button>
+            <Link href="/about">
+              <Button
+                size="lg"
+                className="bg-gradient-to-r from-teal-500 to-cyan-500 hover:from-teal-500/90 hover:to-cyan-500/90 text-white font-bold text-base px-10 h-12 rounded-2xl shadow-2xl shadow-teal-500/25 group transition-all duration-300 hover:-translate-y-1"
+              >
+                Learn More About Us
+                <ArrowRight className="ml-2.5 h-5 w-5 transition-transform group-hover:translate-x-1" />
+              </Button>
+            </Link>
           </div>
         </div>
       </section>
@@ -540,9 +594,7 @@ export function LandingPage() {
           ════════════════════════════════════════════════════════════════ */}
       <section id="benefits" className="py-24 sm:py-32 bg-[#0b1929] relative">
         <div className="absolute inset-0 bg-dot-pattern opacity-20" />
-
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Header */}
           <div className="text-center mb-20">
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-teal-500/10 border border-teal-500/20 text-teal-400 text-[11px] font-bold uppercase tracking-[0.15em] mb-5">
               <Sparkles className="h-3.5 w-3.5" />
@@ -555,8 +607,6 @@ export function LandingPage() {
               Discover how custom ringback tones can transform your business communications and create meaningful connections with every call.
             </p>
           </div>
-
-          {/* Benefit grid */}
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {benefitCards.map((feature, idx) => (
               <div
@@ -564,19 +614,13 @@ export function LandingPage() {
                 className="glass-card group relative p-7 hover:-translate-y-1 transition-all duration-500 animate-fade-in-up"
                 style={{ animationDelay: `${idx * 80}ms` }}
               >
-                {/* Gradient bg on hover */}
                 <div className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${feature.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
-
                 <div className="relative">
                   <div className={`h-12 w-12 rounded-xl ${feature.iconBg} flex items-center justify-center mb-5 shadow-sm group-hover:scale-110 transition-transform duration-300`}>
                     {feature.icon}
                   </div>
-                  <h3 className="text-base font-bold text-white mb-2">
-                    {feature.title}
-                  </h3>
-                  <p className="text-sm text-slate-400 leading-relaxed">
-                    {feature.desc}
-                  </p>
+                  <h3 className="text-base font-bold text-white mb-2">{feature.title}</h3>
+                  <p className="text-sm text-slate-400 leading-relaxed">{feature.desc}</p>
                 </div>
               </div>
             ))}
@@ -585,96 +629,78 @@ export function LandingPage() {
       </section>
 
       {/* ════════════════════════════════════════════════════════════════
-          EXPRESS THROUGH TONES
+          HOW IT WORKS
           ════════════════════════════════════════════════════════════════ */}
-      <section className="py-24 sm:py-32 bg-[#0a1628] relative">
+      <section id="how-it-works" className="py-24 sm:py-32 bg-[#0a1628] relative">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(0,201,183,0.06),transparent_70%)]" />
-
-        <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-teal-500/10 border border-teal-500/20 text-teal-400 text-[11px] font-bold uppercase tracking-[0.15em] mb-5">
-            <Volume2 className="h-3.5 w-3.5" />
-            Express Through Tones
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-20">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-teal-500/10 border border-teal-500/20 text-teal-400 text-[11px] font-bold uppercase tracking-[0.15em] mb-5">
+              <Rocket className="h-3.5 w-3.5" />
+              How It Works
+            </div>
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white mb-5 tracking-tight">
+              Get Started in 4 Simple Steps
+            </h2>
+            <p className="text-slate-400 max-w-3xl mx-auto text-base sm:text-lg leading-relaxed">
+              Setting up your custom ringback tone is quick and hassle-free. Our team handles the heavy lifting so you can focus on what matters.
+            </p>
           </div>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white mb-8 tracking-tight">
-            Express Through Tones
-          </h2>
-          <p className="text-slate-400 text-base sm:text-lg leading-relaxed mb-6">
-            TunePoa.com enables businesses to enhance their brand identity with custom ringback tones. Personalizing call experiences ensures every interaction is memorable and strengthens brand recognition.
-          </p>
-          <p className="text-slate-400 text-base sm:text-lg leading-relaxed mb-10">
-            With RBT, businesses can share promotions, updates, or special offers, creating an engaging way to connect with customers and keep them informed while reinforcing their brand message.
-          </p>
-          <Button
-            size="lg"
-            className="bg-gradient-to-r from-teal-500 to-cyan-500 hover:from-teal-500/90 hover:to-cyan-500/90 text-white font-bold text-base px-10 h-12 rounded-2xl shadow-2xl shadow-teal-500/25 group transition-all duration-300 hover:-translate-y-1"
-            onClick={() => {
-              setAuthMode('register')
-              setAuthDialogOpen(true)
-            }}
-          >
-            Get Started
-            <ArrowRight className="ml-2.5 h-5 w-5 transition-transform group-hover:translate-x-1" />
-          </Button>
+
+          {/* Image */}
+          <div className="mb-16 rounded-2xl overflow-hidden glass-card p-2">
+            <Image
+              src="/how-it-works.png"
+              alt="How TunePoa works"
+              width={1200}
+              height={400}
+              className="w-full h-auto rounded-xl object-cover"
+            />
+          </div>
+
+          {/* Steps grid */}
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {howItWorksSteps.map((step, idx) => (
+              <div
+                key={step.step}
+                className="glass-card group relative p-7 hover:-translate-y-1 transition-all duration-500 animate-fade-in-up"
+                style={{ animationDelay: `${idx * 100}ms` }}
+              >
+                {/* Step number */}
+                <div className="absolute -top-3 -left-1 h-8 w-8 rounded-lg bg-gradient-to-br from-teal-500 to-cyan-500 text-white flex items-center justify-center font-extrabold text-sm shadow-lg shadow-teal-500/25">
+                  {step.step}
+                </div>
+                <div className="relative">
+                  <div className="h-12 w-12 rounded-xl bg-teal-500/15 text-teal-400 flex items-center justify-center mb-5 shadow-sm group-hover:scale-110 transition-transform duration-300">
+                    {step.icon}
+                  </div>
+                  <h3 className="text-base font-bold text-white mb-2">{step.title}</h3>
+                  <p className="text-sm text-slate-400 leading-relaxed">{step.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
       {/* ════════════════════════════════════════════════════════════════
-          INTEGRATIONS SECTION
+          STATS / NUMBERS
           ════════════════════════════════════════════════════════════════ */}
-      <section id="integrations" className="py-24 sm:py-32 bg-[#0a1628] relative overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(0,201,183,0.08),transparent_60%)]" />
-        <div className="absolute top-20 right-[10%] w-[400px] h-[400px] bg-teal-500/[0.05] rounded-full blur-[100px]" />
-        <div className="absolute bottom-20 left-[10%] w-[300px] h-[300px] bg-cyan-400/[0.04] rounded-full blur-[80px]" />
-
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Header */}
-          <div className="text-center mb-20">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-teal-500/10 border border-teal-500/20 text-teal-400 text-[11px] font-bold uppercase tracking-[0.15em] mb-5">
-              <Network className="h-3.5 w-3.5" />
-              Integrations
-            </div>
+      <section id="stats" className="py-24 sm:py-32 bg-[#0b1929] relative">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(0,201,183,0.08),transparent_50%)]" />
+        <div className="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white mb-5 tracking-tight">
-              Stable Ringback Tones Across Africa...
+              Trusted by Businesses Across Tanzania
             </h2>
-            <p className="text-slate-400 max-w-3xl mx-auto text-base sm:text-lg leading-relaxed">
-              With TunePoa, your custom Ringback Tones are seamlessly connected to local networks in key regions across Africa. This direct integration guarantees exceptional reliability, ensuring your brand&apos;s message reaches your audience with consistency and impact, every time they call.
+            <p className="text-slate-400 max-w-2xl mx-auto text-base sm:text-lg leading-relaxed">
+              Numbers that speak for themselves. Join hundreds of businesses already using TunePoa.
             </p>
           </div>
-
-          {/* Integration visual */}
-          <div className="max-w-4xl mx-auto">
-            <div className="glass-card p-8 sm:p-12 text-center relative overflow-hidden">
-              {/* Background decoration */}
-              <div className="absolute inset-0 bg-gradient-to-br from-teal-500/[0.03] to-cyan-500/[0.03]" />
-              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[1px] bg-gradient-to-r from-transparent via-teal-500/30 to-transparent" />
-
-              <div className="relative">
-                <div className="inline-flex items-center justify-center h-20 w-20 rounded-2xl bg-gradient-to-br from-teal-500/20 to-cyan-500/20 border border-teal-500/20 mb-8">
-                  <Network className="h-10 w-10 text-teal-400" />
-                </div>
-                <div className="flex flex-wrap justify-center gap-6 mb-8">
-                  {[
-                    { icon: <MapPin className="h-5 w-5" />, label: 'Tanzania' },
-                    { icon: <MapPin className="h-5 w-5" />, label: 'Kenya' },
-                    { icon: <MapPin className="h-5 w-5" />, label: 'Uganda' },
-                    { icon: <MapPin className="h-5 w-5" />, label: 'Nigeria' },
-                    { icon: <MapPin className="h-5 w-5" />, label: 'Ghana' },
-                    { icon: <MapPin className="h-5 w-5" />, label: 'South Africa' },
-                  ].map((item) => (
-                    <div
-                      key={item.label}
-                      className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/[0.04] border border-white/[0.08] text-sm text-slate-300 hover:bg-teal-500/10 hover:border-teal-500/20 hover:text-teal-400 transition-all duration-300"
-                    >
-                      {item.icon}
-                      {item.label}
-                    </div>
-                  ))}
-                </div>
-                <p className="text-sm text-slate-500">
-                  Direct integration with local networks for seamless delivery
-                </p>
-              </div>
-            </div>
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-5">
+            {stats.map((stat) => (
+              <StatCounter key={stat.label} stat={stat} />
+            ))}
           </div>
         </div>
       </section>
@@ -683,7 +709,6 @@ export function LandingPage() {
           PRICING
           ════════════════════════════════════════════════════════════════ */}
       <section id="pricing" className="py-24 sm:py-32 relative overflow-hidden">
-        {/* Dark green-blue background */}
         <div className="absolute inset-0 bg-gradient-to-b from-[#0a1628] via-[#0d1f2d] to-[#0a1628]" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(0,201,183,0.1),transparent_50%)]" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,rgba(74,178,207,0.08),transparent_50%)]" />
@@ -692,7 +717,6 @@ export function LandingPage() {
         <div className="absolute bottom-10 right-[10%] w-[300px] h-[300px] bg-cyan-400/[0.06] rounded-full blur-[80px]" />
 
         <div className="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Header */}
           <div className="text-center mb-16">
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-teal-500/10 border border-teal-500/20 text-teal-400 text-[11px] font-bold uppercase tracking-[0.15em] mb-5 backdrop-blur-sm">
               Pricing
@@ -705,11 +729,9 @@ export function LandingPage() {
             </p>
           </div>
 
-          {/* ── Package Cards ── */}
           <div className="grid md:grid-cols-3 gap-6 lg:gap-8 mb-16">
             {pricingCards.map((card) => (
               <div key={card.name} className={`glass-card group relative p-8 hover:-translate-y-1 hover:shadow-2xl transition-all duration-500 ${card.popular ? 'border-teal-500/30' : ''}`}>
-                {/* Popular badge */}
                 {card.badge && card.popular && (
                   <div className="absolute top-0 right-0 z-10">
                     <div className="flex items-center gap-1 px-3 py-1.5 bg-gradient-to-r from-amber-500 to-orange-500 text-white text-[10px] font-extrabold uppercase tracking-widest rounded-bl-xl shadow-lg shadow-amber-500/30">
@@ -718,11 +740,7 @@ export function LandingPage() {
                     </div>
                   </div>
                 )}
-
-                {/* Accent bar */}
                 <div className={`h-1.5 w-16 rounded-full bg-gradient-to-r ${card.accentFrom} ${card.accentTo} mb-6`} />
-
-                {/* Icon + name */}
                 <div className="flex items-center gap-3 mb-4">
                   <div className={`h-12 w-12 rounded-xl ${card.iconBg} border border-teal-500/20 flex items-center justify-center ${card.iconColor}`}>
                     {card.icon}
@@ -732,23 +750,13 @@ export function LandingPage() {
                     <p className="text-xs text-slate-400">{card.subtitle}</p>
                   </div>
                 </div>
-
-                {/* Price */}
                 <div className="mb-6">
                   <div className="flex items-baseline gap-1">
                     <span className="text-4xl font-extrabold text-white tracking-tight">{card.price}</span>
-                    {card.price !== 'Custom' && (
-                      <span className="text-sm font-medium text-slate-400 ml-1">TZS</span>
-                    )}
+                    {card.price !== 'Custom' && <span className="text-sm font-medium text-slate-400 ml-1">TZS</span>}
                   </div>
                 </div>
-
-                {/* Description */}
-                <p className="text-sm text-slate-400 leading-relaxed mb-6">
-                  {card.description}
-                </p>
-
-                {/* Features */}
+                <p className="text-sm text-slate-400 leading-relaxed mb-6">{card.description}</p>
                 <ul className="space-y-3 mb-8">
                   {card.features.map((f) => (
                     <li key={f} className="flex items-center gap-2.5 text-sm text-slate-300">
@@ -757,12 +765,10 @@ export function LandingPage() {
                     </li>
                   ))}
                 </ul>
-
-                {/* CTA */}
                 <button
                   onClick={() => {
                     if (card.price === 'Custom') {
-                      scrollTo('footer')
+                      window.location.href = '/contact'
                     } else if (!isAuthenticated) {
                       window.dispatchEvent(new CustomEvent('open-auth', { detail: 'register' }))
                     } else {
@@ -784,48 +790,31 @@ export function LandingPage() {
           ════════════════════════════════════════════════════════════════ */}
       <section id="testimonials" className="py-24 sm:py-32 bg-[#0a1628] relative overflow-hidden">
         <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-teal-500/30 to-transparent" />
-
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Header */}
           <div className="text-center mb-20">
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-teal-500/10 border border-teal-500/20 text-teal-400 text-[11px] font-bold uppercase tracking-[0.15em] mb-5">
               <Star className="h-3.5 w-3.5" />
               Testimonials
             </div>
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white mb-5 tracking-tight">
-              Hear from our customers
+              Hear from Our Customers
             </h2>
           </div>
-
-          {/* Testimonial cards */}
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {testimonials.map((t, i) => (
-              <div
-                key={i}
-                className="glass-card group relative p-8 hover:-translate-y-1 transition-all duration-500"
-              >
-                {/* Quote mark decoration */}
+              <div key={i} className="glass-card group relative p-8 hover:-translate-y-1 transition-all duration-500">
                 <div className="absolute top-6 right-8 text-7xl font-serif text-teal-500/10 leading-none select-none group-hover:text-teal-500/20 transition-colors duration-300">
                   &ldquo;
                 </div>
-
                 <div className="relative">
-                  {/* Stars */}
                   <div className="flex gap-1 mb-5">
                     {[...Array(t.rating)].map((_, si) => (
-                      <Star
-                        key={si}
-                        className="h-4 w-4 text-amber-400 fill-amber-400"
-                      />
+                      <Star key={si} className="h-4 w-4 text-amber-400 fill-amber-400" />
                     ))}
                   </div>
-
-                  {/* Quote */}
                   <p className="text-[15px] text-slate-300 leading-relaxed mb-8 font-medium">
                     &ldquo;{t.quote}&rdquo;
                   </p>
-
-                  {/* Author */}
                   <div className="flex items-center gap-3.5 pt-6 border-t border-white/[0.08]">
                     <div className="h-11 w-11 rounded-xl bg-gradient-to-br from-teal-500 to-cyan-400 text-white flex items-center justify-center font-bold text-sm shadow-md shadow-teal-500/20">
                       {t.name.charAt(0)}
@@ -847,21 +836,18 @@ export function LandingPage() {
           ════════════════════════════════════════════════════════════════ */}
       <section id="faq" className="py-24 sm:py-32 bg-[#0b1929] relative">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,rgba(0,201,183,0.06),transparent_50%)]" />
-
         <div className="relative max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Header */}
           <div className="text-center mb-16">
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-teal-500/10 border border-teal-500/20 text-teal-400 text-[11px] font-bold uppercase tracking-[0.15em] mb-5">
               FAQ
             </div>
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white mb-5 tracking-tight">
-              Frequently asked questions
+              Frequently Asked Questions
             </h2>
             <p className="text-slate-400 max-w-xl mx-auto text-base sm:text-lg leading-relaxed">
               Still have more questions? Don&apos;t hesitate to contact us!
             </p>
           </div>
-
           <div className="glass-card overflow-hidden">
             <Accordion type="single" collapsible className="w-full">
               {faqItems.map((item, i) => (
@@ -880,41 +866,39 @@ export function LandingPage() {
       </section>
 
       {/* ════════════════════════════════════════════════════════════════
-          CTA
+          CTA BANNER
           ════════════════════════════════════════════════════════════════ */}
-      <section className="py-24 sm:py-32 relative overflow-hidden">
-        {/* Background */}
-        <div className="absolute inset-0 bg-gradient-to-br from-[#0a1628] via-[#0d1f2d] to-[#0a1628]" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(0,201,183,0.12),transparent_60%)]" />
+      <section className="py-20 sm:py-28 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-teal-600 via-cyan-600 to-teal-500" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.1),transparent_60%)]" />
+        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+        <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent" />
 
-        {/* Floating orbs */}
-        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-teal-500/[0.06] rounded-full blur-[120px]" />
-        <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-cyan-400/[0.05] rounded-full blur-[100px]" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-teal-500/[0.03] rounded-full blur-[150px]" />
-
-        <div className="relative max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white mb-6 tracking-tight leading-tight">
-            Your Ring Back Tone,{' '}
-            <span className="bg-gradient-to-r from-[#00c9b7] via-[#4ab2cf] to-[#00c9b7] bg-clip-text text-transparent">
-              your style
-            </span>
+            Ready to Transform Your Caller Experience?
           </h2>
-          <p className="text-base sm:text-lg text-slate-400 mb-10 max-w-xl mx-auto leading-relaxed">
-            Get started today and make every call memorable!
+          <p className="text-base sm:text-lg text-white/80 mb-10 max-w-xl mx-auto leading-relaxed">
+            Join hundreds of businesses already using TunePoa to make every call count.
           </p>
-
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button
               size="lg"
-              className="bg-gradient-to-r from-teal-500 to-cyan-500 hover:from-teal-500/90 hover:to-cyan-500/90 text-white font-bold text-base px-10 h-13 rounded-2xl shadow-2xl shadow-teal-500/25 group transition-all duration-300 hover:-translate-y-1"
-              onClick={() => {
-                setAuthMode('register')
-                setAuthDialogOpen(true)
-              }}
+              className="bg-white text-teal-700 hover:bg-white/90 font-bold text-base px-10 h-13 rounded-2xl shadow-2xl shadow-black/25 group transition-all duration-300 hover:-translate-y-1"
+              onClick={() => { setAuthMode('register'); setAuthDialogOpen(true) }}
             >
-              Get Started
+              Get Started Free
               <ArrowRight className="ml-2.5 h-5 w-5 transition-transform group-hover:translate-x-1" />
             </Button>
+            <Link href="/contact">
+              <Button
+                size="lg"
+                variant="outline"
+                className="border-2 border-white/30 text-white hover:bg-white/10 hover:border-white/50 font-bold text-base px-10 h-13 rounded-2xl transition-all duration-300 hover:-translate-y-1 bg-transparent"
+              >
+                Contact Sales
+              </Button>
+            </Link>
           </div>
         </div>
       </section>
@@ -939,20 +923,19 @@ export function LandingPage() {
           FOOTER
           ════════════════════════════════════════════════════════════════ */}
       <footer id="footer" className="bg-[#060e1a] text-slate-400 relative">
-        {/* Top gradient line */}
         <div className="h-px bg-gradient-to-r from-transparent via-teal-500/30 to-transparent" />
-
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-12">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-12">
             {/* Brand column */}
             <div>
-              <div className="flex items-center mb-5">
-                <Image src="/tunepoa-logo.png" alt="TunePoa" width={120} height={25} className="object-contain" />
-              </div>
+              <Link href="/">
+                <div className="flex items-center mb-5">
+                  <Image src="/tunepoa-logo.png" alt="TunePoa" width={120} height={25} className="object-contain" />
+                </div>
+              </Link>
               <p className="text-sm leading-relaxed mb-6">
                 Your Ring Back Tone, your style. Transform every call into a memorable experience with TunePoa.
               </p>
-              {/* Social icons */}
               <div className="flex items-center gap-4">
                 <a href="#" className="h-9 w-9 rounded-xl bg-white/[0.06] border border-white/[0.08] flex items-center justify-center text-slate-400 hover:text-teal-400 hover:bg-teal-500/10 hover:border-teal-500/20 transition-all duration-300">
                   <Twitter className="h-4 w-4" />
@@ -977,65 +960,68 @@ export function LandingPage() {
               <ul className="space-y-3">
                 {footerCompanyLinks.map((link) => (
                   <li key={link.label}>
-                    <button
-                      onClick={() => scrollTo(link.action!)}
-                      className="text-sm hover:text-teal-400 transition-colors duration-200"
-                    >
-                      {link.label}
-                    </button>
+                    {link.href ? (
+                      <Link href={link.href} className="text-sm hover:text-teal-400 transition-colors duration-200">
+                        {link.label}
+                      </Link>
+                    ) : link.action ? (
+                      <button onClick={() => scrollTo(link.action)} className="text-sm hover:text-teal-400 transition-colors duration-200">
+                        {link.label}
+                      </button>
+                    ) : (
+                      <span className="text-sm">{link.label}</span>
+                    )}
                   </li>
                 ))}
               </ul>
             </div>
 
-            {/* Product column */}
+            {/* Legal column */}
             <div>
               <h4 className="text-[11px] font-bold text-slate-300 mb-5 uppercase tracking-[0.15em]">
-                Product
-              </h4>
-              <ul className="space-y-3">
-                {footerProductLinks.map((link) => (
-                  <li key={link.label}>
-                    <button
-                      className="text-sm hover:text-teal-400 transition-colors duration-200"
-                    >
-                      {link.label}
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {/* Other column */}
-            <div>
-              <h4 className="text-[11px] font-bold text-slate-300 mb-5 uppercase tracking-[0.15em]">
-                Other
+                Legal
               </h4>
               <ul className="space-y-3">
                 {footerOtherLinks.map((link) => (
                   <li key={link.label}>
-                    <button
-                      onClick={() => link.action ? scrollTo(link.action) : null}
-                      className="text-sm hover:text-teal-400 transition-colors duration-200"
-                    >
-                      {link.label}
-                    </button>
+                    {link.href ? (
+                      <Link href={link.href} className="text-sm hover:text-teal-400 transition-colors duration-200">
+                        {link.label}
+                      </Link>
+                    ) : link.action ? (
+                      <button onClick={() => scrollTo(link.action)} className="text-sm hover:text-teal-400 transition-colors duration-200">
+                        {link.label}
+                      </button>
+                    ) : (
+                      <span className="text-sm">{link.label}</span>
+                    )}
                   </li>
                 ))}
               </ul>
+
+              {/* Contact info */}
+              <div className="mt-8 space-y-2">
+                <h4 className="text-[11px] font-bold text-slate-300 mb-3 uppercase tracking-[0.15em]">Contact</h4>
+                <a href="mailto:info@tunepoa.co.tz" className="flex items-center gap-2 text-sm hover:text-teal-400 transition-colors duration-200">
+                  <Mail className="h-4 w-4" />
+                  info@tunepoa.co.tz
+                </a>
+                <a href="tel:+255700000000" className="flex items-center gap-2 text-sm hover:text-teal-400 transition-colors duration-200">
+                  <Phone className="h-4 w-4" />
+                  +255 700 000 000
+                </a>
+              </div>
             </div>
           </div>
 
           {/* Bottom bar */}
           <div className="mt-16 pt-8 border-t border-white/[0.06] flex flex-col sm:flex-row items-center justify-between gap-4">
             <p className="text-xs text-slate-500">
-              &copy; Tune Poa 2024 All Rights Reserved.
+              &copy; {new Date().getFullYear()} TunePoa. All Rights Reserved.
             </p>
-            <div className="flex items-center gap-4 text-xs text-slate-500">
-              <a href="mailto:hello@tunepoa.co.tz" className="flex items-center gap-1.5 hover:text-teal-400 transition-colors duration-200">
-                <Mail className="h-3.5 w-3.5" />
-                hello@tunepoa.co.tz
-              </a>
+            <div className="flex items-center gap-1 text-xs text-slate-500">
+              <MapPin className="h-3.5 w-3.5" />
+              Dar es Salaam, Tanzania
             </div>
           </div>
         </div>

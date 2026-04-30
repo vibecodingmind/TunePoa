@@ -72,6 +72,7 @@ const adminNavItems: NavItem[] = [
   { id: 'admin-activity-logs', label: 'Activity Logs', i18nKey: 'nav.admin.activityLogs', icon: <ScrollText className="h-[18px] w-[18px]" />, adminOnly: true },
   { id: 'admin-audio', label: 'Audio Library', i18nKey: 'nav.admin.audio', icon: <Headphones className="h-[18px] w-[18px]" />, adminOnly: true },
   { id: 'admin-invoices', label: 'Invoices', i18nKey: 'nav.admin.invoices', icon: <Receipt className="h-[18px] w-[18px]" />, adminOnly: true },
+  { id: 'admin-sample-tunes', label: 'Sample Tunes', i18nKey: 'nav.admin.sampleTunes', icon: <Music className="h-[18px] w-[18px]" />, adminOnly: true },
   { id: 'admin-export', label: 'Data Export', i18nKey: 'common.export', icon: <Download className="h-[18px] w-[18px]" />, adminOnly: true },
 ]
 

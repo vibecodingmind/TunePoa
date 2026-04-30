@@ -26,6 +26,7 @@ import { AdminActivityLogs } from '@/components/tunepoa/admin-activity-logs'
 import { AdminAudioPage } from '@/components/tunepoa/admin-audio-page'
 import { AdminInvoicesPage } from '@/components/tunepoa/admin-invoices-page'
 import { AdminExportPage } from '@/components/tunepoa/admin-export-page'
+import { AdminSampleTunesPage } from '@/components/tunepoa/admin-sample-tunes'
 import Image from 'next/image'
 
 /* ─── Branded Loading Screen ─── */
@@ -62,7 +63,7 @@ function LoadingScreen() {
 const ADMIN_VIEWS = new Set([
   'admin-dashboard', 'admin-requests', 'admin-subscriptions',
   'admin-users', 'admin-packages', 'admin-pricing',
-  'admin-analytics', 'admin-activity-logs', 'admin-audio', 'admin-invoices', 'admin-export',
+  'admin-analytics', 'admin-activity-logs', 'admin-audio', 'admin-invoices', 'admin-sample-tunes', 'admin-export',
 ])
 // User-only views that admins should not land on
 const USER_VIEWS = new Set([
@@ -129,6 +130,8 @@ function ViewRouter() {
       return <AdminAudioPage />
     case 'admin-invoices':
       return <AdminInvoicesPage />
+    case 'admin-sample-tunes':
+      return <AdminSampleTunesPage />
     case 'admin-export':
       return <AdminExportPage />
     default:

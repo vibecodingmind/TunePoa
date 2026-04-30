@@ -288,3 +288,22 @@ model EmailTemplate {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
+
+// ==================== SAMPLE TUNES ====================
+// Public showcase tunes for the sample tunes page
+
+model SampleTune {
+  id            String   @id @default(cuid())
+  title         String
+  category      String   @default("promo") // promo, branding, offer, announcement, hold
+  description   String?
+  audioUrl      String   // URL to the audio file (external or uploaded)
+  duration      Int?     // seconds
+  isActive      Boolean  @default(true)
+  displayOrder  Int      @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([category])
+  @@index([isActive])
+}
