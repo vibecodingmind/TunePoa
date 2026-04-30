@@ -123,26 +123,6 @@ function SidebarContent({ onClose }: { onClose?: () => void }) {
       {/* Divider */}
       <div className="mx-4 h-px bg-white/[0.06]" />
 
-      {/* User info card */}
-      <div className="px-4 py-4 shrink-0">
-        <div className="flex items-center gap-3 p-3 rounded-xl bg-teal-500/10 border border-teal-500/15">
-          <div className="relative shrink-0">
-            <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-tp-500 to-ts-400 text-white flex items-center justify-center font-semibold text-sm shadow-md shadow-tp-500/15">
-              {currentUser?.name?.charAt(0)?.toUpperCase() || 'U'}
-            </div>
-            <div className="absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full bg-tp-500 border-2 border-[#081426]" />
-          </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-sm font-semibold text-slate-100 truncate">
-              {currentUser?.name || 'User'}
-            </p>
-            <p className="text-[11px] text-slate-500 truncate">
-              {currentUser?.businessName || currentUser?.email}
-            </p>
-          </div>
-        </div>
-      </div>
-
       {/* Navigation */}
       <ScrollArea className="flex-1 px-3 py-1">
         <nav className="space-y-5">
