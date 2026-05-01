@@ -177,7 +177,7 @@ export function PricingCalculator({ mode = 'landing', onSubscribe, isAuthenticat
  <Users className="h-5 w-5" />
  </div>
  <div>
- <h4 className="text-sm font-bold text-white">Number of Users</h4>
+ <h4 className="text-sm font-bold text-white">Number of Numbers</h4>
  <p className="text-xs text-slate-400">How many phone numbers need ringback tones?</p>
  </div>
  </div>
@@ -213,7 +213,7 @@ export function PricingCalculator({ mode = 'landing', onSubscribe, isAuthenticat
  Tier: {result.tier.name}
  </span>
  <span className="text-[10px] text-teal-400 font-medium">
- ({result.tier.minUsers}–{result.tier.maxUsers === 999 ? '50+' : result.tier.maxUsers} users)
+ ({result.tier.minUsers}–{result.tier.maxUsers === 999 ? '50+' : result.tier.maxUsers} numbers)
  </span>
  </div>
  )}
@@ -355,7 +355,7 @@ export function PricingCalculator({ mode = 'landing', onSubscribe, isAuthenticat
  <div className="flex items-center justify-between text-sm">
  <span className="text-slate-400 flex items-center gap-2">
  <Users className="h-3.5 w-3.5" />
- {result.userCount} users × {formatTZS(result.unitPrice)} TZS
+ {result.userCount} numbers × {formatTZS(result.unitPrice)} TZS
  </span>
  <span className="text-slate-300 font-medium">
  {formatTZS(result.subtotal)} TZS
@@ -397,7 +397,7 @@ export function PricingCalculator({ mode = 'landing', onSubscribe, isAuthenticat
  </div>
  {result.durationMonths > 1 && (
  <p className="text-xs text-teal-400 mt-2 font-medium">
- That&apos;s {formatTZS(Math.round(result.total / result.durationMonths))} TZS per month
+ That&apos;s {formatTZS(result.unitPrice)} TZS per number for {result.durationMonths} months
  </p>
  )}
  </div>
@@ -406,12 +406,12 @@ export function PricingCalculator({ mode = 'landing', onSubscribe, isAuthenticat
  <div className="flex items-center justify-center gap-4 py-2 rounded-xl bg-white/[0.04] border border-white/[0.06]">
  <div className="text-center">
  <p className="text-lg font-extrabold text-white">{formatTZS(result.unitPrice)}</p>
- <p className="text-[10px] text-slate-400 uppercase tracking-wider font-medium">Per User/Mo</p>
+ <p className="text-[10px] text-slate-400 uppercase tracking-wider font-medium">Per Number</p>
  </div>
  <div className="h-8 w-px bg-white/10" />
  <div className="text-center">
  <p className="text-lg font-extrabold text-white">{result.userCount}</p>
- <p className="text-[10px] text-slate-400 uppercase tracking-wider font-medium">Users</p>
+ <p className="text-[10px] text-slate-400 uppercase tracking-wider font-medium">Numbers</p>
  </div>
  <div className="h-8 w-px bg-white/10" />
  <div className="text-center">
@@ -480,7 +480,7 @@ export function PricingCalculator({ mode = 'landing', onSubscribe, isAuthenticat
  <div className="space-y-3">
  <div className="flex items-center gap-3">
  <div className="h-8 w-8 rounded-lg bg-teal-500/10 text-teal-300 flex items-center justify-center text-xs font-extrabold">1</div>
- <Label className="text-sm font-bold text-white">Number of Users</Label>
+ <Label className="text-sm font-bold text-white">Number of Numbers</Label>
  </div>
  <div className="flex items-center gap-4">
  <div className="flex items-center gap-0 rounded-xl border-2 border-white/[0.08] bg-white/[0.03] overflow-hidden">
@@ -571,14 +571,14 @@ export function PricingCalculator({ mode = 'landing', onSubscribe, isAuthenticat
  <div className="space-y-2.5 text-sm">
  <div className="flex justify-between">
  <span className="text-slate-400">Tier:</span>
- <span className="font-bold text-slate-200">{result.tier.name} Users</span>
+ <span className="font-bold text-slate-200">{result.tier.name}</span>
  </div>
  <div className="flex justify-between">
- <span className="text-slate-400">Price / User / Month:</span>
+ <span className="text-slate-400">Price per Number:</span>
  <span className="font-bold text-slate-200">{formatTZS(result.unitPrice)} TZS</span>
  </div>
  <div className="flex justify-between">
- <span className="text-slate-400">Total Users:</span>
+ <span className="text-slate-400">Total Numbers:</span>
  <span className="font-bold text-slate-200">{result.userCount}</span>
  </div>
  <div className="flex justify-between">

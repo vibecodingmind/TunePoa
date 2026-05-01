@@ -65,7 +65,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json()
-    const { businessName, businessCategory, adType, targetAudience, adScript, preferredLanguage, specialInstructions } = body
+    const { businessName, businessCategory, adType, targetAudience, adScript, preferredLanguage, specialInstructions, voicePreference } = body
 
     // Validate required fields
     if (!businessName || !adScript) {
@@ -82,6 +82,7 @@ export async function POST(request: NextRequest) {
         adScript,
         preferredLanguage: preferredLanguage || 'swahili',
         specialInstructions,
+        voicePreference: voicePreference || 'male',
         status: 'PENDING',
       },
       include: {
@@ -98,7 +99,7 @@ export async function POST(request: NextRequest) {
         action: 'CREATED',
         entityType: 'SERVICE_REQUEST',
         entityId: serviceRequest.id,
-        details: JSON.stringify({ adType: serviceRequest.adType, businessName }),
+        details: JSON.stringify({ adType: serviceRequest.adType, businessName, voicePreference: serviceRequest.voicePreference }),
       },
     })
 

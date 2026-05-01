@@ -135,10 +135,10 @@ const TIER_STYLES = [
 
 // Features per tier for visual richness
 const TIER_FEATURES: string[][] = [
-  ['Up to 10 users', 'Basic ringback tones', 'Email support', '1 month min. commitment'],
-  ['Up to 25 users', 'Custom audio uploads', 'Priority support', 'Multi-duration plans'],
-  ['Up to 50 users', 'Studio recording', 'Dedicated manager', 'Bulk discount pricing'],
-  ['50+ users', 'White-label option', '24/7 phone support', 'Custom contracts'],
+  ['Up to 10 numbers', 'Basic ringback tones', 'Email support', '1 month min. commitment'],
+  ['Up to 25 numbers', 'Custom audio uploads', 'Priority support', 'Multi-duration plans'],
+  ['Up to 50 numbers', 'Studio recording', 'Dedicated manager', 'Bulk discount pricing'],
+  ['50+ numbers', 'White-label option', '24/7 phone support', 'Custom contracts'],
 ]
 
 function getStyleForTier(index: number) {
@@ -248,10 +248,10 @@ function TierCard({
           </div>
           <div className="min-w-0">
             <h3 className="text-lg font-extrabold text-white truncate">
-              {tier.name} Users
+              {tier.name}
             </h3>
             <p className="text-sm text-slate-400 font-medium">
-              {userRange} users
+              {userRange} numbers
             </p>
             <Badge
               variant="outline"
@@ -275,7 +275,7 @@ function TierCard({
               {formatTZS(tier.price1Month)}
             </span>
             <span className="text-sm font-medium text-slate-500">
-              TZS/user/mo
+              TZS/number/mo
             </span>
           </div>
         </div>
@@ -288,7 +288,6 @@ function TierCard({
           <div className="grid grid-cols-2 gap-2">
             {DURATION_CONFIG.map((d) => {
               const price = getPriceForDuration(tier, d.months)
-              const perMonth = Math.round(price / d.months)
               return (
                 <div
                   key={d.months}
@@ -312,10 +311,7 @@ function TierCard({
                     {d.label}
                   </p>
                   <p className="text-lg font-extrabold text-white mt-0.5">
-                    {formatTZS(price)}
-                  </p>
-                  <p className="text-[10px] text-slate-500 font-medium">
-                    {formatTZS(perMonth)} TZS/mo
+                    {formatTZS(price)} TZS
                   </p>
                 </div>
               )
@@ -480,7 +476,7 @@ export function PackagesPage() {
         }
         toast({
           title: `${tier.name} Tier Selected`,
-          description: `Configure your subscription for ${tier.minUsers}–${tier.maxUsers === 999 ? '50+' : tier.maxUsers} users below.`,
+          description: `Configure your subscription for ${tier.minUsers}–${tier.maxUsers === 999 ? '50+' : tier.maxUsers} numbers below.`,
         })
       } else {
         navigate('landing')
@@ -672,7 +668,7 @@ export function PackagesPage() {
               Calculate & Subscribe
             </h2>
             <p className="text-sm text-slate-400 max-w-lg mx-auto">
-              Select your exact number of users, preferred duration, and optional
+              Select your exact number of numbers, preferred duration, and optional
               audio recording to get an instant price.
             </p>
           </div>

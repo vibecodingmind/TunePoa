@@ -54,6 +54,7 @@ model ServiceRequest {
   targetAudience    String?
   adScript          String
   preferredLanguage String   @default("swahili")
+  voicePreference   String?
   specialInstructions String?
   status            String   @default("PENDING") // PENDING, APPROVED, REJECTED
   rejectionReason   String?

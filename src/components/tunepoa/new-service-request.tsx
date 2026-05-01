@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { useAppStore } from '@/lib/store'
 import {
  Card,
@@ -34,9 +34,11 @@ import {
  Lightbulb,
  CheckCircle2,
  Pencil,
- Users,
  Globe,
  AlertCircle,
+ Mic,
+ Phone,
+ Radio,
 } from 'lucide-react'
 import { useToast } from '@/hooks/use-toast'
 
@@ -44,28 +46,9 @@ import { useToast } from '@/hooks/use-toast'
 /* Constants */
 /* ========================================================================= */
 
-const BUSINESS_CATEGORIES = [
- { value: 'Restaurant', label: 'Restaurant' },
- { value: 'Retail', label: 'Retail' },
- { value: 'Healthcare', label: 'Healthcare' },
- { value: 'Education', label: 'Education' },
- { value: 'Real Estate', label: 'Real Estate' },
- { value: 'Professional Services', label: 'Professional Services' },
- { value: 'Entertainment', label: 'Entertainment' },
- { value: 'Technology', label: 'Technology' },
- { value: 'Agriculture', label: 'Agriculture' },
- { value: 'Media', label: 'Media' },
- { value: 'Other', label: 'Other' },
-]
-
-const TARGET_AUDIENCES = [
- { value: 'General Public', label: 'General Public' },
- { value: 'Youth', label: 'Youth' },
- { value: 'Professionals', label: 'Professionals' },
- { value: 'Students', label: 'Students' },
- { value: 'Women', label: 'Women' },
- { value: 'Farmers', label: 'Farmers' },
- { value: 'Business Owners', label: 'Business Owners' },
+const VOICE_PREFERENCES = [
+ { value: 'male', label: 'Male Voice', description: 'Deep, authoritative tone' },
+ { value: 'female', label: 'Female Voice', description: 'Warm, friendly tone' },
 ]
 
 const AD_TYPES = [
@@ -130,13 +113,44 @@ export function NewServiceRequest() {
  >('business')
  const [form, setForm] = useState({
  businessName: user?.businessName || '',
- businessCategory: user?.businessCategory || '',
- targetAudience: '',
  adType: 'PROMO',
  preferredLanguage: 'Swahili',
+ voicePreference: 'male',
  adScript: '',
  specialInstructions: '',
  })
+
+ /* ---- Subscriptions for Live Ads ---- */
+
+ const [subscriptions, setSubscriptions] = useState<any[]>([])
+ const [serviceRequests, setServiceRequests] = useState<any[]>([])
+
+ useEffect(() => {
+ if (!token) return
+ fetch('/api/subscriptions?status=ACTIVE', {
+ headers: { Authorization: `Bearer ${token}` },
+ })
+ .then((r) => r.json())
+ .then((data) => {
+ if (data.success) setSubscriptions(data.data?.subscriptions || [])
+ })
+ .catch(() => {})
+
+ fetch('/api/service-requests', {
+ headers: { Authorization: `Bearer ${token}` },
+ })
+ .then((r) => r.json())
+ .then((data) => {
+ if (data.success) setServiceRequests(data.data?.requests || [])
+ })
+ .catch(() => {})
+ }, [token])
+
+ const totalNumbers = subscriptions.reduce((sum: number, sub: any) => sum + (sub.userCount || 0), 0)
+ const assignedCount = serviceRequests.filter(
+ (r: any) => r.status === 'APPROVED' || r.status === 'COMPLETED' || r.status === 'ACTIVE'
+ ).length
+ const availableNumbers = totalNumbers - assignedCount
 
  const updateField = (field: string, value: string) => {
  setForm((prev) => ({ ...prev, [field]: value }))
@@ -147,8 +161,6 @@ export function NewServiceRequest() {
  const errors = useMemo(() => {
  const errs: Record<string, string> = {}
  if (!form.businessName.trim()) errs.businessName = 'Business name is required'
- if (!form.businessCategory) errs.businessCategory = 'Business category is required'
- if (!form.targetAudience) errs.targetAudience = 'Target audience is required'
  if (!form.adType) errs.adType = 'Ad type is required'
  if (!form.preferredLanguage) errs.preferredLanguage = 'Language is required'
  if (form.adScript.length > 0 && form.adScript.length < MIN_SCRIPT_LENGTH)
@@ -163,8 +175,6 @@ export function NewServiceRequest() {
  const isFormComplete = useMemo(() => {
  return (
  form.businessName.trim() !== '' &&
- form.businessCategory !== '' &&
- form.targetAudience !== '' &&
  form.adType !== '' &&
  form.preferredLanguage !== '' &&
  form.adScript.trim() !== '' &&
@@ -198,10 +208,9 @@ export function NewServiceRequest() {
  },
  body: JSON.stringify({
  businessName: form.businessName,
- businessCategory: form.businessCategory,
- targetAudience: form.targetAudience,
  adType: form.adType,
  preferredLanguage: form.preferredLanguage,
+ voicePreference: form.voicePreference,
  adScript: form.adScript,
  specialInstructions: form.specialInstructions || null,
  }),
@@ -237,6 +246,7 @@ export function NewServiceRequest() {
  /* ---- Helpers ---- */
 
  const selectedAdType = AD_TYPES.find((a) => a.value === form.adType)
+ const selectedVoice = VOICE_PREFERENCES.find((v) => v.value === form.voicePreference)
  const scriptPercentage = Math.min((form.adScript.length / MAX_SCRIPT_LENGTH) * 100, 100)
  const scriptColor =
  form.adScript.length === 0
@@ -246,7 +256,7 @@ export function NewServiceRequest() {
  : 'bg-teal-500/100'
 
  const completedSteps = [
- { label: 'Business', done: form.businessName.trim() !== '' && form.businessCategory !== '' },
+ { label: 'Business', done: form.businessName.trim() !== '' },
  { label: 'Ad Type', done: form.adType !== '' },
  { label: 'Script', done: form.adScript.length >= MIN_SCRIPT_LENGTH },
  ]
@@ -338,68 +348,6 @@ export function NewServiceRequest() {
  {errors.businessName}
  </p>
  )}
- </div>
-
- <div className="grid sm:grid-cols-2 gap-4">
- <div className="space-y-2">
- <Label htmlFor="businessCategory">
- Business Category <span className="text-red-500">*</span>
- </Label>
- <Select
- value={form.businessCategory}
- onValueChange={(v) => updateField('businessCategory', v)}
- >
- <SelectTrigger
- id="businessCategory"
- className={`h-11 bg-white/5 border-white/[0.08] text-white ${errors.businessCategory ? 'border-red-400' : ''}`}
- >
- <SelectValue placeholder="Select a category" />
- </SelectTrigger>
- <SelectContent>
- {BUSINESS_CATEGORIES.map((cat) => (
- <SelectItem key={cat.value} value={cat.value}>
- {cat.label}
- </SelectItem>
- ))}
- </SelectContent>
- </Select>
- {errors.businessCategory && (
- <p className="text-xs text-red-500 flex items-center gap-1">
- <AlertCircle className="h-3 w-3" />
- {errors.businessCategory}
- </p>
- )}
- </div>
-
- <div className="space-y-2">
- <Label htmlFor="targetAudience">
- Target Audience <span className="text-red-500">*</span>
- </Label>
- <Select
- value={form.targetAudience}
- onValueChange={(v) => updateField('targetAudience', v)}
- >
- <SelectTrigger
- id="targetAudience"
- className={`h-11 bg-white/5 border-white/[0.08] text-white ${errors.targetAudience ? 'border-red-400' : ''}`}
- >
- <SelectValue placeholder="Select audience" />
- </SelectTrigger>
- <SelectContent>
- {TARGET_AUDIENCES.map((aud) => (
- <SelectItem key={aud.value} value={aud.value}>
- {aud.label}
- </SelectItem>
- ))}
- </SelectContent>
- </Select>
- {errors.targetAudience && (
- <p className="text-xs text-red-500 flex items-center gap-1">
- <AlertCircle className="h-3 w-3" />
- {errors.targetAudience}
- </p>
- )}
- </div>
  </div>
  </CardContent>
  )}
@@ -497,6 +445,55 @@ export function NewServiceRequest() {
  </Select>
  </div>
 
+ {/* Voice Selection */}
+ <div className="space-y-3">
+ <Label className="flex items-center gap-1.5 text-white font-medium">
+ <Mic className="h-3.5 w-3.5 text-slate-400" />
+ Voice Selection
+ </Label>
+ <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+ {VOICE_PREFERENCES.map((voice) => {
+ const isSelected = form.voicePreference === voice.value
+ return (
+ <button
+ key={voice.value}
+ type="button"
+ onClick={() => updateField('voicePreference', voice.value)}
+ className={`p-4 rounded-xl border-2 text-left transition-all duration-200 ${
+ isSelected
+ ? 'border-teal-400/30 bg-teal-500/10/50'
+ : 'border-white/[0.08] hover:border-slate-300'
+ }`}
+ >
+ <div className="flex items-start gap-3">
+ <div
+ className={`h-10 w-10 rounded-lg flex items-center justify-center shrink-0 transition-colors ${
+ isSelected
+ ? 'bg-teal-500/10 text-teal-400'
+ : voice.value === 'male'
+ ? 'bg-sky-500/15 text-sky-400'
+ : 'bg-pink-500/15 text-pink-400'
+ }`}
+ >
+ <Mic className="h-5 w-5" />
+ </div>
+ <div>
+ <p
+ className={`font-semibold text-sm ${
+ isSelected ? 'text-teal-300' : 'text-white'
+ }`}
+ >
+ {voice.label}
+ </p>
+ <p className="text-xs text-slate-400 mt-0.5">{voice.description}</p>
+ </div>
+ </div>
+ </button>
+ )
+ })}
+ </div>
+ </div>
+
  {/* Ad Script */}
  <div className="space-y-2">
  <Label htmlFor="adScript">
@@ -556,6 +553,90 @@ export function NewServiceRequest() {
  </div>
  </CardContent>
  )}
+ </Card>
+
+ {/* ================================================================ */}
+ {/* Live Ads — Assigned Numbers Card */}
+ {/* ================================================================ */}
+ <Card className="border-0 shadow-sm">
+ <CardHeader className="pb-4">
+ <div className="flex items-center gap-3">
+ <div className="h-10 w-10 rounded-lg bg-teal-500/10 flex items-center justify-center">
+ <Radio className="h-5 w-5 text-teal-400" />
+ </div>
+ <div>
+ <CardTitle className="text-lg text-white">Live Ads — Assigned Numbers</CardTitle>
+ <CardDescription>Your active subscriptions and ad assignments</CardDescription>
+ </div>
+ </div>
+ </CardHeader>
+ <CardContent className="space-y-4">
+ {/* Summary stats */}
+ <div className="grid grid-cols-3 gap-3">
+ <div className="rounded-xl bg-white/[0.03] border border-white/[0.08] p-3 text-center">
+ <div className="flex items-center justify-center gap-1.5 mb-1">
+ <Phone className="h-3.5 w-3.5 text-teal-400" />
+ <span className="text-[10px] text-slate-400 uppercase tracking-wider font-semibold">Total Numbers</span>
+ </div>
+ <p className="text-xl font-extrabold text-white">{totalNumbers}</p>
+ </div>
+ <div className="rounded-xl bg-white/[0.03] border border-white/[0.08] p-3 text-center">
+ <div className="flex items-center justify-center gap-1.5 mb-1">
+ <CheckCircle2 className="h-3.5 w-3.5 text-teal-400" />
+ <span className="text-[10px] text-slate-400 uppercase tracking-wider font-semibold">Available</span>
+ </div>
+ <p className="text-xl font-extrabold text-teal-300">{Math.max(0, availableNumbers)}</p>
+ </div>
+ <div className="rounded-xl bg-white/[0.03] border border-white/[0.08] p-3 text-center">
+ <div className="flex items-center justify-center gap-1.5 mb-1">
+ <Radio className="h-3.5 w-3.5 text-amber-400" />
+ <span className="text-[10px] text-slate-400 uppercase tracking-wider font-semibold">Assigned to Ads</span>
+ </div>
+ <p className="text-xl font-extrabold text-amber-300">{assignedCount}</p>
+ </div>
+ </div>
+
+ {/* Existing service requests list */}
+ {serviceRequests.length > 0 ? (
+ <div className="space-y-2">
+ <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Existing Service Requests</p>
+ <div className="max-h-48 overflow-y-auto space-y-2">
+ {serviceRequests.slice(0, 10).map((req: any) => (
+ <div
+ key={req.id}
+ className="flex items-center justify-between p-2.5 rounded-lg bg-white/[0.03] border border-white/[0.06]"
+ >
+ <div className="min-w-0 flex-1">
+ <p className="text-sm font-medium text-slate-200 truncate">{req.businessName}</p>
+ <p className="text-[10px] text-slate-500">{req.adType} • Created {new Date(req.createdAt).toLocaleDateString()}</p>
+ </div>
+ <Badge
+ variant="outline"
+ className={`ml-2 shrink-0 text-[9px] font-bold uppercase tracking-wider border-0 ${
+ req.status === 'APPROVED' || req.status === 'COMPLETED'
+ ? 'bg-teal-500/10 text-teal-300'
+ : req.status === 'PENDING'
+ ? 'bg-amber-500/10 text-amber-400'
+ : 'bg-slate-500/10 text-slate-400'
+ }`}
+ >
+ {req.status}
+ </Badge>
+ </div>
+ ))}
+ </div>
+ </div>
+ ) : (
+ <p className="text-xs text-slate-500 text-center py-2">No service requests found</p>
+ )}
+
+ {subscriptions.length === 0 && (
+ <div className="flex items-center gap-2 p-3 rounded-xl bg-amber-500/10 border border-amber-500/10">
+ <AlertCircle className="h-4 w-4 text-amber-400 shrink-0" />
+ <p className="text-xs text-amber-400">No active subscriptions found. Subscribe to a package to assign numbers to ads.</p>
+ </div>
+ )}
+ </CardContent>
  </Card>
 
  {/* ================================================================ */}
@@ -625,21 +706,6 @@ export function NewServiceRequest() {
  </p>
  <p className="text-sm text-white mt-0.5 font-medium">{form.businessName}</p>
  </div>
- <div>
- <p className="text-xs text-slate-400 uppercase tracking-wider font-semibold">
- Category
- </p>
- <p className="text-sm text-white mt-0.5 font-medium">{form.businessCategory}</p>
- </div>
- <div className="flex items-center gap-1.5">
- <Users className="h-3.5 w-3.5 text-slate-400" />
- <div>
- <p className="text-xs text-slate-400 uppercase tracking-wider font-semibold">
- Target Audience
- </p>
- <p className="text-sm text-white mt-0.5 font-medium">{form.targetAudience}</p>
- </div>
- </div>
  <div className="flex items-center gap-1.5">
  <Globe className="h-3.5 w-3.5 text-slate-400" />
  <div>
@@ -647,6 +713,15 @@ export function NewServiceRequest() {
  Language
  </p>
  <p className="text-sm text-white mt-0.5 font-medium">{form.preferredLanguage}</p>
+ </div>
+ </div>
+ <div className="flex items-center gap-1.5">
+ <Mic className="h-3.5 w-3.5 text-slate-400" />
+ <div>
+ <p className="text-xs text-slate-400 uppercase tracking-wider font-semibold">
+ Voice
+ </p>
+ <p className="text-sm text-white mt-0.5 font-medium">{selectedVoice?.label}</p>
  </div>
  </div>
  </div>
